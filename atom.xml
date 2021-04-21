@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://cm940324.github.io</id>
     <title>Oasis</title>
-    <updated>2021-04-21T03:07:51.740Z</updated>
+    <updated>2021-04-21T10:02:23.244Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://cm940324.github.io"/>
     <link rel="self" href="https://cm940324.github.io/atom.xml"/>
@@ -10,6 +10,89 @@
     <logo>https://cm940324.github.io/images/avatar.png</logo>
     <icon>https://cm940324.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, Oasis</rights>
+    <entry>
+        <title type="html"><![CDATA[Spring Security]]></title>
+        <id>https://cm940324.github.io/post/spring-security/</id>
+        <link href="https://cm940324.github.io/post/spring-security/">
+        </link>
+        <updated>2021-04-21T09:17:40.000Z</updated>
+        <content type="html"><![CDATA[<p>Java 领域老牌的权限管理框架当属 Shiro 了。<br>
+Shiro 有着众多的优点，例如轻量、简单、易于集成等。<br>
+当然 Shiro 也有不足，例如对 OAuth2 支持不够，在 Spring Boot 面前无法充分展示自己的优势等等，特别是随着现在 Spring Boot 和 Spring Cloud 的流行，Spring Security 正在走向舞台舞台中央。<br>
+Spring Security 最早不叫 Spring Security ，叫 Acegi Security，叫 Acegi Security 并不是说它和 Spring 就没有关系了，它依然是为 Spring 框架提供安全支持的。事实上，Java 领域的框架，很少有框架能够脱离 Spring 框架独立存在。<br>
+Acegi Security 基于 Spring，可以帮助我们为项目建立丰富的角色与权限管理，但是最广为人诟病的则是它臃肿繁琐的配置，这一问题最终也遗传给了 Spring Security。<br>
+在 Acegi Security 时代，网上流传一句话：“每当有人要使用 Acegi Security，就会有一个精灵死去。”足见 Acegi Security 的配置是多么可怕。<br>
+当 Acegi Security 投入 Spring 怀抱之后，先把这个名字改了，这就是大家所见到的 Spring Security 了，然后配置也得到了极大的简化。<br>
+但是和 Shiro 相比，人们对 Spring Security 的评价依然中重量级、配置繁琐。<br>
+直到有一天 Spring Boot 像谜一般出现在江湖边缘，彻底颠覆了 JavaEE 的世界。一人得道鸡犬升天，Spring Security 也因此飞上枝头变凤凰。<br>
+#1.核心功能#<br>
+对于一个权限管理框架而言，无论是 Shiro 还是 Spring Security，最最核心的功能，无非就是两方面：<br>
+认证<br>
+授权<br>
+通俗点说，认证就是我们常说的登录，授权就是权限鉴别，看看请求是否具备相应的权限。<br>
+虽然就是一个简简单单的登录，可是也能玩出很多花样来。<br>
+Spring Security 支持多种不同的认证方式，这些认证方式有的是 Spring Security 自己提供的认证功能，有的是第三方标准组织制订的，主要有如下一些：<br>
+一些比较常见的认证方式：<br>
+HTTP BASIC authentication headers：基于IETF RFC 标准。<br>
+HTTP Digest authentication headers：基于IETF RFC 标准。<br>
+HTTP X.509 client certificate exchange：基于IETF RFC 标准。<br>
+LDAP：跨平台身份验证。<br>
+Form-based authentication：基于表单的身份验证。<br>
+Run-as authentication：用户用户临时以某一个身份登录。<br>
+OpenID authentication：去中心化认证。<br>
+除了这些常见的认证方式之外，一些比较冷门的认证方式，Spring Security 也提供了支持。<br>
+Jasig Central Authentication Service：单点登录。<br>
+Automatic &quot;remember-me&quot; authentication：记住我登录（允许一些非敏感操作）。<br>
+Anonymous authentication：匿名登录。<br>
+......<br>
+作为一个开放的平台，Spring Security 提供的认证机制不仅仅是上面这些。如果上面这些认证机制依然无法满足你的需求，我们也可以自己定制认证逻辑。当我们需要和一些“老破旧”的系统进行集成时，自定义认证逻辑就显得非常重要了。<br>
+除了认证，剩下的就是授权了。<br>
+Spring Security 支持基于 URL 的请求授权、支持方法访问授权以及对象访问授权。<br>
+#2.基础入门#<br>
+##2.1. 新建项目##<br>
+首先新建一个 Spring Boot 项目，创建时引入 Spring Security 依赖和 web 依赖，如下图：<br>
+<img src="https://cm940324.github.io/post-images/1618997105251.webp" alt="" loading="lazy"><br>
+项目创建成功后，Spring Security 的依赖就添加进来了，在 Spring Boot 中我们加入的是 spring-boot-starter-security ，其实主要是这两个：<br>
+<img src="https://cm940324.github.io/post-images/1618997141497.webp" alt="" loading="lazy"><br>
+项目创建成功后，我们添加一个测试的 HelloController，内容如下：<br>
+<img src="https://cm940324.github.io/post-images/1618997324779.jpg" alt="" loading="lazy"><br>
+接下来什么事情都不用做，我们直接来启动项目。<br>
+在项目启动过程中，我们会看到如下一行日志：<br>
+<img src="https://cm940324.github.io/post-images/1618997378329.jpg" alt="" loading="lazy"><br>
+这就是 Spring Security 为默认用户 user 生成的临时密码，是一个 UUID 字符串。<br>
+接下来我们去访问 http://localhost:8080/hello 接口，就可以看到自动重定向到登录页面了：<br>
+<img src="https://cm940324.github.io/post-images/1618997430748.webp" alt="" loading="lazy"><br>
+在登录页面，默认的用户名就是 user，默认的登录密码则是项目启动时控制台打印出来的密码，输入用户名密码之后，就登录成功了，登录成功后，我们就可以访问到 /hello 接口了。<br>
+在 Spring Security 中，默认的登录页面和登录接口，都是 /login ，只不过一个是 get 请求（登录页面），另一个是 post 请求（登录接口）。<br>
+大家可以看到，非常方便，一个依赖就保护了所有接口。<br>
+有人说，你怎么知道知道生成的默认密码是一个 UUID 呢？<br>
+这个其实很好判断。<br>
+和用户相关的自动化配置类在 UserDetailsServiceAutoConfiguration 里边，在该类的 getOrDeducePassword 方法中，我们看到如下一行日志：<br>
+<img src="https://cm940324.github.io/post-images/1618997536347.png" alt="" loading="lazy"><br>
+毫无疑问，我们在控制台看到的日志就是从这里打印出来的。打印的条件是 isPasswordGenerated 方法返回 true，即密码是默认生成的。<br>
+进而我们发现，user.getPassword 出现在 SecurityProperties 中，在 SecurityProperties 中我们看到如下定义：<br>
+<img src="https://cm940324.github.io/post-images/1618997630300.jpg" alt="" loading="lazy"><br>
+可以看到，默认的用户名就是 user，默认的密码则是 UUID，而默认情况下，passwordGenerated 也为 true。<br>
+##2.2. 用户配置##<br>
+默认的密码有一个问题就是每次重启项目都会变，这很不方便。<br>
+在正式介绍数据库连接之前，先和大家介绍两种非主流的用户名/密码配置方案。<br>
+###2.2.1. 配置###<br>
+我们可以在 application.properties 中配置默认的用户名密码。<br>
+怎么配置呢？大家还记得上一小节我们说的 SecurityProperties，默认的用户就定义在它里边，是一个静态内部类，我们如果要定义自己的用户名密码，必然是要去覆盖默认配置，我们先来看下 SecurityProperties 的定义：<br>
+<img src="https://cm940324.github.io/post-images/1618997862541.png" alt="" loading="lazy"><br>
+这就很清晰了，我们只需要以 spring.security.user 为前缀，去定义用户名密码即可：<br>
+<img src="https://cm940324.github.io/post-images/1618997956875.png" alt="" loading="lazy"><br>
+这就是我们新定义的用户名密码。<br>
+在 properties 中定义的用户名密码最终是通过 set 方法注入到属性中去的，这里我们顺便来看下 SecurityProperties.User#setPassword 方法:<br>
+<img src="https://cm940324.github.io/post-images/1618999137418.png" alt="" loading="lazy"><br>
+从这里我们可以看到，application.properties 中定义的密码在注入进来之后，还顺便设置了 passwordGenerated 属性为 false，这个属性设置为 false 之后，控制台就不会打印默认的密码了。<br>
+此时重启项目，就可以使用自己定义的用户名/密码登录了。<br>
+###2.2.2. 配置类###<br>
+除了上面的配置文件这种方式之外，我们也可以在配置类中配置用户名/密码。<br>
+在配置类中配置，我们就要指定 PasswordEncoder 了，这是一个非常关键的东西。<br>
+考虑到有的小伙伴对于 PasswordEncoder 还不太熟悉，因此，我这里先稍微给大家介绍一下 PasswordEncoder 到底是干嘛用的。要说 PasswordEncoder ，就得先说密码加密。</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[SQL 语句性能优化策略]]></title>
         <id>https://cm940324.github.io/post/sql-yu-ju-xing-neng-you-hua-ce-lue/</id>
