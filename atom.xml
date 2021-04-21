@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://cm940324.github.io</id>
-    <title>Sweet Home</title>
-    <updated>2021-04-21T00:49:25.669Z</updated>
+    <title>Oasis</title>
+    <updated>2021-04-21T00:52:55.737Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://cm940324.github.io"/>
     <link rel="self" href="https://cm940324.github.io/atom.xml"/>
-    <subtitle>&lt;a href=&quot;https://cm940324.github.io/&quot; target=&quot;_blank&quot;&gt;浮华一世转瞬空&lt;/a&gt;</subtitle>
+    <subtitle>&lt;a href=&quot;https://cm940324.github.io/&quot; target=&quot;_blank&quot;&gt;We reach. We grasp. And what is left in our hands at the end? A shadow. Or worse than a shadow — misery&lt;/a&gt;</subtitle>
     <logo>https://cm940324.github.io/images/avatar.png</logo>
     <icon>https://cm940324.github.io/favicon.ico</icon>
-    <rights>All rights reserved 2021, Sweet Home</rights>
+    <rights>All rights reserved 2021, Oasis</rights>
     <entry>
         <title type="html"><![CDATA[SQL 语句性能优化策略]]></title>
         <id>https://cm940324.github.io/post/sql-yu-ju-xing-neng-you-hua-ce-lue/</id>
