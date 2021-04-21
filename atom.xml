@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://cm940324.github.io</id>
     <title>Oasis</title>
-    <updated>2021-04-21T10:02:23.244Z</updated>
+    <updated>2021-04-21T10:03:47.524Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://cm940324.github.io"/>
     <link rel="self" href="https://cm940324.github.io/atom.xml"/>
@@ -15,7 +15,7 @@
         <id>https://cm940324.github.io/post/spring-security/</id>
         <link href="https://cm940324.github.io/post/spring-security/">
         </link>
-        <updated>2021-04-21T09:17:40.000Z</updated>
+        <updated>2021-02-19T09:17:40.000Z</updated>
         <content type="html"><![CDATA[<p>Java 领域老牌的权限管理框架当属 Shiro 了。<br>
 Shiro 有着众多的优点，例如轻量、简单、易于集成等。<br>
 当然 Shiro 也有不足，例如对 OAuth2 支持不够，在 Spring Boot 面前无法充分展示自己的优势等等，特别是随着现在 Spring Boot 和 Spring Cloud 的流行，Spring Security 正在走向舞台舞台中央。<br>
