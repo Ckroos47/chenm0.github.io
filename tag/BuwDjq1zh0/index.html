@@ -9,7 +9,7 @@
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
 <title>Oasis</title>
-<link rel="shortcut icon" href="/favicon.ico?v=1619069232599">
+<link rel="shortcut icon" href="/favicon.ico?v=1619071853051">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
 <link
@@ -190,19 +190,19 @@
     <div class="sidebar-item-box">
       <a href="/archives/">
         
-        <span class="site-item-stat-count">4</span>
+        <span class="site-item-stat-count">5</span>
         <span class="site-item-stat-name language" data-lan="article">文章</span>
       </a>
     </div>
     <div class="sidebar-item-box">
       <a href="">
-        <span class="site-item-stat-count">3</span>
+        <span class="site-item-stat-count">4</span>
         <span class="site-item-stat-name language" data-lan="category">分类</span>
       </a>
     </div>
     <div class="sidebar-item-box">
       <a href="/tags/">
-        <span class="site-item-stat-count">3</span>
+        <span class="site-item-stat-count">4</span>
         <span class="site-item-stat-name language" data-lan="tag">标签</span>
       </a>
     </div>
@@ -253,6 +253,10 @@
           <small class="language" data-lan="tag">标签</small>
         </h2>
       </div>
+      
+      
+      
+      
       
       
       
@@ -1043,6 +1047,249 @@
       <hr>
     </div>
     <div class="result" id="result">
+      
+      <div class="item">
+        <a class="result-title" style="opacity: 0;" href="https://cm940324.github.io/post/spring-data-rest/"" data-c="
+          &lt;h3 id=&#34;什么是spring-data-rest&#34;&gt;什么是Spring Data REST&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;​		Spring Data REST是基于Spring Data的repository之上，可以把 repository 自动输出为REST资源，目前支持Spring Data JPA、Spring Data &lt;a href=&#34;https://cloud.tencent.com/product/mongodb?from=10680&#34;&gt;MongoDB&lt;/a&gt;、Spring Data Neo4j、Spring Data GemFire、Spring Data Cassandra的 repository 自动转换成REST服务。注意是自动。简单点说，Spring Data REST把我们需要编写的大量REST模版接口做了自动化实现.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;restful-api&#34;&gt;restful api&lt;/h3&gt;
+&lt;p&gt;​		REST是一种设计风格(与具体的语言无关)，它的URL主体是资源，是个名词。而且也仅支持HTTP协议，规定了使用HTTP Method表达本次要做的动作，类型一般也不超过那四五种。这些动作表达了对资源仅有的几种转化方式。&lt;/p&gt;
+&lt;p&gt;​		常用的HTTP动词有下面五个（括号里是对应的SQL命令）。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;GET（SELECT）：从服务器取出资源（一项或多项）&lt;/li&gt;
+&lt;li&gt;POST（CREATE）：在服务器新建一个资源。&lt;/li&gt;
+&lt;li&gt;PUT（UPDATE）：在服务器更新资源（客户端提供改变后的完整资源）。&lt;/li&gt;
+&lt;li&gt;PATCH（UPDATE）：在服务器更新资源（客户端提供改变的属性）。&lt;/li&gt;
+&lt;li&gt;DELETE（DELETE）：从服务器删除资源。&lt;/li&gt;
+&lt;li&gt;HEAD：获取资源的元数据。&lt;/li&gt;
+&lt;li&gt;OPTIONS：获取信息，关于资源的哪些属性是客户端可以改变的。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;实现&#34;&gt;实现&lt;/h3&gt;
+&lt;h4 id=&#34;添加依赖&#34;&gt;添加依赖&lt;/h4&gt;
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;spring-boot-starter-data-rest&amp;lt;/artifactId&amp;gt;
+&amp;lt;/dependency&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;定义domain&#34;&gt;定义domain&lt;/h4&gt;
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;package com.zyndev.springdatarestdemo.domain;
+
+import lombok.Data;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Date;
+
+
+@Data
+@Entity
+@Table(name = &amp;quot;tb_user&amp;quot;)
+public class User implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;            // 用户id
+    private String userName;    // 用户名称
+    private String password;    // 用户密码
+    private Integer active;     // 是否可用
+    private Date lastLoginTime; // 最后登录时间
+    private Date createTime;    // 账户创建时间
+    private Date updateTime;    // 最后更新时间
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;定义-repository&#34;&gt;定义 Repository&lt;/h4&gt;
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;package com.zyndev.springdatarestdemo.controller;
+
+import com.zyndev.springdatarestdemo.domain.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+
+@RepositoryRestResource(path=&amp;quot;user&amp;quot;)
+public interface UserRepository extends JpaRepository&amp;lt;User, Long&amp;gt; {
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&#34;配置&#34;&gt;配置&lt;/h4&gt;
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;server:
+  port: 8080
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+&lt;/code&gt;&lt;/pre&gt;
+&lt;blockquote&gt;
+&lt;p&gt;通过设置 &lt;code&gt;spring.jpa.hibernate.ddl-auto=update&lt;/code&gt; 来自动创建表，如果你已经根据domain建好表，可忽略，配置中省略了数据库的配置，请根据情况自行添加&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&#34;测试&#34;&gt;测试&lt;/h4&gt;
+&lt;p&gt;启动项目:&lt;/p&gt;
+&lt;p&gt;​		&lt;strong&gt;1. GET 访问 localhost:8080/user&lt;/strong&gt;这里我已经添加了一条数据&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;{
+    &amp;quot;_embedded&amp;quot;: {
+        &amp;quot;users&amp;quot;: [
+            {
+                &amp;quot;userName&amp;quot;: &amp;quot;abc&amp;quot;,
+                &amp;quot;password&amp;quot;: &amp;quot;abc&amp;quot;,
+                &amp;quot;active&amp;quot;: 1,
+                &amp;quot;lastLoginTime&amp;quot;: null,
+                &amp;quot;createTime&amp;quot;: null,
+                &amp;quot;updateTime&amp;quot;: null,
+                &amp;quot;_links&amp;quot;: {
+                    &amp;quot;self&amp;quot;: {
+                        &amp;quot;href&amp;quot;: &amp;quot;http://localhost:8080/user/1&amp;quot;
+                    },
+                    &amp;quot;user&amp;quot;: {
+                        &amp;quot;href&amp;quot;: &amp;quot;http://localhost:8080/user/1&amp;quot;
+                    }
+                }
+            }
+        ]
+    },
+    &amp;quot;_links&amp;quot;: {
+        &amp;quot;self&amp;quot;: {
+            &amp;quot;href&amp;quot;: &amp;quot;http://localhost:8080/user{?page,size,sort}&amp;quot;,
+            &amp;quot;templated&amp;quot;: true
+        },
+        &amp;quot;profile&amp;quot;: {
+            &amp;quot;href&amp;quot;: &amp;quot;http://localhost:8080/profile/user&amp;quot;
+        }
+    },
+    &amp;quot;page&amp;quot;: {
+        &amp;quot;size&amp;quot;: 20,
+        &amp;quot;totalElements&amp;quot;: 1,
+        &amp;quot;totalPages&amp;quot;: 1,
+        &amp;quot;number&amp;quot;: 0
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;​		&lt;strong&gt;2. GET 访问 localhost:8080/user/1&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;​		通过上面可以看出 &lt;code&gt;1&lt;/code&gt; 是存在的&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;{
+    &amp;quot;userName&amp;quot;: &amp;quot;abc&amp;quot;,
+    &amp;quot;password&amp;quot;: &amp;quot;abc&amp;quot;,
+    &amp;quot;active&amp;quot;: 1,
+    &amp;quot;lastLoginTime&amp;quot;: null,
+    &amp;quot;createTime&amp;quot;: null,
+    &amp;quot;updateTime&amp;quot;: null,
+    &amp;quot;_links&amp;quot;: {
+        &amp;quot;self&amp;quot;: {
+            &amp;quot;href&amp;quot;: &amp;quot;http://localhost:8080/user/1&amp;quot;
+        },
+        &amp;quot;user&amp;quot;: {
+            &amp;quot;href&amp;quot;: &amp;quot;http://localhost:8080/user/1&amp;quot;
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;​		&lt;strong&gt;3. GET 访问 localhost:8080/user/2&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;​		因为 &lt;code&gt;2&lt;/code&gt; 并不存在，这时返回 &lt;code&gt;404&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;​		&lt;strong&gt;4. POST localhost:8080/user 创建一个资源&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;​		设置 &lt;code&gt;Content-Type=application/json&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;​		&lt;strong&gt;body:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;{
+    &amp;quot;userName&amp;quot;: &amp;quot;abcdfasdfe&amp;quot;,
+    &amp;quot;password&amp;quot;: &amp;quot;abc&amp;quot;,
+    &amp;quot;active&amp;quot;: 1,
+    &amp;quot;lastLoginTime&amp;quot;: null,
+    &amp;quot;createTime&amp;quot;: null,
+    &amp;quot;updateTime&amp;quot;: null
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;返回状态码 &lt;code&gt;201&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;返回数据：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;{
+    &amp;quot;userName&amp;quot;: &amp;quot;abcdfasdfe&amp;quot;,
+    &amp;quot;password&amp;quot;: &amp;quot;abc&amp;quot;,
+    &amp;quot;active&amp;quot;: 1,
+    &amp;quot;lastLoginTime&amp;quot;: null,
+    &amp;quot;createTime&amp;quot;: null,
+    &amp;quot;updateTime&amp;quot;: null,
+    &amp;quot;_links&amp;quot;: {
+        &amp;quot;self&amp;quot;: {
+            &amp;quot;href&amp;quot;: &amp;quot;http://localhost:8080/user/4&amp;quot;
+        },
+        &amp;quot;user&amp;quot;: {
+            &amp;quot;href&amp;quot;: &amp;quot;http://localhost:8080/user/4&amp;quot;
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;​		&lt;strong&gt;5. 再次访问 GET 访问 localhost:8080/user&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;​		这时可以看出 users 的数量为 2 说明已经创建成功&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;{
+    &amp;quot;_embedded&amp;quot;: {
+        &amp;quot;users&amp;quot;: [
+            {
+                &amp;quot;userName&amp;quot;: &amp;quot;abc&amp;quot;,
+                &amp;quot;password&amp;quot;: &amp;quot;abc&amp;quot;,
+                &amp;quot;active&amp;quot;: 1,
+                &amp;quot;lastLoginTime&amp;quot;: null,
+                &amp;quot;createTime&amp;quot;: null,
+                &amp;quot;updateTime&amp;quot;: null,
+                &amp;quot;_links&amp;quot;: {
+                    &amp;quot;self&amp;quot;: {
+                        &amp;quot;href&amp;quot;: &amp;quot;http://localhost:8080/user/1&amp;quot;
+                    },
+                    &amp;quot;user&amp;quot;: {
+                        &amp;quot;href&amp;quot;: &amp;quot;http://localhost:8080/user/1&amp;quot;
+                    }
+                }
+            },
+            {
+                &amp;quot;userName&amp;quot;: &amp;quot;abcdfasdfe&amp;quot;,
+                &amp;quot;password&amp;quot;: &amp;quot;abc&amp;quot;,
+                &amp;quot;active&amp;quot;: 1,
+                &amp;quot;lastLoginTime&amp;quot;: null,
+                &amp;quot;createTime&amp;quot;: null,
+                &amp;quot;updateTime&amp;quot;: null,
+                &amp;quot;_links&amp;quot;: {
+                    &amp;quot;self&amp;quot;: {
+                        &amp;quot;href&amp;quot;: &amp;quot;http://localhost:8080/user/4&amp;quot;
+                    },
+                    &amp;quot;user&amp;quot;: {
+                        &amp;quot;href&amp;quot;: &amp;quot;http://localhost:8080/user/4&amp;quot;
+                    }
+                }
+            }
+        ]
+    },
+    &amp;quot;_links&amp;quot;: {
+        &amp;quot;self&amp;quot;: {
+            &amp;quot;href&amp;quot;: &amp;quot;http://localhost:8080/user{?page,size,sort}&amp;quot;,
+            &amp;quot;templated&amp;quot;: true
+        },
+        &amp;quot;profile&amp;quot;: {
+            &amp;quot;href&amp;quot;: &amp;quot;http://localhost:8080/profile/user&amp;quot;
+        }
+    },
+    &amp;quot;page&amp;quot;: {
+        &amp;quot;size&amp;quot;: 20,
+        &amp;quot;totalElements&amp;quot;: 2,
+        &amp;quot;totalPages&amp;quot;: 1,
+        &amp;quot;number&amp;quot;: 0
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;​		&lt;strong&gt;6. delete 访问 localhost:8080/user/1&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;返回状态码： &lt;code&gt;204&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;再次访问 GET 访问 localhost:8080/user 会发现 users 的数量已经为1，说明已经删除成功&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;可以使用 postman 测试，这里为了不贴图，就按上面的写了，希望理解&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;# 小功能&lt;/p&gt;
+&lt;p&gt;为了方便查看和测试api,可以集成 &lt;code&gt;hal browser&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;在 pom 文件添加依赖即可&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;org.springframework.data&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;spring-data-rest-hal-browser&amp;lt;/artifactId&amp;gt;
+&amp;lt;/dependency&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;重启项目并访问： &lt;code&gt;http://127.0.0.1:8080/browser/index.html#/&lt;/code&gt;&lt;/p&gt;
+">Spring Data REST 快速构建 restful api 应用</a>
+      </div>
       
       <div class="item">
         <a class="result-title" style="opacity: 0;" href="https://cm940324.github.io/post/java10-var/"" data-c="
