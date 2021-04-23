@@ -9,7 +9,7 @@
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
 <title>Java 10 var 关键字深度解读 | Oasis</title>
-<link rel="shortcut icon" href="/favicon.ico?v=1619071853051">
+<link rel="shortcut icon" href="/favicon.ico?v=1619141705100">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
 <link
@@ -208,19 +208,19 @@
     <div class="sidebar-item-box">
       <a href="/archives/">
         
-        <span class="site-item-stat-count">5</span>
+        <span class="site-item-stat-count">4</span>
         <span class="site-item-stat-name language" data-lan="article">文章</span>
       </a>
     </div>
     <div class="sidebar-item-box">
       <a href="">
-        <span class="site-item-stat-count">4</span>
+        <span class="site-item-stat-count">3</span>
         <span class="site-item-stat-name language" data-lan="category">分类</span>
       </a>
     </div>
     <div class="sidebar-item-box">
       <a href="/tags/">
-        <span class="site-item-stat-count">4</span>
+        <span class="site-item-stat-count">3</span>
         <span class="site-item-stat-name language" data-lan="tag">标签</span>
       </a>
     </div>
@@ -746,8 +746,8 @@ private var getFoo() {
     </div>
     <div class="nav-next">
       
-        <a class="nav-pc-next" title="Spring Security" href="https://cm940324.github.io/post/spring-security/">Spring Security</a>
-        <a class="nav-mobile-next" title="Spring Security" href="https://cm940324.github.io/post/spring-security/">下一篇</a>
+        <a class="nav-pc-next" title="SQL 语句性能优化策略" href="https://cm940324.github.io/post/sql-yu-ju-xing-neng-you-hua-ce-lue/">SQL 语句性能优化策略</a>
+        <a class="nav-mobile-next" title="SQL 语句性能优化策略" href="https://cm940324.github.io/post/sql-yu-ju-xing-neng-you-hua-ce-lue/">下一篇</a>
         <i class="fa fa-chevron-right"></i>
       
     </div>
@@ -2115,111 +2115,6 @@ private var getFoo() {
 &lt;p&gt;​		除了局部变量，var 不能被用于字段或方法上，这样做是为了避免 AAD 错误。&lt;/p&gt;
 &lt;p&gt;​		虽说 var 有可能让代码变得更糟，但作为 Java 开发者，应该尝试在变量声明和嵌套表达式或链式表达式之间做出权衡，写出可读性更高的代码。&lt;/p&gt;
 ">Java 10 var 关键字深度解读</a>
-      </div>
-      
-      <div class="item">
-        <a class="result-title" style="opacity: 0;" href="https://cm940324.github.io/post/spring-security/"" data-c="
-          &lt;p&gt;Java 领域老牌的权限管理框架当属 Shiro 了。&lt;/p&gt;
-&lt;p&gt;Shiro 有着众多的优点，例如轻量、简单、易于集成等。&lt;/p&gt;
-&lt;p&gt;当然 Shiro 也有不足，例如对 OAuth2 支持不够，在 Spring Boot 面前无法充分展示自己的优势等等，特别是随着现在 Spring Boot 和 Spring Cloud 的流行，Spring Security 正在走向舞台舞台中央。&lt;/p&gt;
-&lt;p&gt;Spring Security 最早不叫 Spring Security ，叫 Acegi Security，叫 Acegi Security 并不是说它和 Spring 就没有关系了，它依然是为 Spring 框架提供安全支持的。事实上，Java 领域的框架，很少有框架能够脱离 Spring 框架独立存在。&lt;/p&gt;
-&lt;p&gt;Acegi Security 基于 Spring，可以帮助我们为项目建立丰富的角色与权限管理，但是最广为人诟病的则是它臃肿繁琐的配置，这一问题最终也遗传给了 Spring Security。&lt;/p&gt;
-&lt;p&gt;在 Acegi Security 时代，网上流传一句话：“每当有人要使用 Acegi Security，就会有一个精灵死去。”足见 Acegi Security 的配置是多么可怕。&lt;/p&gt;
-&lt;p&gt;当 Acegi Security 投入 Spring 怀抱之后，先把这个名字改了，这就是大家所见到的 Spring Security 了，然后配置也得到了极大的简化。&lt;/p&gt;
-&lt;p&gt;但是和 Shiro 相比，人们对 Spring Security 的评价依然中重量级、配置繁琐。&lt;/p&gt;
-&lt;p&gt;直到有一天 Spring Boot 像谜一般出现在江湖边缘，彻底颠覆了 JavaEE 的世界。一人得道鸡犬升天，Spring Security 也因此飞上枝头变凤凰。&lt;/p&gt;
-&lt;p&gt;# &lt;strong&gt;&lt;strong&gt;1.核心功能&lt;/strong&gt;&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;对于一个权限管理框架而言，无论是 Shiro 还是 Spring Security，最最核心的功能，无非就是两方面：&lt;/p&gt;
-&lt;p&gt;```&lt;/p&gt;
-&lt;p&gt;​                  认证&lt;/p&gt;
-&lt;p&gt;​                  授权&lt;/p&gt;
-&lt;p&gt;```&lt;/p&gt;
-&lt;p&gt;通俗点说，认证就是我们常说的登录，授权就是权限鉴别，看看请求是否具备相应的权限。&lt;/p&gt;
-&lt;p&gt;虽然就是一个简简单单的登录，可是也能玩出很多花样来。&lt;/p&gt;
-&lt;p&gt;Spring Security 支持多种不同的认证方式，这些认证方式有的是 Spring Security 自己提供的认证功能，有的是第三方标准组织制订的，主要有如下一些：&lt;/p&gt;
-&lt;p&gt;一些比较常见的认证方式：&lt;/p&gt;
-&lt;p&gt;```&lt;/p&gt;
-&lt;p&gt;HTTP BASIC authentication headers：基于IETF RFC 标准。&lt;/p&gt;
-&lt;p&gt;HTTP Digest authentication headers：基于IETF RFC 标准。&lt;/p&gt;
-&lt;p&gt;HTTP X.509 client certificate exchange：基于IETF RFC 标准。&lt;/p&gt;
-&lt;p&gt;LDAP：跨平台身份验证。&lt;/p&gt;
-&lt;p&gt;Form-based authentication：基于表单的身份验证。&lt;/p&gt;
-&lt;p&gt;Run-as authentication：用户用户临时以某一个身份登录。&lt;/p&gt;
-&lt;p&gt;OpenID authentication：去中心化认证。&lt;/p&gt;
-&lt;p&gt;```&lt;/p&gt;
-&lt;p&gt;除了这些常见的认证方式之外，一些比较冷门的认证方式，Spring Security 也提供了支持。&lt;/p&gt;
-&lt;p&gt;```&lt;/p&gt;
-&lt;p&gt;Jasig Central Authentication Service：单点登录。&lt;/p&gt;
-&lt;p&gt;Automatic &amp;quot;remember-me&amp;quot; authentication：记住我登录（允许一些非敏感操作）。&lt;/p&gt;
-&lt;p&gt;Anonymous authentication：匿名登录。&lt;/p&gt;
-&lt;p&gt;......&lt;/p&gt;
-&lt;p&gt;```&lt;/p&gt;
-&lt;p&gt;作为一个开放的平台，Spring Security 提供的认证机制不仅仅是上面这些。如果上面这些认证机制依然无法满足你的需求，我们也可以自己定制认证逻辑。当我们需要和一些“老破旧”的系统进行集成时，自定义认证逻辑就显得非常重要了。&lt;/p&gt;
-&lt;p&gt;除了认证，剩下的就是授权了。&lt;/p&gt;
-&lt;p&gt;Spring Security 支持基于 URL 的请求授权、支持方法访问授权以及对象访问授权。&lt;/p&gt;
-&lt;p&gt;# &lt;strong&gt;&lt;strong&gt;2.基础入门&lt;/strong&gt;&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;## &lt;strong&gt;&lt;strong&gt;2.1. 新建项目&lt;/strong&gt;&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;首先新建一个 Spring Boot 项目，创建时引入 Spring Security 依赖和 web 依赖，如下图：&lt;/p&gt;
-&lt;figure data-type=&#34;image&#34; tabindex=&#34;1&#34;&gt;&lt;img src=&#34;https://cm940324.github.io/post-images/1618997105251.webp&#34; alt=&#34;&#34; loading=&#34;lazy&#34;&gt;&lt;/figure&gt;
-&lt;p&gt;项目创建成功后，Spring Security 的依赖就添加进来了，在 Spring Boot 中我们加入的是 spring-boot-starter-security ，其实主要是这两个：&lt;/p&gt;
-&lt;figure data-type=&#34;image&#34; tabindex=&#34;2&#34;&gt;&lt;img src=&#34;https://cm940324.github.io/post-images/1618997141497.webp&#34; alt=&#34;&#34; loading=&#34;lazy&#34;&gt;&lt;/figure&gt;
-&lt;p&gt;项目创建成功后，我们添加一个测试的 HelloController，内容如下：&lt;/p&gt;
-&lt;figure data-type=&#34;image&#34; tabindex=&#34;3&#34;&gt;&lt;img src=&#34;https://cm940324.github.io/post-images/1618997324779.jpg&#34; alt=&#34;&#34; loading=&#34;lazy&#34;&gt;&lt;/figure&gt;
-&lt;p&gt;接下来什么事情都不用做，我们直接来启动项目。&lt;/p&gt;
-&lt;p&gt;在项目启动过程中，我们会看到如下一行日志：&lt;/p&gt;
-&lt;figure data-type=&#34;image&#34; tabindex=&#34;4&#34;&gt;&lt;img src=&#34;https://cm940324.github.io/post-images/1618997378329.jpg&#34; alt=&#34;&#34; loading=&#34;lazy&#34;&gt;&lt;/figure&gt;
-&lt;p&gt;这就是 Spring Security 为默认用户 user 生成的临时密码，是一个 UUID 字符串。&lt;/p&gt;
-&lt;p&gt;接下来我们去访问 http://localhost:8080/hello 接口，就可以看到自动重定向到登录页面了：&lt;/p&gt;
-&lt;figure data-type=&#34;image&#34; tabindex=&#34;5&#34;&gt;&lt;img src=&#34;https://cm940324.github.io/post-images/1618997430748.webp&#34; alt=&#34;&#34; loading=&#34;lazy&#34;&gt;&lt;/figure&gt;
-&lt;p&gt;在登录页面，默认的用户名就是 user，默认的登录密码则是项目启动时控制台打印出来的密码，输入用户名密码之后，就登录成功了，登录成功后，我们就可以访问到 /hello 接口了。&lt;/p&gt;
-&lt;p&gt;在 Spring Security 中，默认的登录页面和登录接口，都是 /login ，只不过一个是 get 请求（登录页面），另一个是 post 请求（登录接口）。&lt;/p&gt;
-&lt;p&gt;大家可以看到，非常方便，一个依赖就保护了所有接口。&lt;/p&gt;
-&lt;p&gt;有人说，你怎么知道知道生成的默认密码是一个 UUID 呢？&lt;/p&gt;
-&lt;p&gt;这个其实很好判断。&lt;/p&gt;
-&lt;p&gt;和用户相关的自动化配置类在 UserDetailsServiceAutoConfiguration 里边，在该类的 getOrDeducePassword 方法中，我们看到如下一行日志：&lt;/p&gt;
-&lt;figure data-type=&#34;image&#34; tabindex=&#34;6&#34;&gt;&lt;img src=&#34;https://cm940324.github.io/post-images/1618997536347.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34;&gt;&lt;/figure&gt;
-&lt;p&gt;毫无疑问，我们在控制台看到的日志就是从这里打印出来的。打印的条件是 isPasswordGenerated 方法返回 true，即密码是默认生成的。&lt;/p&gt;
-&lt;p&gt;进而我们发现，user.getPassword 出现在 SecurityProperties 中，在 SecurityProperties 中我们看到如下定义：&lt;/p&gt;
-&lt;figure data-type=&#34;image&#34; tabindex=&#34;7&#34;&gt;&lt;img src=&#34;https://cm940324.github.io/post-images/1618997630300.jpg&#34; alt=&#34;&#34; loading=&#34;lazy&#34;&gt;&lt;/figure&gt;
-&lt;p&gt;可以看到，默认的用户名就是 user，默认的密码则是 UUID，而默认情况下，passwordGenerated 也为 true。&lt;/p&gt;
-&lt;p&gt;## &lt;strong&gt;&lt;strong&gt;2.2. 用户配置&lt;/strong&gt;&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;默认的密码有一个问题就是每次重启项目都会变，这很不方便。&lt;/p&gt;
-&lt;p&gt;在正式介绍数据库连接之前，先和大家介绍两种非主流的用户名/密码配置方案。&lt;/p&gt;
-&lt;p&gt;### &lt;strong&gt;&lt;strong&gt;2.2.1. 配置&lt;/strong&gt;&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;我们可以在 application.properties 中配置默认的用户名密码。&lt;/p&gt;
-&lt;p&gt;怎么配置呢？大家还记得上一小节我们说的 SecurityProperties，默认的用户就定义在它里边，是一个静态内部类，我们如果要定义自己的用户名密码，必然是要去覆盖默认配置，我们先来看下 SecurityProperties 的定义：&lt;/p&gt;
-&lt;figure data-type=&#34;image&#34; tabindex=&#34;8&#34;&gt;&lt;img src=&#34;https://cm940324.github.io/post-images/1618997862541.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34;&gt;&lt;/figure&gt;
-&lt;p&gt;这就很清晰了，我们只需要以 spring.security.user 为前缀，去定义用户名密码即可：&lt;/p&gt;
-&lt;figure data-type=&#34;image&#34; tabindex=&#34;9&#34;&gt;&lt;img src=&#34;https://cm940324.github.io/post-images/1618997956875.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34;&gt;&lt;/figure&gt;
-&lt;p&gt;这就是我们新定义的用户名密码。&lt;/p&gt;
-&lt;p&gt;在 properties 中定义的用户名密码最终是通过 set 方法注入到属性中去的，这里我们顺便来看下 SecurityProperties.User #setPassword 方法:&lt;/p&gt;
-&lt;figure data-type=&#34;image&#34; tabindex=&#34;10&#34;&gt;&lt;img src=&#34;https://cm940324.github.io/post-images/1618999137418.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34;&gt;&lt;/figure&gt;
-&lt;p&gt;从这里我们可以看到，application.properties 中定义的密码在注入进来之后，还顺便设置了 passwordGenerated 属性为 false，这个属性设置为 false 之后，控制台就不会打印默认的密码了。&lt;/p&gt;
-&lt;p&gt;此时重启项目，就可以使用自己定义的用户名/密码登录了。&lt;/p&gt;
-&lt;p&gt;### &lt;strong&gt;&lt;strong&gt;2.2.2. 配置类&lt;/strong&gt;&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;除了上面的配置文件这种方式之外，我们也可以在配置类中配置用户名/密码。&lt;/p&gt;
-&lt;p&gt;在配置类中配置，我们就要指定 PasswordEncoder 了，这是一个非常关键的东西。&lt;/p&gt;
-&lt;p&gt;考虑到有的小伙伴对于 PasswordEncoder 还不太熟悉，因此，我这里先稍微给大家介绍一下 PasswordEncoder 到底是干嘛用的。要说 PasswordEncoder ，就得先说密码加密。&lt;/p&gt;
-&lt;p&gt;#### &lt;strong&gt;&lt;strong&gt;2.2.2.1. 为什么要加密&lt;/strong&gt;&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;2011 年 12 月 21 日，有人在网络上公开了一个包含 600 万个 CSDN 用户资料的数据库，数据全部为明文储存，包含用户名、密码以及注册邮箱。事件发生后 CSDN 在微博、官方网站等渠道发出了声明，解释说此数据库系 2009 年备份所用，因不明原因泄露，已经向警方报案，后又在官网发出了公开道歉信。在接下来的十多天里，金山、网易、京东、当当、新浪等多家公司被卷入到这次事件中。整个事件中最触目惊心的莫过于 CSDN 把用户密码明文存储，由于很多用户是多个网站共用一个密码，因此一个网站密码泄露就会造成很大的安全隐患。由于有了这么多前车之鉴，我们现在做系统时，密码都要加密处理。&lt;/p&gt;
-&lt;p&gt;这次泄密，也留下了一些有趣的事情，特别是对于广大程序员设置密码这一项。人们从 CSDN 泄密的文件中，发现了一些好玩的密码，例如如下这些：&lt;/p&gt;
-&lt;p&gt;- &lt;code&gt;ppnn13%dkstFeb.1st&lt;/code&gt; 这段密码的中文解析是：娉娉袅袅十三余，豆蔻梢头二月初。&lt;/p&gt;
-&lt;p&gt;- &lt;code&gt;csbt34.ydhl12s&lt;/code&gt; 这段密码的中文解析是：池上碧苔三四点，叶底黄鹂一两声&lt;/p&gt;
-&lt;p&gt;等等不一而足，你会发现很多程序员的人文素养还是非常高的，让人啧啧称奇。&lt;/p&gt;
-&lt;p&gt;#### &lt;strong&gt;&lt;strong&gt;2.2.2.2. 加密方案&lt;/strong&gt;&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;密码加密我们一般会用到散列函数，又称散列算法、哈希函数，这是一种从任何数据中创建数字“指纹”的方法。散列函数把消息或数据压缩成摘要，使得数据量变小，将数据的格式固定下来，然后将数据打乱混合，重新创建一个散列值。散列值通常用一个短的随机字母和数字组成的字符串来代表。好的散列函数在输入域中很少出现散列冲突。在散列表和数据处理中，不抑制冲突来区别数据，会使得数据库记录更难找到。我们常用的散列函数有 MD5 消息摘要算法、安全散列算法（Secure Hash Algorithm）。&lt;/p&gt;
-&lt;p&gt;但是仅仅使用散列函数还不够，为了增加密码的安全性，一般在密码加密过程中还需要加盐，所谓的盐可以是一个随机数也可以是用户名，加盐之后，即使密码明文相同的用户生成的密码密文也不相同，这可以极大的提高密码的安全性。但是传统的加盐方式需要在数据库中有专门的字段来记录盐值，这个字段可能是用户名字段（因为用户名唯一），也可能是一个专门记录盐值的字段，这样的配置比较繁琐。&lt;/p&gt;
-&lt;p&gt;不同于 Shiro 中需要自己处理密码加盐，在 Spring Security 中，BCryptPasswordEncoder 就自带了盐，处理起来非常方便。&lt;/p&gt;
-&lt;p&gt;而 BCryptPasswordEncoder 就是 PasswordEncoder 接口的实现类。&lt;/p&gt;
-&lt;p&gt;#### &lt;strong&gt;&lt;strong&gt;2.2.2.3. PasswordEncoder&lt;/strong&gt;&lt;/strong&gt;&lt;/p&gt;
-&lt;figure data-type=&#34;image&#34; tabindex=&#34;11&#34;&gt;&lt;img src=&#34;https://cm940324.github.io/post-images/1619005005813.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34;&gt;&lt;/figure&gt;
-&lt;p&gt;\1. encode 方法用来对明文密码进行加密，返回加密之后的密文。&lt;/p&gt;
-&lt;p&gt;\2. matches 方法是一个密码校对方法，在用户登录的时候，将用户传来的明文密码和数据库中保存的密文密码作为参数，传入到这个方法中去，根据返回的 Boolean 值判断用户密码是否输入正确。&lt;/p&gt;
-&lt;p&gt;\3. upgradeEncoding 是否还要进行再次加密，这个一般来说就不用了。&lt;/p&gt;
-&lt;p&gt;通过下图我们可以看到 PasswordEncoder 的实现类：&lt;/p&gt;
-&lt;figure data-type=&#34;image&#34; tabindex=&#34;12&#34;&gt;&lt;img src=&#34;https://cm940324.github.io/post-images/1619005134025.webp&#34; alt=&#34;&#34; loading=&#34;lazy&#34;&gt;&lt;/figure&gt;
-&lt;p&gt;#### &lt;strong&gt;&lt;strong&gt;2.2.2.3. PasswordEncoder&lt;/strong&gt;&lt;/strong&gt;&lt;/p&gt;
-">Spring Security</a>
       </div>
       
       <div class="item">
