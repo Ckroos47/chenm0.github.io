@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://cm940324.github.io</id>
     <title>Oasis</title>
-    <updated>2021-04-26T06:14:42.085Z</updated>
+    <updated>2021-04-26T07:57:43.301Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://cm940324.github.io"/>
     <link rel="self" href="https://cm940324.github.io/atom.xml"/>
@@ -12,8 +12,8 @@
     <rights>All rights reserved 2021, Oasis</rights>
     <entry>
         <title type="html"><![CDATA[理解、学习与使用 JAVA 中的 OPTIONAL]]></title>
-        <id>https://cm940324.github.io/post/li-jie-xue-xi-yu-shi-yong-java-zhong-de-optional/</id>
-        <link href="https://cm940324.github.io/post/li-jie-xue-xi-yu-shi-yong-java-zhong-de-optional/">
+        <id>https://cm940324.github.io/post/java8-optional/</id>
+        <link href="https://cm940324.github.io/post/java8-optional/">
         </link>
         <updated>2021-04-26T06:14:05.000Z</updated>
         <content type="html"><![CDATA[<p>​		从 Java 8 引入的一个很有趣的特性是 <em>Optional</em>  类。Optional 类主要解决的问题是臭名昭著的空指针异常（NullPointerException） —— 每个 Java 程序员都非常了解的异常。</p>
