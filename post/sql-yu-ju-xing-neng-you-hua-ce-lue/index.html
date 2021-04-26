@@ -9,7 +9,7 @@
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
 <title>SQL 语句性能优化策略 | Oasis</title>
-<link rel="shortcut icon" href="/favicon.ico?v=1619141705100">
+<link rel="shortcut icon" href="/favicon.ico?v=1619417664029">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
 <link
@@ -207,7 +207,7 @@
     <div class="sidebar-item-box">
       <a href="/archives/">
         
-        <span class="site-item-stat-count">4</span>
+        <span class="site-item-stat-count">5</span>
         <span class="site-item-stat-name language" data-lan="article">文章</span>
       </a>
     </div>
@@ -1545,6 +1545,302 @@ InnoDB：事务处理，以及并发条件下要求数据的一致性。除了�
       <hr>
     </div>
     <div class="result" id="result">
+      
+      <div class="item">
+        <a class="result-title" style="opacity: 0;" href="https://cm940324.github.io/post/li-jie-xue-xi-yu-shi-yong-java-zhong-de-optional/"" data-c="
+          &lt;p&gt;​		从 Java 8 引入的一个很有趣的特性是 &lt;em&gt;Optional&lt;/em&gt;  类。Optional 类主要解决的问题是臭名昭著的空指针异常（NullPointerException） —— 每个 Java 程序员都非常了解的异常。&lt;/p&gt;
+&lt;p&gt;​		本质上，这是一个包含有可选值的包装类，这意味着 Optional 类既可以含有对象也可以为空。Optional 是 Java 实现函数式编程的强劲一步，并且帮助在范式中实现。但是 Optional 的意义显然不止于此。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;if (user != null) {
+    Address address = user.getAddress();
+    if (address != null) {
+        Country country = address.getCountry();
+        if (country != null) {
+            String isocode = country.getIsocode();
+            if (isocode != null) {
+                isocode = isocode.toUpperCase();
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;​		你看到了，这很容易就变得冗长，难以维护。&lt;/p&gt;
+&lt;p&gt;​		为了简化这个过程，我们来看看用 &lt;em&gt;Optional&lt;/em&gt; 类是怎么做的。从创建和验证实例，到使用其不同的方法，并与其它返回相同类型的方法相结合，下面是见证 &lt;em&gt;Optional&lt;/em&gt;  奇迹的时刻。&lt;/p&gt;
+&lt;h3 id=&#34;创建-optional-实例&#34;&gt;创建 &lt;em&gt;Optional&lt;/em&gt; 实例&lt;/h3&gt;
+&lt;p&gt;​		重申一下，这个类型的对象可能包含值，也可能为空。你可以使用同名方法创建一个空的 Optional.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test(expected = NoSuchElementException.class)
+public void whenCreateEmptyOptional_thenNull() {
+    Optional&amp;lt;User&amp;gt; emptyOpt = Optional.empty();
+    emptyOpt.get();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;​		毫不奇怪，尝试访问 &lt;em&gt;emptyOpt&lt;/em&gt; 变量的值会导致 &lt;em&gt;NoSuchElementException&lt;/em&gt;。&lt;/p&gt;
+&lt;p&gt;​		你可以使用 &lt;em&gt;of()&lt;/em&gt; 和 ofNullable() 方法创建包含值的 &lt;em&gt;Optional&lt;/em&gt;。两个方法的不同之处在于如果你把 &lt;em&gt;null&lt;/em&gt; 值作为参数传递进去，&lt;em&gt;of()&lt;/em&gt; 方法会抛出 &lt;em&gt;NullPointerException&lt;/em&gt;：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test(expected = NullPointerException.class)
+public void whenCreateOfEmptyOptional_thenNullPointerException() {
+    Optional&amp;lt;User&amp;gt; opt = Optional.of(user);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;​		你看，我们并没有完全摆脱 &lt;em&gt;NullPointerException&lt;/em&gt;。因此，你应该明确对象不为 &lt;em&gt;null&lt;/em&gt; 的时候使用 &lt;em&gt;of()&lt;/em&gt;。&lt;/p&gt;
+&lt;p&gt;如果对象即可能是 &lt;em&gt;null&lt;/em&gt; 也可能是非 null，你就应该使用 &lt;em&gt;ofNullable()&lt;/em&gt; 方法：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Optional&amp;lt;User&amp;gt; opt = Optional.ofNullable(user);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;访问-optional-对象的值&#34;&gt;访问 &lt;em&gt;Optional&lt;/em&gt; 对象的值&lt;/h3&gt;
+&lt;p&gt;​		从 &lt;em&gt;Optional&lt;/em&gt; 实例中取回实际值对象的方法之一是使用 &lt;em&gt;get()&lt;/em&gt; 方法：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void whenCreateOfNullableOptional_thenOk() {
+    String name = &amp;quot;John&amp;quot;;
+    Optional&amp;lt;String&amp;gt; opt = Optional.ofNullable(name);
+    assertEquals(&amp;quot;John&amp;quot;, opt.get());
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;​		不过，你看到了，这个方法会在值为 &lt;em&gt;null&lt;/em&gt; 的时候抛出异常。要避免异常，你可以选择首先验证是否有值：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void whenCheckIfPresent_thenOk() {
+    User user = new User(&amp;quot;john@gmail.com&amp;quot;, &amp;quot;1234&amp;quot;);
+    Optional&amp;lt;User&amp;gt; opt = Optional.ofNullable(user);
+    assertTrue(opt.isPresent());
+    assertEquals(user.getEmail(), opt.get().getEmail());
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;​		检查是否有值的另一个选择是 &lt;em&gt;ifPresent()&lt;/em&gt; 方法。该方法除了执行检查，还接受一个&lt;em&gt;Consumer(消费者&lt;/em&gt;) 参数，如果对象不是空的，就对执行传入的 Lambda 表达式：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;opt.ifPresent( u -&amp;gt; assertEquals(user.getEmail(), u.getEmail()));
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;​		这个例子中，只有 user 用户不为 null 的时候才会执行断言。&lt;/p&gt;
+&lt;p&gt;​		接下来，我们来看看提供空值的方法。&lt;/p&gt;
+&lt;h3 id=&#34;返回默认值&#34;&gt;返回默认值&lt;/h3&gt;
+&lt;p&gt;​		&lt;em&gt;Optional&lt;/em&gt; 类提供了 API 用以返回对象值，或者在对象为空的时候返回默认值。&lt;/p&gt;
+&lt;p&gt;​		这里你可以使用的第一个方法是 &lt;em&gt;orElse()&lt;/em&gt;，它的工作方式非常直接，如果有值则返回该值，否则返回传递给它的参数值：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void whenEmptyValue_thenReturnDefault() {
+    User user = null;
+    User user2 = new User(&amp;quot;anna@gmail.com&amp;quot;, &amp;quot;1234&amp;quot;);
+    User result = Optional.ofNullable(user).orElse(user2);
+
+    assertEquals(user2.getEmail(), result.getEmail());
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;​		这里 &lt;em&gt;user&lt;/em&gt; 对象是空的，所以返回了作为默认值的 &lt;em&gt;user2&lt;/em&gt;。&lt;/p&gt;
+&lt;p&gt;​		如果对象的初始值不是 null，那么默认值会被忽略：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void whenValueNotNull_thenIgnoreDefault() {
+    User user = new User(&amp;quot;john@gmail.com&amp;quot;,&amp;quot;1234&amp;quot;);
+    User user2 = new User(&amp;quot;anna@gmail.com&amp;quot;, &amp;quot;1234&amp;quot;);
+    User result = Optional.ofNullable(user).orElse(user2);
+
+    assertEquals(&amp;quot;john@gmail.com&amp;quot;, result.getEmail());
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;​		第二个同类型的 API 是 &lt;em&gt;orElseGet()&lt;/em&gt; —— 其行为略有不同。这个方法会在有值的时候返回值，如果没有值，它会执行作为参数传入的 &lt;em&gt;Supplier(供应者)&lt;/em&gt; 函数式接口，并将返回其执行结果：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;User result = Optional.ofNullable(user).orElseGet( () -&amp;gt; user2);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;​		&lt;em&gt;orElse()&lt;/em&gt; 和 &lt;em&gt;orElseGet()&lt;/em&gt; 的不同之处&lt;/p&gt;
+&lt;p&gt;​		乍一看，这两种方法似乎起着同样的作用。然而事实并非如此。我们创建一些示例来突出二者行为上的异同。&lt;/p&gt;
+&lt;p&gt;我们先来看看对象为空时他们的行为：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void givenEmptyValue_whenCompare_thenOk() {
+    User user = null
+    logger.debug(&amp;quot;Using orElse&amp;quot;);
+    User result = Optional.ofNullable(user).orElse(createNewUser());
+    logger.debug(&amp;quot;Using orElseGet&amp;quot;);
+    User result2 = Optional.ofNullable(user).orElseGet(() -&amp;gt; createNewUser());
+}
+
+private User createNewUser() {
+    logger.debug(&amp;quot;Creating New User&amp;quot;);
+    return new User(&amp;quot;extra@gmail.com&amp;quot;, &amp;quot;1234&amp;quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;​		上面的代码中，两种方法都调用了 &lt;em&gt;createNewUser()&lt;/em&gt; 方法，这个方法会记录一个消息并返回 &lt;em&gt;User&lt;/em&gt; 对象。&lt;/p&gt;
+&lt;p&gt;代码输出如下：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Using orElse
+Creating New User
+Using orElseGet
+Creating New User
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;​		由此可见，当对象为空而返回默认对象时，行为并无差异。&lt;/p&gt;
+&lt;p&gt;​&lt;/p&gt;
+&lt;p&gt;​		我们接下来看一个类似的示例，但这里 &lt;em&gt;Optional&lt;/em&gt;  不为空：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void givenPresentValue_whenCompare_thenOk() {
+    User user = new User(&amp;quot;john@gmail.com&amp;quot;, &amp;quot;1234&amp;quot;);
+    logger.info(&amp;quot;Using orElse&amp;quot;);
+    User result = Optional.ofNullable(user).orElse(createNewUser());
+    logger.info(&amp;quot;Using orElseGet&amp;quot;);
+    User result2 = Optional.ofNullable(user).orElseGet(() -&amp;gt; createNewUser());
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;​		这次的输出：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Using orElse
+Creating New User
+Using orElseGet
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;​		这个示例中，两个 &lt;em&gt;Optional&lt;/em&gt;  对象都包含非空值，两个方法都会返回对应的非空值。不过，&lt;em&gt;orElse()&lt;/em&gt; 方法仍然创建了 &lt;em&gt;User&lt;/em&gt; 对象。与之相反，&lt;em&gt;orElseGet()&lt;/em&gt; 方法不创建 &lt;em&gt;User&lt;/em&gt; 对象。&lt;/p&gt;
+&lt;p&gt;​		在执行较密集的调用时，比如调用 Web 服务或数据查询，这个差异会对性能产生重大影响。&lt;/p&gt;
+&lt;h3 id=&#34;返回异常&#34;&gt;返回异常&lt;/h3&gt;
+&lt;p&gt;​		除了 &lt;em&gt;orElse()&lt;/em&gt; 和 &lt;em&gt;orElseGet()&lt;/em&gt; 方法，Optional 还定义了 &lt;em&gt;orElseThrow()&lt;/em&gt; API —— 它会在对象为空的时候抛出异常，而不是返回备选的值：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test(expected = IllegalArgumentException.class)
+public void whenThrowException_thenOk() {
+    User result = Optional.ofNullable(user)
+      .orElseThrow( () -&amp;gt; new IllegalArgumentException());
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;​		这里，如果 &lt;em&gt;user&lt;/em&gt; 值为 null，会抛出 &lt;em&gt;IllegalArgumentException&lt;/em&gt;。&lt;/p&gt;
+&lt;p&gt;​		这个方法让我们有更丰富的语义，可以决定抛出什么样的异常，而不总是抛出 &lt;em&gt;NullPointerException&lt;/em&gt;。&lt;/p&gt;
+&lt;p&gt;​		现在我们已经很好地理解了如何使用 Optional，我们来看看其它可以对 &lt;em&gt;Optional&lt;/em&gt; 值进行转换和过滤的方法。&lt;/p&gt;
+&lt;h3 id=&#34;转换值&#34;&gt;转换值&lt;/h3&gt;
+&lt;p&gt;​		有很多种方法可以转换 &lt;em&gt;Optional&lt;/em&gt; 的值。我们从 &lt;em&gt;map()&lt;/em&gt; 和 &lt;em&gt;flatMap()&lt;/em&gt; 方法开始。&lt;/p&gt;
+&lt;p&gt;先来看一个使用 &lt;em&gt;map()&lt;/em&gt; API 的例子：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void whenMap_thenOk() {
+    User user = new User(&amp;quot;anna@gmail.com&amp;quot;, &amp;quot;1234&amp;quot;);
+    String email = Optional.ofNullable(user)
+      .map(u -&amp;gt; u.getEmail()).orElse(&amp;quot;default@gmail.com&amp;quot;);
+
+    assertEquals(email, user.getEmail());
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;​		&lt;em&gt;map()&lt;/em&gt; 对值应用(调用)作为参数的&lt;em&gt;函数&lt;/em&gt;，然后将返回的值包装在 &lt;em&gt;Optional&lt;/em&gt; 中。这就使对返回值进行链试调用的操作成为可能 —— 这里的下一环就是 &lt;em&gt;orElse()&lt;/em&gt;。&lt;/p&gt;
+&lt;p&gt;​		相比这下，&lt;em&gt;flatMap()&lt;/em&gt; 也需要&lt;em&gt;函数&lt;/em&gt;作为参数，并对值调用这个函数，然后直接返回结果。&lt;/p&gt;
+&lt;p&gt;​		下面的操作中，我们给 &lt;em&gt;User&lt;/em&gt; 类添加了一个方法，用来返回 &lt;em&gt;Optional&lt;/em&gt;：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class User {    
+    private String position;
+
+    public Optional&amp;lt;String&amp;gt; getPosition() {
+        return Optional.ofNullable(position);
+    }
+
+    //...
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;​		既然 getter 方法返回 String 值的 &lt;em&gt;Optional&lt;/em&gt;，你可以在对 &lt;em&gt;User&lt;/em&gt; &lt;em&gt;的 Optional&lt;/em&gt; 对象调用 &lt;em&gt;flatMap()&lt;/em&gt; 时，用它作为参数。其返回的值是解除包装的 String 值&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void whenFlatMap_thenOk() {
+    User user = new User(&amp;quot;anna@gmail.com&amp;quot;, &amp;quot;1234&amp;quot;);
+    user.setPosition(&amp;quot;Developer&amp;quot;);
+    String position = Optional.ofNullable(user)
+      .flatMap(u -&amp;gt; u.getPosition()).orElse(&amp;quot;default&amp;quot;);
+
+    assertEquals(position, user.getPosition().get());
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;​		过滤值&lt;/p&gt;
+&lt;p&gt;​		除了转换值之外，&lt;em&gt;Optional&lt;/em&gt; 类也提供了按条件“过滤”值的方法。&lt;em&gt;filter()&lt;/em&gt; 接受一个 &lt;em&gt;Predicate&lt;/em&gt; 参数，返回测试结果为 true 的值。如果测试结果为 false，会返回一个空的 &lt;em&gt;Optional&lt;/em&gt;。&lt;/p&gt;
+&lt;p&gt;来看一个根据基本的电子邮箱验证来决定接受或拒绝 &lt;em&gt;User&lt;/em&gt;*(用户)* 的示例：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void whenFilter_thenOk() {
+    User user = new User(&amp;quot;anna@gmail.com&amp;quot;, &amp;quot;1234&amp;quot;);
+    Optional&amp;lt;User&amp;gt; result = Optional.ofNullable(user)
+      .filter(u -&amp;gt; u.getEmail() != null &amp;amp;&amp;amp; u.getEmail().contains(&amp;quot;@&amp;quot;));
+
+    assertTrue(result.isPresent());
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;​		如果通过过滤器测试，&lt;em&gt;result&lt;/em&gt; 对象会包含非空值。&lt;/p&gt;
+&lt;h3 id=&#34;optional-类的链式方法&#34;&gt;&lt;em&gt;Optional&lt;/em&gt; 类的链式方法&lt;/h3&gt;
+&lt;p&gt;​		为了更充分的使用 &lt;em&gt;Optional&lt;/em&gt;，你可以链接组合其大部分方法，因为它们都返回相同类似的对象。&lt;/p&gt;
+&lt;p&gt;​		我们使用 &lt;em&gt;Optional&lt;/em&gt; 重写最早介绍的示例。&lt;/p&gt;
+&lt;p&gt;​		首先，重构类，使其 getter 方法返回 &lt;em&gt;Optional&lt;/em&gt; 引用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class User {
+    private Address address;
+
+    public Optional&amp;lt;Address&amp;gt; getAddress() {
+        return Optional.ofNullable(address);
+    }
+
+    // ...
+}
+public class Address {
+    private Country country;
+
+    public Optional&amp;lt;Country&amp;gt; getCountry() {
+        return Optional.ofNullable(country);
+    }
+
+    // ...
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;​		现在可以删除 &lt;em&gt;null&lt;/em&gt; 检查，替换为 &lt;em&gt;Optional&lt;/em&gt; 的方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void whenChaining_thenOk() {
+    User user = new User(&amp;quot;anna@gmail.com&amp;quot;, &amp;quot;1234&amp;quot;);
+
+    String result = Optional.ofNullable(user)
+      .flatMap(u -&amp;gt; u.getAddress())
+      .flatMap(a -&amp;gt; a.getCountry())
+      .map(c -&amp;gt; c.getIsocode())
+      .orElse(&amp;quot;default&amp;quot;);
+
+    assertEquals(result, &amp;quot;default&amp;quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;​		上面的代码可以通过方法引用进一步缩减：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;String result = Optional.ofNullable(user)
+  .flatMap(User::getAddress)
+  .flatMap(Address::getCountry)
+  .map(Country::getIsocode)
+  .orElse(&amp;quot;default&amp;quot;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;结果现在的代码看起来比之前采用条件分支的冗长代码简洁多了。&lt;/p&gt;
+&lt;h3 id=&#34;java-9-增强&#34;&gt;Java 9 增强&lt;/h3&gt;
+&lt;p&gt;​		我们介绍了 Java 8 的特性，Java 9 为 Optional 类添加了三个方法：&lt;em&gt;or()&lt;/em&gt;、&lt;em&gt;ifPresentOrElse()&lt;/em&gt; 和 &lt;em&gt;stream()&lt;/em&gt;。&lt;/p&gt;
+&lt;p&gt;​		&lt;em&gt;or()&lt;/em&gt; 方法与 &lt;em&gt;orElse()&lt;/em&gt; 和 &lt;em&gt;orElseGet()&lt;/em&gt; 类似，它们都在对象为空的时候提供了替代情况。&lt;em&gt;or()&lt;/em&gt; 的返回值是由 &lt;em&gt;Supplier&lt;/em&gt; 参数产生的另一个 &lt;em&gt;Optional&lt;/em&gt; 对象。&lt;/p&gt;
+&lt;p&gt;​		如果对象包含值，则 Lambda 表达式不会执行：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void whenEmptyOptional_thenGetValueFromOr() {
+    User result = Optional.ofNullable(user)
+      .or( () -&amp;gt; Optional.of(new User(&amp;quot;default&amp;quot;,&amp;quot;1234&amp;quot;))).get();
+
+    assertEquals(result.getEmail(), &amp;quot;default&amp;quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;​		上面的示例中，如果 &lt;em&gt;user&lt;/em&gt; 变量是 null，它会返回一个 &lt;em&gt;Optional&lt;/em&gt;，它所包含的 &lt;em&gt;User&lt;/em&gt; 对象，其电子邮件为 “default”。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;ifPresentOrElse()&lt;/em&gt; 方法需要两个参数：一个 &lt;em&gt;Consumer&lt;/em&gt; 和一个 &lt;em&gt;Runnable&lt;/em&gt;。如果对象包含值，会执行 &lt;em&gt;Consumer&lt;/em&gt; 的动作，否则运行 &lt;em&gt;Runnable&lt;/em&gt;。&lt;/p&gt;
+&lt;p&gt;​		如果你想在有值的时候执行某个动作，或者只是跟踪是否定义了某个值，那么这个方法非常有用：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Optional.ofNullable(user).ifPresentOrElse( u -&amp;gt; logger.info(&amp;quot;User is:&amp;quot; + u.getEmail()),
+  () -&amp;gt; logger.info(&amp;quot;User not found&amp;quot;));
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;​		最后介绍的是新的 &lt;em&gt;stream()&lt;/em&gt; 方法，它通过把实例转换为 &lt;em&gt;Stream&lt;/em&gt; 对象，让你从广大的 &lt;em&gt;Stream&lt;/em&gt; API 中受益。如果没有值，它会得到空的 &lt;em&gt;Stream&lt;/em&gt;；有值的情况下，&lt;em&gt;Stream&lt;/em&gt; 则会包含单一值。&lt;/p&gt;
+&lt;p&gt;​		我们来看一个把 &lt;em&gt;Optional&lt;/em&gt; 处理成 &lt;em&gt;Stream&lt;/em&gt; 的例子：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void whenGetStream_thenOk() {
+    User user = new User(&amp;quot;john@gmail.com&amp;quot;, &amp;quot;1234&amp;quot;);
+    List&amp;lt;String&amp;gt; emails = Optional.ofNullable(user)
+      .stream()
+      .filter(u -&amp;gt; u.getEmail() != null &amp;amp;&amp;amp; u.getEmail().contains(&amp;quot;@&amp;quot;))
+      .map( u -&amp;gt; u.getEmail())
+      .collect(Collectors.toList());
+
+    assertTrue(emails.size() == 1);
+    assertEquals(emails.get(0), user.getEmail());
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;​		这里对 &lt;em&gt;Stream&lt;/em&gt; 的使用带来了其 &lt;em&gt;filter()、map()&lt;/em&gt; 和 &lt;em&gt;collect()&lt;/em&gt; 接口，以获取 &lt;em&gt;List&lt;/em&gt;。&lt;/p&gt;
+&lt;h3 id=&#34;optional-应该怎样用&#34;&gt;&lt;em&gt;Optional&lt;/em&gt; 应该怎样用？&lt;/h3&gt;
+&lt;p&gt;​		在使用 &lt;em&gt;Optional&lt;/em&gt; 的时候需要考虑一些事情，以决定什么时候怎样使用它。&lt;/p&gt;
+&lt;p&gt;​		重要的一点是 &lt;em&gt;Optional&lt;/em&gt; 不是 &lt;em&gt;Serializable&lt;/em&gt;。因此，它不应该用作类的字段。&lt;/p&gt;
+&lt;p&gt;​		如果你需要序列化的对象包含 &lt;em&gt;Optional&lt;/em&gt; 值，&lt;a href=&#34;https://stackify.com/java-xml-jackson/&#34;&gt;&lt;em&gt;Jackson&lt;/em&gt; 库&lt;/a&gt;支持把 &lt;em&gt;Optional&lt;/em&gt; 当作普通对象。也就是说，&lt;em&gt;Jackson&lt;/em&gt; 会把空对象看作 &lt;em&gt;null&lt;/em&gt;，而有值的对象则把其值看作对应域的值。这个功能在 &lt;a href=&#34;https://github.com/FasterXML/jackson-modules-java8&#34;&gt;jackson-modules-java8&lt;/a&gt; 项目中。&lt;/p&gt;
+&lt;p&gt;​		它在另一种情况下也并不怎么有用，就是在将其类型用作方法或构建方法的参数时。这样做会让代码变得复杂，完全没有必要：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;User user = new User(&amp;quot;john@gmail.com&amp;quot;, &amp;quot;1234&amp;quot;, Optional.empty());
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;​		使用重载方法来处理非要的参数要容易得多。&lt;/p&gt;
+&lt;p&gt;​		&lt;em&gt;Optional&lt;/em&gt; 主要用作返回类型。在获取到这个类型的实例后，如果它有值，你可以取得这个值，否则可以进行一些替代行为。&lt;/p&gt;
+&lt;p&gt;​		&lt;em&gt;Optional&lt;/em&gt; 类有一个非常有用的用例，就是将其与流或其它返回 &lt;em&gt;Optional&lt;/em&gt; 的方法结合，以构建流畅的API。&lt;/p&gt;
+&lt;p&gt;​		我们来看一个示例，使用 &lt;em&gt;Stream&lt;/em&gt; 返回 &lt;em&gt;Optional&lt;/em&gt; 对象的 &lt;em&gt;findFirst()&lt;/em&gt; 方法：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void whenEmptyStream_thenReturnDefaultOptional() {
+    List&amp;lt;User&amp;gt; users = new ArrayList&amp;lt;&amp;gt;();
+    User user = users.stream().findFirst().orElse(new User(&amp;quot;default&amp;quot;, &amp;quot;1234&amp;quot;));
+
+    assertEquals(user.getEmail(), &amp;quot;default&amp;quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;总结&#34;&gt;总结&lt;/h3&gt;
+&lt;p&gt;&lt;em&gt;Optional&lt;/em&gt; 是 Java 语言的有益补充 —— 它旨在减少代码中的 &lt;em&gt;NullPointerExceptions&lt;/em&gt;，虽然还不能完全消除这些异常。&lt;/p&gt;
+&lt;p&gt;它也是精心设计，自然融入 Java 8 函数式支持的功能。&lt;/p&gt;
+&lt;p&gt;总的来说，这个简单而强大的类有助于创建简单、可读性更强、比对应程序错误更少的程序。&lt;/p&gt;
+&lt;p&gt;转自 https://www.cnblogs.com/zhangboyu/p/7580262.html&lt;/p&gt;
+">理解、学习与使用 JAVA 中的 OPTIONAL</a>
+      </div>
       
       <div class="item">
         <a class="result-title" style="opacity: 0;" href="https://cm940324.github.io/post/spring-data-rest/"" data-c="
