@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://cm940324.github.io</id>
     <title>Oasis</title>
-    <updated>2021-05-06T08:39:33.953Z</updated>
+    <updated>2021-05-06T08:40:51.729Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://cm940324.github.io"/>
     <link rel="self" href="https://cm940324.github.io/atom.xml"/>
@@ -12,8 +12,8 @@
     <rights>All rights reserved 2021, Oasis</rights>
     <entry>
         <title type="html"><![CDATA[PostgreSQL自带全文检索]]></title>
-        <id>https://cm940324.github.io/post/postgresql-zi-dai-quan-wen-jian-suo/</id>
-        <link href="https://cm940324.github.io/post/postgresql-zi-dai-quan-wen-jian-suo/">
+        <id>https://cm940324.github.io/post/postgresql-jiansuo/</id>
+        <link href="https://cm940324.github.io/post/postgresql-jiansuo/">
         </link>
         <updated>2021-05-06T08:38:50.000Z</updated>
         <content type="html"><![CDATA[<h3 id="相关文档">相关文档</h3>
