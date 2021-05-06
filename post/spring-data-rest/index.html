@@ -9,7 +9,7 @@
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
 <title>Spring Data REST 快速构建 restful api 应用 | Oasis</title>
-<link rel="shortcut icon" href="/favicon.ico?v=1620189034016">
+<link rel="shortcut icon" href="/favicon.ico?v=1620290370826">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
 <link
@@ -208,7 +208,7 @@
     <div class="sidebar-item-box">
       <a href="/archives/">
         
-        <span class="site-item-stat-count">6</span>
+        <span class="site-item-stat-count">7</span>
         <span class="site-item-stat-name language" data-lan="article">文章</span>
       </a>
     </div>
@@ -1843,6 +1843,66 @@ spring:
       <hr>
     </div>
     <div class="result" id="result">
+      
+      <div class="item">
+        <a class="result-title" style="opacity: 0;" href="https://cm940324.github.io/post/postgresql-zi-dai-quan-wen-jian-suo/"" data-c="
+          &lt;h3 id=&#34;相关文档&#34;&gt;相关文档&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;文本搜索的函数与操作符中文说明: 
+http://www.postgres.cn/docs/9.3.4/functions-textsearch.html
+PostgreSQL 文本搜索文档 : 
+https://www.postgresql.org/docs/9.4/textsearch-controls.html
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;核心函数-关键字&#34;&gt;核心函数、关键字&lt;/h3&gt;
+&lt;p&gt;全文搜索的思想主要分两步：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;将文本解析为对应的倒排索引&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;搜索索引来找到对应的文本&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;要使用 PostgreSQL 的全文搜索, 那么就要了解到底是要用什么关键字和函数来&lt;strong&gt;构建索引&lt;/strong&gt;和&lt;strong&gt;搜索&lt;/strong&gt;， 这里主要涉及到&lt;strong&gt;一个关键字&lt;/strong&gt;和&lt;strong&gt;四个函数&lt;/strong&gt;&lt;br&gt;
+可以看上边的文档了解函数的具体参数&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;关键字 tsvector:&lt;/strong&gt;&lt;br&gt;
+tsvector 是 PostgreSQL 内置的一种字段类型, 用来保存的是分词后的结果 (文本向量) 它是由 [词，序列， 权重] 三个东西共同组成的， 权重可能会没有&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;函数:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;to_tsvector()&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;分词用, 将文本转为向量。 用它可以将字符串转成上边说的 tsvector , 遗憾的是默认不支持中文分词&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;to_tsquery()&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;构建搜索的关键字， 支持各种符号表示条件。 详情查看文档&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;setweight()&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;设置关键词权重， 总共四个权重从高到低为 A-B-C-D&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;ts_rank ()&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;排序用， 可以根据 to_tsquery 和 tsvector 的匹配度计算&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;//查询表中包含 aaa 并且包含 BBB或CCC任意一个 的记录
+  SELECT * FROM table
+  WHERE to_tsvector(&#39;parser_name&#39;, field) @@ to_tsquery(&#39;aaa &amp;amp; (bbb | ccc)&#39;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;索引:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;建立联合索引&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;create index document_title_idx on encms.article using gin (to_tsvector(&#39;english&#39;,&amp;quot;content&amp;quot; || &amp;quot;title&amp;quot;) tsvector_ops)
+&lt;/code&gt;&lt;/pre&gt;
+">PostgreSQL自带全文检索</a>
+      </div>
       
       <div class="item">
         <a class="result-title" style="opacity: 0;" href="https://cm940324.github.io/post/doge/"" data-c="
