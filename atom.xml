@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://cm940324.github.io</id>
     <title>Oasis</title>
-    <updated>2021-05-06T08:40:51.729Z</updated>
+    <updated>2021-05-09T09:22:50.709Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://cm940324.github.io"/>
     <link rel="self" href="https://cm940324.github.io/atom.xml"/>
@@ -10,6 +10,219 @@
     <logo>https://cm940324.github.io/images/avatar.png</logo>
     <icon>https://cm940324.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, Oasis</rights>
+    <entry>
+        <title type="html"><![CDATA[设计模式的学习]]></title>
+        <id>https://cm940324.github.io/post/design-study/</id>
+        <link href="https://cm940324.github.io/post/design-study/">
+        </link>
+        <updated>2021-05-09T09:21:27.000Z</updated>
+        <content type="html"><![CDATA[<h3 id="设计模式的目的">设计模式的目的</h3>
+<p>编写软件过程中，程序员面临着来自 耦合性，内聚性以及可维护性，可扩展性，重用性，灵活性 等多方面的挑战，设计模式是为了让程序(软件)具有更好的:</p>
+<ol>
+<li>
+<p>代码重用性 (即：相同功能的代码，不用多次编写)</p>
+</li>
+<li>
+<p>可读性 (即：编程规范性, 便于其他程序员的阅读和理解)</p>
+</li>
+<li>
+<p>可扩展性 (即：当需要增加新的功能时，非常的方便，称为可维护)</p>
+</li>
+<li>
+<p>可靠性 (即：当我们增加新的功能后，对原来的功能没有影响)</p>
+</li>
+<li>
+<p>使程序呈现高内聚，低耦合的特性</p>
+</li>
+</ol>
+<pre><code>“懂了设计模式，你就懂了面向对象分析和设计（OOA/D）的精要” ----设计模式包含了面向对象的精髓
+
+“C++老手和 C++新手的区别就是前者手背上有很多伤疤” ----Scott Mayers 在其巨著《Effective C++》
+</code></pre>
+<h3 id="设计模式七大原则">设计模式七大原则</h3>
+<p>设计模式原则，其实就是程序员在编程时，应当遵守的原则，也是各种设计模式的基础(即：设计模式为什么这样设计的依据)</p>
+<p><mark>Ø 设计模式常用的七大原则有:</mark></p>
+<ol>
+<li>
+<p>单一职责原则</p>
+</li>
+<li>
+<p>接口隔离原则</p>
+</li>
+<li>
+<p>依赖倒转(倒置)原则</p>
+</li>
+<li>
+<p>里氏替换原则</p>
+</li>
+<li>
+<p>开闭原则</p>
+</li>
+<li>
+<p>迪米特法则</p>
+</li>
+<li>
+<p>合成复用原则</p>
+</li>
+</ol>
+<h4 id="单一职责原则">单一职责原则</h4>
+<h5 id="基本介绍">基本介绍</h5>
+<p>对类来说的，即一个类应该只负责一项职责。如类 A 负责两个不同职责：职责 1，职责 2。当职责 1 需求变更而改变 A 时，可能造成职责 2 执行错误，所以需要将类 A 的粒度分解为 A1，A2</p>
+<h5 id="应用实例">应用实例</h5>
+<p><strong>方案一:</strong></p>
+<pre><code>// 1. 在方式 1 的 run 方法中，违反了单一职责原则
+// 2. 解决的方案非常的简单，根据交通工具运行方法不同，分解成不同类即可
+public class SingleResponsibility1{
+	public static void main(String[] args){
+		Vehicle vehicle = new Vehicle();
+		vehicle.run(&quot;摩托车&quot;);
+		vehicle.run(&quot;汽车&quot;);
+		vehicle.run(&quot;飞机&quot;);
+	}
+}
+class Vehicle {
+	public void run(String vehicle) { 
+			System.out.println(vehicle + &quot; 在公路上运行....&quot;);
+	}
+}
+
+</code></pre>
+<p><strong>方案二</strong></p>
+<pre><code>//方案 2 的分析
+//1. 遵守单一职责原则
+//2. 但是这样做的改动很大，即将类分解，同时修改客户端
+//3. 改进：直接修改 Vehicle 类，改动的代码会比较少=&gt;方案 3
+public class SingleResponsibility1{
+	public static void main(String[] args){
+		RoadVehicle roadVehicle = new RoadVehicle();
+		roadVehicle.run(&quot;摩托车&quot;);
+		roadVehicle.run(&quot;汽车&quot;);
+		AirVehicle airVehicle = new AirVehicle();
+		airVehicle.run(&quot;飞机&quot;);
+	}
+}
+class RoadVehicle {
+	public void run(String vehicle) { 
+		System.out.println(vehicle + &quot;公路运行&quot;);
+	}
+}
+
+
+class AirVehicle {
+	public void run(String vehicle) { 
+		System.out.println(vehicle + &quot;天空运行&quot;);
+	}
+}
+
+</code></pre>
+<p><strong>方案三</strong></p>
+<pre><code>//方式 3 的分析
+//1. 这种修改方法没有对原来的类做大的修改，只是增加方法
+//2. 这里虽然没有在类这个级别上遵守单一职责原则，但是在方法级别上，仍然是遵守单一职责
+public class SingleResponsibility3 {
+	public static void main(String[] args) {
+		Vehicle2 vehicle2	= new Vehicle2();
+		vehicle2.run(&quot;汽车&quot;);
+		vehicle2.runWater(&quot;轮船&quot;);
+		vehicle2.runAir(&quot;飞机&quot;);
+	}
+}
+class Vehicle2 {
+	public void run(String vehicle) {
+		//处理
+		System.out.println(vehicle + &quot; 在公路上运行....&quot;);
+	}
+	public void runAir(String vehicle) { 
+		System.out.println(vehicle + &quot; 在天空上运行....&quot;);
+	}
+	public void runWater(String vehicle) { 
+		System.out.println(vehicle + &quot; 在水中行....&quot;);
+	}
+}
+</code></pre>
+<pre><code>单一职责原则注意事项和细节
+1)	降低类的复杂度，一个类只负责一项职责。
+2)	提高类的可读性，可维护性
+3)	降低变更引起的风险
+4)	通常情况下，我们应当遵守单一职责原则，只有逻辑足够简单，才可以在代码级违反单一职责原则；只有类中方法数量足够少，可以在方法级别保持单一职责原则
+</code></pre>
+<h4 id="接口隔离原则interface-segregation-principle">接口隔离原则(Interface Segregation Principle)</h4>
+<h5 id="基本介绍-2">基本介绍</h5>
+<ol>
+<li>客户端不应该依赖它不需要的接口，即一个类对另一个类的依赖应该建立在最小的接口上</li>
+<li>类 A 通过接口 Interface1 依赖类 B，类 C 通过接口 Interface1 依赖类 D，如果接口 Interface1 对于类 A 和类 C来说不是最小接口，那么类 B 和类 D 必须去实现他们不需要的方法。</li>
+</ol>
+<pre><code>public class Segregation1 {
+
+public static void main(String[] args) {
+// TODO Auto-generated method stub
+}
+
+}
+
+//接口
+interface Interface1 {
+void operation1(); void operation2();
+ 
+
+void operation3(); void operation4(); void operation5();
+}
+
+
+class B implements Interface1 { public void operation1() {
+System.out.println(&quot;B 实现了 operation1&quot;);
+}
+public void operation2() {
+System.out.println(&quot;B 实现了 operation2&quot;);
+}
+public void operation3() {
+System.out.println(&quot;B 实现了 operation3&quot;);
+}
+public void operation4() {
+System.out.println(&quot;B 实现了 operation4&quot;);
+}
+public void operation5() {
+System.out.println(&quot;B 实现了 operation5&quot;);
+}
+}
+
+class D implements Interface1 { public void operation1() {
+System.out.println(&quot;D 实现了 operation1&quot;);
+}
+public void operation2() {
+System.out.println(&quot;D 实现了 operation2&quot;);
+}
+public void operation3() {
+System.out.println(&quot;D 实现了 operation3&quot;);
+}
+public void operation4() {
+System.out.println(&quot;D 实现了  operation4&quot;);
+}
+public void  operation5()  { System.out.println(&quot;D 实现了  operation5&quot;);
+}
+}
+
+class A { //A 类通过接口 Interface1 依赖(使用) B 类，但是只会用到 1,2,3 方法
+public void depend1(Interface1 i) { i.operation1();
+}
+public void depend2(Interface1 i) { i.operation2();
+}
+public void depend3(Interface1 i) { i.operation3();
+}
+}
+
+class C { //C 类通过接口 Interface1  依赖(使用) D 类，但是只会用到 1,4,5 方法
+public void depend1(Interface1 i) { i.operation1();
+}
+public void depend4(Interface1 i) { i.operation4();
+}
+public void depend5(Interface1 i) { i.operation5();
+}
+}
+
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[PostgreSQL自带全文检索]]></title>
         <id>https://cm940324.github.io/post/postgresql-jiansuo/</id>

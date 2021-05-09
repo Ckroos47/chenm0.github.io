@@ -8,7 +8,7 @@
 <meta name="keywords" content="个人博客">
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
-<title>PostgreSQL自带全文检索 | Oasis</title>
+<title>设计模式的学习 | Oasis</title>
 <link rel="shortcut icon" href="/favicon.ico?v=1620552162584">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
@@ -38,8 +38,8 @@
 
 
 
-  <meta name="description" content="PostgreSQL自带全文检索" />
-  <meta name="keywords" content="PostgreSQL" />
+  <meta name="description" content="设计模式的学习" />
+  <meta name="keywords" content="JAVA" />
 </head>
 
 <body>
@@ -255,8 +255,22 @@
 <ul>
 <li>
 <ul>
-<li><a href="#%E7%9B%B8%E5%85%B3%E6%96%87%E6%A1%A3">相关文档</a></li>
-<li><a href="#%E6%A0%B8%E5%BF%83%E5%87%BD%E6%95%B0-%E5%85%B3%E9%94%AE%E5%AD%97">核心函数、关键字</a></li>
+<li><a href="#%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E7%9B%AE%E7%9A%84">设计模式的目的</a></li>
+<li><a href="#%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B8%83%E5%A4%A7%E5%8E%9F%E5%88%99">设计模式七大原则</a>
+<ul>
+<li><a href="#%E5%8D%95%E4%B8%80%E8%81%8C%E8%B4%A3%E5%8E%9F%E5%88%99">单一职责原则</a>
+<ul>
+<li><a href="#%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%BB%8D">基本介绍</a></li>
+<li><a href="#%E5%BA%94%E7%94%A8%E5%AE%9E%E4%BE%8B">应用实例</a></li>
+</ul>
+</li>
+<li><a href="#%E6%8E%A5%E5%8F%A3%E9%9A%94%E7%A6%BB%E5%8E%9F%E5%88%99interface-segregation-principle">接口隔离原则(Interface Segregation Principle)</a>
+<ul>
+<li><a href="#%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%BB%8D-2">基本介绍</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -526,8 +540,8 @@
           <div class="section bg-color post post-page">
             <section class="post-header">
   <h1 class="post-title">
-    <a class="post-title-link" href="https://cm940324.github.io/post/postgresql-jiansuo/">
-      PostgreSQL自带全文检索
+    <a class="post-title-link" href="https://cm940324.github.io/post/design-study/">
+      设计模式的学习
     </a>
   </h1>
   <div class="post-meta">
@@ -535,7 +549,7 @@
     <span class="meta-item pc-show">
       <i class="fa fa-calendar-o"></i>
       <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-05-06 16:38:50">2021-05-06</span>
+      <span class="publish-time" data-t="2021-05-09 17:21:27">2021-05-09</span>
       <span class="post-meta-divider pc-show">|</span>
     </span>
     
@@ -544,8 +558,8 @@
       <span class="pc-show language" data-lan="category-in">分类于</span>
       
       
-      <a href="https://cm940324.github.io/tag/kzUuE88e_/">
-        <span>PostgreSQL</span>
+      <a href="https://cm940324.github.io/tag/BuwDjq1zh0/">
+        <span>JAVA</span>
       </a>
       
       
@@ -554,17 +568,17 @@
     
     <span class="meta-item">
       <i class="fa fa-clock-o"></i>
-      <span>2<span class="language" data-lan="minute">分钟</span></span>
+      <span>6<span class="language" data-lan="minute">分钟</span></span>
     </span>
     <span class="meta-item">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-file-word-o"></i>
-      <span>380<span class="pc-show language" data-lan="words">字数</span></span>
+      <span>1326<span class="pc-show language" data-lan="words">字数</span></span>
     </span>
     
     
     
-    <span id="/post/postgresql-jiansuo/" data-flag-title="PostgreSQL自带全文检索" class="meta-item pc-show leancloud_visitors">
+    <span id="/post/design-study/" data-flag-title="设计模式的学习" class="meta-item pc-show leancloud_visitors">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-eye"></i>
       <span><span class="language" data-lan="view">浏览量</span>：<span class="leancloud-visitors-count"></span></span>
@@ -573,60 +587,210 @@
   </div>
 </section>
             <div class="post-body next-md-body" id="post_body">
-              <h3 id="相关文档">相关文档</h3>
-<pre><code>文本搜索的函数与操作符中文说明: 
-http://www.postgres.cn/docs/9.3.4/functions-textsearch.html
-PostgreSQL 文本搜索文档 : 
-https://www.postgresql.org/docs/9.4/textsearch-controls.html
+              <h3 id="设计模式的目的">设计模式的目的</h3>
+<p>编写软件过程中，程序员面临着来自 耦合性，内聚性以及可维护性，可扩展性，重用性，灵活性 等多方面的挑战，设计模式是为了让程序(软件)具有更好的:</p>
+<ol>
+<li>
+<p>代码重用性 (即：相同功能的代码，不用多次编写)</p>
+</li>
+<li>
+<p>可读性 (即：编程规范性, 便于其他程序员的阅读和理解)</p>
+</li>
+<li>
+<p>可扩展性 (即：当需要增加新的功能时，非常的方便，称为可维护)</p>
+</li>
+<li>
+<p>可靠性 (即：当我们增加新的功能后，对原来的功能没有影响)</p>
+</li>
+<li>
+<p>使程序呈现高内聚，低耦合的特性</p>
+</li>
+</ol>
+<pre><code>“懂了设计模式，你就懂了面向对象分析和设计（OOA/D）的精要” ----设计模式包含了面向对象的精髓
+
+“C++老手和 C++新手的区别就是前者手背上有很多伤疤” ----Scott Mayers 在其巨著《Effective C++》
 </code></pre>
-<h3 id="核心函数-关键字">核心函数、关键字</h3>
-<p>全文搜索的思想主要分两步：</p>
-<ul>
+<h3 id="设计模式七大原则">设计模式七大原则</h3>
+<p>设计模式原则，其实就是程序员在编程时，应当遵守的原则，也是各种设计模式的基础(即：设计模式为什么这样设计的依据)</p>
+<p><mark>Ø 设计模式常用的七大原则有:</mark></p>
+<ol>
 <li>
-<p>将文本解析为对应的倒排索引</p>
+<p>单一职责原则</p>
 </li>
 <li>
-<p>搜索索引来找到对应的文本</p>
-</li>
-</ul>
-<p>要使用 PostgreSQL 的全文搜索, 那么就要了解到底是要用什么关键字和函数来<strong>构建索引</strong>和<strong>搜索</strong>， 这里主要涉及到<strong>一个关键字</strong>和<strong>四个函数</strong><br>
-可以看上边的文档了解函数的具体参数</p>
-<p><strong>关键字 tsvector:</strong><br>
-tsvector 是 PostgreSQL 内置的一种字段类型, 用来保存的是分词后的结果 (文本向量) 它是由 [词，序列， 权重] 三个东西共同组成的， 权重可能会没有</p>
-<p><strong>函数:</strong></p>
-<ul>
-<li>
-<p>to_tsvector()</p>
-<ul>
-<li>分词用, 将文本转为向量。 用它可以将字符串转成上边说的 tsvector , 遗憾的是默认不支持中文分词</li>
-</ul>
+<p>接口隔离原则</p>
 </li>
 <li>
-<p>to_tsquery()</p>
-<ul>
-<li>构建搜索的关键字， 支持各种符号表示条件。 详情查看文档</li>
-</ul>
+<p>依赖倒转(倒置)原则</p>
 </li>
 <li>
-<p>setweight()</p>
-<ul>
-<li>设置关键词权重， 总共四个权重从高到低为 A-B-C-D</li>
-</ul>
+<p>里氏替换原则</p>
 </li>
 <li>
-<p>ts_rank ()</p>
-<ul>
-<li>排序用， 可以根据 to_tsquery 和 tsvector 的匹配度计算</li>
-</ul>
-<pre><code>//查询表中包含 aaa 并且包含 BBB或CCC任意一个 的记录
-  SELECT * FROM table
-  WHERE to_tsvector('parser_name', field) @@ to_tsquery('aaa &amp; (bbb | ccc)')
+<p>开闭原则</p>
+</li>
+<li>
+<p>迪米特法则</p>
+</li>
+<li>
+<p>合成复用原则</p>
+</li>
+</ol>
+<h4 id="单一职责原则">单一职责原则</h4>
+<h5 id="基本介绍">基本介绍</h5>
+<p>对类来说的，即一个类应该只负责一项职责。如类 A 负责两个不同职责：职责 1，职责 2。当职责 1 需求变更而改变 A 时，可能造成职责 2 执行错误，所以需要将类 A 的粒度分解为 A1，A2</p>
+<h5 id="应用实例">应用实例</h5>
+<p><strong>方案一:</strong></p>
+<pre><code>// 1. 在方式 1 的 run 方法中，违反了单一职责原则
+// 2. 解决的方案非常的简单，根据交通工具运行方法不同，分解成不同类即可
+public class SingleResponsibility1{
+	public static void main(String[] args){
+		Vehicle vehicle = new Vehicle();
+		vehicle.run(&quot;摩托车&quot;);
+		vehicle.run(&quot;汽车&quot;);
+		vehicle.run(&quot;飞机&quot;);
+	}
+}
+class Vehicle {
+	public void run(String vehicle) { 
+			System.out.println(vehicle + &quot; 在公路上运行....&quot;);
+	}
+}
+
 </code></pre>
-</li>
-</ul>
-<p><strong>索引:</strong></p>
-<p>建立联合索引</p>
-<pre><code>create index document_title_idx on encms.article using gin (to_tsvector('english',&quot;content&quot; || &quot;title&quot;) tsvector_ops)
+<p><strong>方案二</strong></p>
+<pre><code>//方案 2 的分析
+//1. 遵守单一职责原则
+//2. 但是这样做的改动很大，即将类分解，同时修改客户端
+//3. 改进：直接修改 Vehicle 类，改动的代码会比较少=&gt;方案 3
+public class SingleResponsibility1{
+	public static void main(String[] args){
+		RoadVehicle roadVehicle = new RoadVehicle();
+		roadVehicle.run(&quot;摩托车&quot;);
+		roadVehicle.run(&quot;汽车&quot;);
+		AirVehicle airVehicle = new AirVehicle();
+		airVehicle.run(&quot;飞机&quot;);
+	}
+}
+class RoadVehicle {
+	public void run(String vehicle) { 
+		System.out.println(vehicle + &quot;公路运行&quot;);
+	}
+}
+
+
+class AirVehicle {
+	public void run(String vehicle) { 
+		System.out.println(vehicle + &quot;天空运行&quot;);
+	}
+}
+
+</code></pre>
+<p><strong>方案三</strong></p>
+<pre><code>//方式 3 的分析
+//1. 这种修改方法没有对原来的类做大的修改，只是增加方法
+//2. 这里虽然没有在类这个级别上遵守单一职责原则，但是在方法级别上，仍然是遵守单一职责
+public class SingleResponsibility3 {
+	public static void main(String[] args) {
+		Vehicle2 vehicle2	= new Vehicle2();
+		vehicle2.run(&quot;汽车&quot;);
+		vehicle2.runWater(&quot;轮船&quot;);
+		vehicle2.runAir(&quot;飞机&quot;);
+	}
+}
+class Vehicle2 {
+	public void run(String vehicle) {
+		//处理
+		System.out.println(vehicle + &quot; 在公路上运行....&quot;);
+	}
+	public void runAir(String vehicle) { 
+		System.out.println(vehicle + &quot; 在天空上运行....&quot;);
+	}
+	public void runWater(String vehicle) { 
+		System.out.println(vehicle + &quot; 在水中行....&quot;);
+	}
+}
+</code></pre>
+<pre><code>单一职责原则注意事项和细节
+1)	降低类的复杂度，一个类只负责一项职责。
+2)	提高类的可读性，可维护性
+3)	降低变更引起的风险
+4)	通常情况下，我们应当遵守单一职责原则，只有逻辑足够简单，才可以在代码级违反单一职责原则；只有类中方法数量足够少，可以在方法级别保持单一职责原则
+</code></pre>
+<h4 id="接口隔离原则interface-segregation-principle">接口隔离原则(Interface Segregation Principle)</h4>
+<h5 id="基本介绍-2">基本介绍</h5>
+<ol>
+<li>客户端不应该依赖它不需要的接口，即一个类对另一个类的依赖应该建立在最小的接口上</li>
+<li>类 A 通过接口 Interface1 依赖类 B，类 C 通过接口 Interface1 依赖类 D，如果接口 Interface1 对于类 A 和类 C来说不是最小接口，那么类 B 和类 D 必须去实现他们不需要的方法。</li>
+</ol>
+<pre><code>public class Segregation1 {
+
+public static void main(String[] args) {
+// TODO Auto-generated method stub
+}
+
+}
+
+//接口
+interface Interface1 {
+void operation1(); void operation2();
+ 
+
+void operation3(); void operation4(); void operation5();
+}
+
+
+class B implements Interface1 { public void operation1() {
+System.out.println(&quot;B 实现了 operation1&quot;);
+}
+public void operation2() {
+System.out.println(&quot;B 实现了 operation2&quot;);
+}
+public void operation3() {
+System.out.println(&quot;B 实现了 operation3&quot;);
+}
+public void operation4() {
+System.out.println(&quot;B 实现了 operation4&quot;);
+}
+public void operation5() {
+System.out.println(&quot;B 实现了 operation5&quot;);
+}
+}
+
+class D implements Interface1 { public void operation1() {
+System.out.println(&quot;D 实现了 operation1&quot;);
+}
+public void operation2() {
+System.out.println(&quot;D 实现了 operation2&quot;);
+}
+public void operation3() {
+System.out.println(&quot;D 实现了 operation3&quot;);
+}
+public void operation4() {
+System.out.println(&quot;D 实现了  operation4&quot;);
+}
+public void  operation5()  { System.out.println(&quot;D 实现了  operation5&quot;);
+}
+}
+
+class A { //A 类通过接口 Interface1 依赖(使用) B 类，但是只会用到 1,2,3 方法
+public void depend1(Interface1 i) { i.operation1();
+}
+public void depend2(Interface1 i) { i.operation2();
+}
+public void depend3(Interface1 i) { i.operation3();
+}
+}
+
+class C { //C 类通过接口 Interface1  依赖(使用) D 类，但是只会用到 1,4,5 方法
+public void depend1(Interface1 i) { i.operation1();
+}
+public void depend4(Interface1 i) { i.operation4();
+}
+public void depend5(Interface1 i) { i.operation5();
+}
+}
+
 </code></pre>
 
             </div>
@@ -640,7 +804,7 @@ tsvector 是 PostgreSQL 内置的一种字段类型, 用来保存的是分词后
     </li>
     <li class="post-copyright-link">
       <strong class="language" data-lan="link">本文链接：</strong>
-      <a href="https://cm940324.github.io/post/postgresql-jiansuo/" title="PostgreSQL自带全文检索">https://cm940324.github.io/post/postgresql-jiansuo/</a>
+      <a href="https://cm940324.github.io/post/design-study/" title="设计模式的学习">https://cm940324.github.io/post/design-study/</a>
     </li>
     <li class="post-copyright-license">
       <strong class="language" data-lan="copyright">版权声明： </strong>
@@ -649,21 +813,17 @@ tsvector 是 PostgreSQL 内置的一种字段类型, 用来保存的是分词后
   </ul>
   <div class="tags">
     
-      <a href="https://cm940324.github.io/tag/kzUuE88e_/"># PostgreSQL</a>
+      <a href="https://cm940324.github.io/tag/BuwDjq1zh0/"># JAVA</a>
     
   </div>
   <div class="nav">
     <div class="nav-prev">
       
-        <i class="fa fa-chevron-left"></i>
-        <a class="nav-pc-next" title="设计模式的学习" href="https://cm940324.github.io/post/design-study/">设计模式的学习</a class="nav-pc-next">
-        <a class="nav-mobile-prev" title="设计模式的学习" href="https://cm940324.github.io/post/design-study/">上一篇</a>
-      
     </div>
     <div class="nav-next">
       
-        <a class="nav-pc-next" title="全面复盘：狗狗币是如何上涨400倍的？ " href="https://cm940324.github.io/post/doge/">全面复盘：狗狗币是如何上涨400倍的？ </a>
-        <a class="nav-mobile-next" title="全面复盘：狗狗币是如何上涨400倍的？ " href="https://cm940324.github.io/post/doge/">下一篇</a>
+        <a class="nav-pc-next" title="PostgreSQL自带全文检索" href="https://cm940324.github.io/post/postgresql-jiansuo/">PostgreSQL自带全文检索</a>
+        <a class="nav-mobile-next" title="PostgreSQL自带全文检索" href="https://cm940324.github.io/post/postgresql-jiansuo/">下一篇</a>
         <i class="fa fa-chevron-right"></i>
       
     </div>
