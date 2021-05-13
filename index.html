@@ -9,7 +9,7 @@
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
 <title>Oasis</title>
-<link rel="shortcut icon" href="/favicon.ico?v=1620552162584">
+<link rel="shortcut icon" href="/favicon.ico?v=1620889301787">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
 <link
@@ -190,7 +190,7 @@
     <div class="sidebar-item-box">
       <a href="/archives/">
         
-        <span class="site-item-stat-count">8</span>
+        <span class="site-item-stat-count">9</span>
         <span class="site-item-stat-name language" data-lan="article">文章</span>
       </a>
     </div>
@@ -309,6 +309,83 @@ JAVA PROGRAMMER👨‍💻</p>
         
         <div class="post-button text-center">
           <a class="btn language" data-lan="read-more" href="https://cm940324.github.io/post/about/" rel="contents">
+            阅读全文 »
+          </a>
+        </div>
+        
+      </div>
+      
+        <footer class="post-footer">
+          <div class="post-eof"></div>
+        </footer>
+      
+    </div>
+  </article>
+
+  <article class="post-list-box  post box-shadow-wrapper">
+    <div class="article-wrapper bg-color">
+      <section class="post-header">
+  <h1 class="post-title">
+    <a class="post-title-link" href="https://cm940324.github.io/post/amazons3-gong-ju-lei/">
+      AmazonS3工具类
+    </a>
+  </h1>
+  <div class="post-meta">
+    
+    <span class="meta-item pc-show">
+      <i class="fa fa-calendar-o"></i>
+      <span class="language" data-lan="publish">发布于</span>
+      <span class="publish-time" data-t="2021-05-13 15:00:29">2021-05-13</span>
+      <span class="post-meta-divider pc-show">|</span>
+    </span>
+    
+    <span class="meta-item">
+      <i class="fa fa-clock-o"></i>
+      <span>2<span class="language" data-lan="minute">分钟</span></span>
+    </span>
+    <span class="meta-item">
+      <span class="post-meta-divider">|</span>
+      <i class="fa fa-file-word-o"></i>
+      <span>268<span class="pc-show language" data-lan="words">字数</span></span>
+    </span>
+    
+  </div>
+</section>
+      <div class="post-body">
+        
+        
+          
+            <!-- 没有手动摘要切开启了自动摘要,则根据配置筛除摘要内容 -->
+            
+            
+              
+              
+              
+            
+              
+              
+              
+            
+              
+              
+              
+            
+            
+              <p><pre><code>/**
+ * @author chenmo
+ * @Date: Created in 2021/5/12 5:05 下午
+
+                
+                  <!-- 自动摘要出来的内容有<code则补上结尾,防止格式错误 -->
+                  </code></pre>
+                
+              <p>
+            
+          
+        
+        
+        <div class="post-button text-center">
+          <a class="btn language" data-lan="read-more" href="https://cm940324.github.io/post/amazons3-gong-ju-lei/" rel="contents">
             阅读全文 »
           </a>
         </div>
@@ -1721,6 +1798,89 @@ http://www.postgres.cn/docs/9.3.4/functions-textsearch.html
       <hr>
     </div>
     <div class="result" id="result">
+      
+      <div class="item">
+        <a class="result-title" style="opacity: 0;" href="https://cm940324.github.io/post/amazons3-gong-ju-lei/"" data-c="
+          &lt;pre&gt;&lt;code&gt;/**
+ * @author chenmo
+ * @Date: Created in 2021/5/12 5:05 下午
+ * @Utils: Intellij Idea
+ * @Description: TODO
+ */
+@Component
+@RequiredArgsConstructor
+public class AmazonS3Operator {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AmazonS3Operator.class);
+
+    final AmazonS3Configuration amazonS3Configuration;
+
+    //创建链接
+    public AmazonS3 createConnection(){
+        AWSCredentials credentials = new BasicAWSCredentials(amazonS3Configuration.getAccessKey(), amazonS3Configuration.getSecretKey());
+        AmazonS3 conn = new AmazonS3Client(credentials);
+        conn.setEndpoint(amazonS3Configuration.getEndPoint());
+        List&amp;lt;Bucket&amp;gt; buckets = conn.listBuckets();
+        LOGGER.info(&amp;quot;amazonS3 bucket list ==========================================&amp;quot;);
+        for (Bucket bucket : buckets) {
+            LOGGER.info(&amp;quot;amazonS3 bucket =========&amp;gt;&amp;quot;+bucket.getName() + &amp;quot;\t&amp;quot; +
+                    StringUtils.fromDate(bucket.getCreationDate()));
+        }
+        LOGGER.info(&amp;quot;================================================================&amp;quot;);
+        return conn;
+    }
+
+    //创建Bucket
+    public Bucket createBucket(String name){
+        return createConnection().createBucket(name);
+    }
+
+    //上传一个文件
+    public String uploadFileToBucket(MultipartFile multipartFile){
+        Snowflake snowflake = new Snowflake(1,1);
+        String key = snowflake.nextIdStr();
+        FileInputStream fileInputStream = null;
+        try {
+            fileInputStream = (FileInputStream) multipartFile.getInputStream();
+            createConnection().putObject(amazonS3Configuration.getBucket(),key,fileInputStream,new ObjectMetadata());
+            LOGGER.info(&amp;quot;上传文件&amp;quot;+key+&amp;quot;：&amp;quot;+multipartFile.getName()+ &amp;quot;到&amp;quot;+amazonS3Configuration.getBucket()+&amp;quot;成功！！！！&amp;quot;);
+            return key;
+        }catch (FileNotFoundException e){
+            LOGGER.info(&amp;quot;上传文件&amp;quot;+key+&amp;quot;：&amp;quot;+multipartFile.getName()+  &amp;quot;到&amp;quot;+amazonS3Configuration.getBucket()+&amp;quot;失败，文件未找到&amp;quot;);
+            return null;
+        }catch (IOException e){
+            e.printStackTrace();
+            return null;
+        }finally {
+            try {
+                if(fileInputStream != null){
+                    fileInputStream.close();
+                }
+            }catch (IOException e){
+                LOGGER.debug(&amp;quot;inputStream close IOException:&amp;quot; + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
+
+    //预览一个文件
+    public String reviewFileFromBucket(String key){
+        try {
+            if(StringUtils.isNullOrEmpty(key)){
+                return null;
+            }
+            GeneratePresignedUrlRequest httpRequest = new GeneratePresignedUrlRequest(amazonS3Configuration.getBucket(), key);
+            return createConnection().generatePresignedUrl(httpRequest).toString();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+">AmazonS3工具类</a>
+      </div>
       
       <div class="item">
         <a class="result-title" style="opacity: 0;" href="https://cm940324.github.io/post/design-study/"" data-c="

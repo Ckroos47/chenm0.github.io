@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://cm940324.github.io</id>
     <title>Oasis</title>
-    <updated>2021-05-09T09:22:50.709Z</updated>
+    <updated>2021-05-13T07:01:46.472Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://cm940324.github.io"/>
     <link rel="self" href="https://cm940324.github.io/atom.xml"/>
@@ -10,6 +10,92 @@
     <logo>https://cm940324.github.io/images/avatar.png</logo>
     <icon>https://cm940324.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, Oasis</rights>
+    <entry>
+        <title type="html"><![CDATA[AmazonS3工具类]]></title>
+        <id>https://cm940324.github.io/post/amazons3-gong-ju-lei/</id>
+        <link href="https://cm940324.github.io/post/amazons3-gong-ju-lei/">
+        </link>
+        <updated>2021-05-13T07:00:29.000Z</updated>
+        <content type="html"><![CDATA[<pre><code>/**
+ * @author chenmo
+ * @Date: Created in 2021/5/12 5:05 下午
+ * @Utils: Intellij Idea
+ * @Description: TODO
+ */
+@Component
+@RequiredArgsConstructor
+public class AmazonS3Operator {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AmazonS3Operator.class);
+
+    final AmazonS3Configuration amazonS3Configuration;
+
+    //创建链接
+    public AmazonS3 createConnection(){
+        AWSCredentials credentials = new BasicAWSCredentials(amazonS3Configuration.getAccessKey(), amazonS3Configuration.getSecretKey());
+        AmazonS3 conn = new AmazonS3Client(credentials);
+        conn.setEndpoint(amazonS3Configuration.getEndPoint());
+        List&lt;Bucket&gt; buckets = conn.listBuckets();
+        LOGGER.info(&quot;amazonS3 bucket list ==========================================&quot;);
+        for (Bucket bucket : buckets) {
+            LOGGER.info(&quot;amazonS3 bucket =========&gt;&quot;+bucket.getName() + &quot;\t&quot; +
+                    StringUtils.fromDate(bucket.getCreationDate()));
+        }
+        LOGGER.info(&quot;================================================================&quot;);
+        return conn;
+    }
+
+    //创建Bucket
+    public Bucket createBucket(String name){
+        return createConnection().createBucket(name);
+    }
+
+    //上传一个文件
+    public String uploadFileToBucket(MultipartFile multipartFile){
+        Snowflake snowflake = new Snowflake(1,1);
+        String key = snowflake.nextIdStr();
+        FileInputStream fileInputStream = null;
+        try {
+            fileInputStream = (FileInputStream) multipartFile.getInputStream();
+            createConnection().putObject(amazonS3Configuration.getBucket(),key,fileInputStream,new ObjectMetadata());
+            LOGGER.info(&quot;上传文件&quot;+key+&quot;：&quot;+multipartFile.getName()+ &quot;到&quot;+amazonS3Configuration.getBucket()+&quot;成功！！！！&quot;);
+            return key;
+        }catch (FileNotFoundException e){
+            LOGGER.info(&quot;上传文件&quot;+key+&quot;：&quot;+multipartFile.getName()+  &quot;到&quot;+amazonS3Configuration.getBucket()+&quot;失败，文件未找到&quot;);
+            return null;
+        }catch (IOException e){
+            e.printStackTrace();
+            return null;
+        }finally {
+            try {
+                if(fileInputStream != null){
+                    fileInputStream.close();
+                }
+            }catch (IOException e){
+                LOGGER.debug(&quot;inputStream close IOException:&quot; + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
+
+    //预览一个文件
+    public String reviewFileFromBucket(String key){
+        try {
+            if(StringUtils.isNullOrEmpty(key)){
+                return null;
+            }
+            GeneratePresignedUrlRequest httpRequest = new GeneratePresignedUrlRequest(amazonS3Configuration.getBucket(), key);
+            return createConnection().generatePresignedUrl(httpRequest).toString();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+}
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[设计模式的学习]]></title>
         <id>https://cm940324.github.io/post/design-study/</id>

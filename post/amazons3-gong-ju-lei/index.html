@@ -8,7 +8,7 @@
 <meta name="keywords" content="个人博客">
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
-<title>关于 | Oasis</title>
+<title>AmazonS3工具类 | Oasis</title>
 <link rel="shortcut icon" href="/favicon.ico?v=1620889301787">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
@@ -38,7 +38,7 @@
 
 
 
-  <meta name="description" content="关于" />
+  <meta name="description" content="AmazonS3工具类" />
   <meta name="keywords" content="" />
 </head>
 
@@ -331,38 +331,32 @@
           <div class="section bg-color post post-page">
             <section class="post-header">
   <h1 class="post-title">
-    <a class="post-title-link" href="https://cm940324.github.io/post/about/">
-      关于
+    <a class="post-title-link" href="https://cm940324.github.io/post/amazons3-gong-ju-lei/">
+      AmazonS3工具类
     </a>
   </h1>
   <div class="post-meta">
     
-    <span class="meta-item">
-      <i class="fa fa-thumb-tack"></i>
-      <span class="language" data-lan="top">置顶</span>
-      <span class="post-meta-divider">|</span>
-    </span>
-    
     <span class="meta-item pc-show">
       <i class="fa fa-calendar-o"></i>
       <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2019-01-25 19:09:48">2019-01-25</span>
+      <span class="publish-time" data-t="2021-05-13 15:00:29">2021-05-13</span>
       <span class="post-meta-divider pc-show">|</span>
     </span>
     
     <span class="meta-item">
       <i class="fa fa-clock-o"></i>
-      <span>1<span class="language" data-lan="minute">分钟</span></span>
+      <span>2<span class="language" data-lan="minute">分钟</span></span>
     </span>
     <span class="meta-item">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-file-word-o"></i>
-      <span>2<span class="pc-show language" data-lan="words">字数</span></span>
+      <span>268<span class="pc-show language" data-lan="words">字数</span></span>
     </span>
     
     
     
-    <span id="/post/about/" data-flag-title="关于" class="meta-item pc-show leancloud_visitors">
+    <span id="/post/amazons3-gong-ju-lei/" data-flag-title="AmazonS3工具类" class="meta-item pc-show leancloud_visitors">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-eye"></i>
       <span><span class="language" data-lan="view">浏览量</span>：<span class="leancloud-visitors-count"></span></span>
@@ -371,11 +365,119 @@
   </div>
 </section>
             <div class="post-body next-md-body" id="post_body">
-              <p><img src="https://cm940324.github.io/post-images/1618881224746.jpeg" alt="" loading="lazy"><br>
-JAVA PROGRAMMER👨‍💻</p>
+              <pre><code>/**
+ * @author chenmo
+ * @Date: Created in 2021/5/12 5:05 下午
+ * @Utils: Intellij Idea
+ * @Description: TODO
+ */
+@Component
+@RequiredArgsConstructor
+public class AmazonS3Operator {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AmazonS3Operator.class);
+
+    final AmazonS3Configuration amazonS3Configuration;
+
+    //创建链接
+    public AmazonS3 createConnection(){
+        AWSCredentials credentials = new BasicAWSCredentials(amazonS3Configuration.getAccessKey(), amazonS3Configuration.getSecretKey());
+        AmazonS3 conn = new AmazonS3Client(credentials);
+        conn.setEndpoint(amazonS3Configuration.getEndPoint());
+        List&lt;Bucket&gt; buckets = conn.listBuckets();
+        LOGGER.info(&quot;amazonS3 bucket list ==========================================&quot;);
+        for (Bucket bucket : buckets) {
+            LOGGER.info(&quot;amazonS3 bucket =========&gt;&quot;+bucket.getName() + &quot;\t&quot; +
+                    StringUtils.fromDate(bucket.getCreationDate()));
+        }
+        LOGGER.info(&quot;================================================================&quot;);
+        return conn;
+    }
+
+    //创建Bucket
+    public Bucket createBucket(String name){
+        return createConnection().createBucket(name);
+    }
+
+    //上传一个文件
+    public String uploadFileToBucket(MultipartFile multipartFile){
+        Snowflake snowflake = new Snowflake(1,1);
+        String key = snowflake.nextIdStr();
+        FileInputStream fileInputStream = null;
+        try {
+            fileInputStream = (FileInputStream) multipartFile.getInputStream();
+            createConnection().putObject(amazonS3Configuration.getBucket(),key,fileInputStream,new ObjectMetadata());
+            LOGGER.info(&quot;上传文件&quot;+key+&quot;：&quot;+multipartFile.getName()+ &quot;到&quot;+amazonS3Configuration.getBucket()+&quot;成功！！！！&quot;);
+            return key;
+        }catch (FileNotFoundException e){
+            LOGGER.info(&quot;上传文件&quot;+key+&quot;：&quot;+multipartFile.getName()+  &quot;到&quot;+amazonS3Configuration.getBucket()+&quot;失败，文件未找到&quot;);
+            return null;
+        }catch (IOException e){
+            e.printStackTrace();
+            return null;
+        }finally {
+            try {
+                if(fileInputStream != null){
+                    fileInputStream.close();
+                }
+            }catch (IOException e){
+                LOGGER.debug(&quot;inputStream close IOException:&quot; + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
+
+    //预览一个文件
+    public String reviewFileFromBucket(String key){
+        try {
+            if(StringUtils.isNullOrEmpty(key)){
+                return null;
+            }
+            GeneratePresignedUrlRequest httpRequest = new GeneratePresignedUrlRequest(amazonS3Configuration.getBucket(), key);
+            return createConnection().generatePresignedUrl(httpRequest).toString();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+}
+</code></pre>
 
             </div>
             
+            
+              <div class="post-footer">
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong class="language" data-lan="author">本文作者：</strong>
+      陈陌
+    </li>
+    <li class="post-copyright-link">
+      <strong class="language" data-lan="link">本文链接：</strong>
+      <a href="https://cm940324.github.io/post/amazons3-gong-ju-lei/" title="AmazonS3工具类">https://cm940324.github.io/post/amazons3-gong-ju-lei/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong class="language" data-lan="copyright">版权声明： </strong>
+      本博客所有文章除特别声明外，均采用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i> BY-NC-SA</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+  <div class="tags">
+    
+  </div>
+  <div class="nav">
+    <div class="nav-prev">
+      
+    </div>
+    <div class="nav-next">
+      
+        <a class="nav-pc-next" title="设计模式的学习" href="https://cm940324.github.io/post/design-study/">设计模式的学习</a>
+        <a class="nav-mobile-next" title="设计模式的学习" href="https://cm940324.github.io/post/design-study/">下一篇</a>
+        <i class="fa fa-chevron-right"></i>
+      
+    </div>
+  </div>
+</div>
             
             
   
