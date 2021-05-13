@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://cm940324.github.io</id>
     <title>Oasis</title>
-    <updated>2021-05-13T07:01:46.472Z</updated>
+    <updated>2021-05-13T07:02:06.163Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://cm940324.github.io"/>
     <link rel="self" href="https://cm940324.github.io/atom.xml"/>
@@ -12,8 +12,8 @@
     <rights>All rights reserved 2021, Oasis</rights>
     <entry>
         <title type="html"><![CDATA[AmazonS3工具类]]></title>
-        <id>https://cm940324.github.io/post/amazons3-gong-ju-lei/</id>
-        <link href="https://cm940324.github.io/post/amazons3-gong-ju-lei/">
+        <id>https://cm940324.github.io/post/amazons3-util/</id>
+        <link href="https://cm940324.github.io/post/amazons3-util/">
         </link>
         <updated>2021-05-13T07:00:29.000Z</updated>
         <content type="html"><![CDATA[<pre><code>/**
