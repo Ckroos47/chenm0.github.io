@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://cm940324.github.io</id>
     <title>Oasis</title>
-    <updated>2021-05-21T07:08:23.928Z</updated>
+    <updated>2021-05-21T09:13:15.515Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://cm940324.github.io"/>
     <link rel="self" href="https://cm940324.github.io/atom.xml"/>
@@ -10,6 +10,161 @@
     <logo>https://cm940324.github.io/images/avatar.png</logo>
     <icon>https://cm940324.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, Oasis</rights>
+    <entry>
+        <title type="html"><![CDATA[Thymeleaf常用属性]]></title>
+        <id>https://cm940324.github.io/post/thymeleaf/</id>
+        <link href="https://cm940324.github.io/post/thymeleaf/">
+        </link>
+        <updated>2021-05-21T09:12:09.000Z</updated>
+        <content type="html"><![CDATA[<p>如需了解Thymeleaf 基本表达式，请参考《<a href="http://www.cnblogs.com/hjwublog/p/5051632.html">Thymeleaf </a><a href="http://www.cnblogs.com/hjwublog/p/5051632.html">基本表达式</a>》一文</p>
+<h1 id="thaction"><strong>th:action</strong></h1>
+<p>定义后台控制器路径，类似<form>标签的action属性。</p>
+<p>例如：</p>
+<pre><code>&lt;form id=&quot;login-form&quot; th:action=&quot;@{/login}&quot;&gt;...&lt;/form&gt;
+</code></pre>
+<h1 id="theach"><strong>th:each</strong></h1>
+<p>对象遍历，功能类似jstl中的&lt;c:forEach&gt;标签。</p>
+<p>例如：</p>
+<pre><code>public class StudentRequestBean {
+
+private List&lt;Student&gt; students;
+
+...
+
+}
+
+public class Student implements Serializable{
+
+private String firstName;
+
+private String school;
+
+...}
+
+@RequestMapping(value = &quot;/addStudent&quot;, method = RequestMethod.POST)
+
+public String addStudent(@ModelAttribute(value = &quot;stuReqBean&quot;) 
+
+StudentRequestBean stuReqBean，ModelMap model) {...}
+</code></pre>
+<form id="login-form" th:action="@{/addStudent}" 
+```
+th:object="${stuReqBean}" method="POST">
+<div class="student" th:each="stuIter,rowStat:${stuReqBean.students}">
+<p>&lt;input type=&quot;text&quot; class=&quot;firstName&quot; value=&quot;&quot;</p>
+<p>th:field=&quot;*{students[<strong>${rowStat.index}</strong>].firstName}&quot;&gt;</input></p>
+<p>&lt;input type=&quot;text&quot; class=&quot;school&quot; value=&quot;&quot;</p>
+<p>th:field=&quot;*{students[<strong>${rowStat.index}</strong>].school}&quot;&gt;</input></p>
+<p>...</p>
+</div>
+</form>
+```
+<p>上面的例子中通过选择表达式*{}既能将表单绑定到后台的StudentRequestBean中的集合属性students，也能将Servlet上下文中的StudentRequestBean中的List类型的students变量回显，回显时通过th:each进行遍历。</p>
+<p>注意1：绑定集合属性元素下标的用法*{students[<strong>${rowStat.index}</strong>].firstName}</p>
+<p>注意2：如果List<Student> students为null，页面将无法显示表单，后台必须给students初始化一个值，即:</p>
+<pre><code>List&lt;Student &gt; stus = new ArrayList&lt;Student &gt;();
+
+stus .add(new Student ());
+
+StudentRequestBean.setStudents(stus );
+</code></pre>
+<p>注意3：stuIter代表students的迭代器</p>
+<h1 id="thfield"><strong>th:field</strong></h1>
+<p>常用于表单字段绑定。通常与th:object一起使用。 属性绑定、集合绑定。</p>
+<p>如：</p>
+<pre><code>public class LoginBean implements Serializable{...
+
+private String username;
+
+private List&lt;User&gt; user;
+
+...}
+
+
+public class User implements Serializable{...
+
+private String username;;
+
+...}
+
+
+@RequestMapping(value = &quot;/login&quot;, method = RequestMethod.POST)
+
+public String login(@ModelAttribute(value = &quot;loginBean&quot;) LoginBean loginBean，ModelMap model) {..}
+</code></pre>
+<pre><code>&lt;form id=&quot;login-form&quot; th:action=&quot;@{/login}&quot; th:object=&quot;${loginBean}&quot;&gt;...
+
+&lt;input type=&quot;text&quot; value=&quot;&quot; th:field=&quot;*{username}&quot;&gt;&lt;/input&gt;
+
+&lt;input type=&quot;text&quot; value=&quot;&quot; th:field=&quot;*{user[0].username}&quot;&gt;&lt;/input&gt;
+
+&lt;/form&gt;
+</code></pre>
+<h1 id="thhref"><strong>th:href</strong></h1>
+<p>定义超链接，类似<a>标签的href 属性。value形式为@{/logout}</p>
+<p>例如：</p>
+<pre><code>&lt;a th:href=&quot;@{/logout}&quot; class=&quot;signOut&quot;&gt;&lt;/a&gt;
+</code></pre>
+<h1 id="thid"><strong>th:id</strong></h1>
+<p>div id声明，类似html标签中的id属性。</p>
+<p>例如：</p>
+<pre><code>&lt;div class=&quot;student&quot; th:id = &quot;stu+(${rowStat.index}+1)&quot;&gt;&lt;/div&gt;
+</code></pre>
+<h1 id="thif"><strong>th:if</strong></h1>
+<p>条件判断。</p>
+<p>例如：</p>
+<pre><code>&lt;div th:if=&quot;${rowStat.index} == 0&quot;&gt;... do something ...&lt;/div&gt;
+</code></pre>
+<h1 id="thinclude"><strong>th:include</strong></h1>
+<p>见th:fragment</p>
+<h1 id="thfragment"><strong>th:fragment</strong></h1>
+<p>声明定义该属性的div为模板片段，常用与头文件、页尾文件的引入。常与th:include，th:replace一起使用。</p>
+<p>例如：</p>
+<p>声明模板片段/WEBINF/templates/footer. html</p>
+<pre><code>&lt;div th: fragment=&quot; copy&quot; &gt;
+
+© 2011 The Good Thymes Virtual Grocery
+
+&lt;/div&gt;
+</code></pre>
+<p>引入模板片段</p>
+<pre><code>&lt;div th: include=&quot; /templates/footer : : copy&quot; &gt;&lt;/div&gt;
+
+&lt;div th: replace=&quot; /templates/footer : : copy&quot; &gt;&lt;/div&gt;
+</code></pre>
+<h1 id="thobject"><strong>th:object</strong></h1>
+<p>用于表单数据对象绑定，将表单绑定到后台controller的一个JavaBean参数。常与th:field一起使用进行表单数据绑定。</p>
+<p>例如：</p>
+<pre><code>public class LoginBean implements Serializable{...}
+
+
+@RequestMapping(value = &quot;/login&quot;, method = RequestMethod.POST)
+
+public String login(@ModelAttribute(value = &quot;loginBean&quot;) LoginBean loginBean，ModelMap model) {...}
+</code></pre>
+<pre><code>&lt;form id=&quot;login-form&quot; th:action=&quot;@{/login}&quot; th:object=&quot;${loginBean}&quot;&gt;...&lt;/form&gt;
+</code></pre>
+<h1 id="thsrc"><strong>th:src</strong></h1>
+<p>用于外部资源引入，类似于<script>标签的src属性，常与@{}一起使用。</p>
+<p>例如：</p>
+<pre><code>&lt;script th:src=&quot;@{/resources/js/jquery/jquery.json-2.4.min.js}&quot;
+</code></pre>
+<h1 id="threplace"><strong>th:replace</strong></h1>
+<p>见th:fragment</p>
+<h1 id="thtext"><strong>th:text</strong></h1>
+<p>文本显示。</p>
+<p>例如：</p>
+<pre><code>&lt;td class=&quot;text&quot; th:text=&quot;${username}&quot; &gt;&lt;/td&gt;
+</code></pre>
+<h1 id="thvalue"><strong>th:value</strong></h1>
+<p>用于标签复制，类似<option>标签的value属性。</p>
+<p>例如:</p>
+<pre><code>&lt;option th:value=&quot;Adult&quot;&gt;Adult&lt;/option&gt;
+
+&lt;input  id=&quot;msg&quot; type=&quot;hidden&quot; th:value=&quot;${msg}&quot; /&gt;
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[搭建内容管理系统CMS（1）：如何支持内容生产？]]></title>
         <id>https://cm940324.github.io/post/cms1/</id>
@@ -1398,16 +1553,6 @@ InnoDB：事务处理，以及并发条件下要求数据的一致性。除了�
 <p>对于某些文本字段，例如“省份”或者“性别”，我们可以将它们定义为ENUM类型。因为在MySQL中，ENUM类型被当作数值型数据来处理，而数值型数据被处理起来的速度要比文本类型快得多。这样，我们又可以提高数据库的性能。</p>
 <p>51、字符串数据类型：char，varchar，text选择区别。</p>
 <p>52、任何对列的操作都将导致表扫描，它包括数据库函数、计算表达式等等，查询时要尽可能将操作移至等号右边。</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[关于]]></title>
-        <id>https://cm940324.github.io/post/about/</id>
-        <link href="https://cm940324.github.io/post/about/">
-        </link>
-        <updated>2019-01-25T11:09:48.000Z</updated>
-        <content type="html"><![CDATA[<p><img src="https://cm940324.github.io/post-images/1618881224746.jpeg" alt="" loading="lazy"><br>
-JAVA PROGRAMMER👨‍💻</p>
 ]]></content>
     </entry>
 </feed>
