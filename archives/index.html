@@ -9,7 +9,7 @@
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
 <title>Oasis</title>
-<link rel="shortcut icon" href="/favicon.ico?v=1620889536523">
+<link rel="shortcut icon" href="/favicon.ico?v=1621580873359">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
 <link
@@ -191,19 +191,19 @@
     <div class="sidebar-item-box">
       <a href="/archives/">
         
-        <span class="site-item-stat-count">9</span>
+        <span class="site-item-stat-count">10</span>
         <span class="site-item-stat-name language" data-lan="article">文章</span>
       </a>
     </div>
     <div class="sidebar-item-box">
       <a href="">
-        <span class="site-item-stat-count">5</span>
+        <span class="site-item-stat-count">6</span>
         <span class="site-item-stat-name language" data-lan="category">分类</span>
       </a>
     </div>
     <div class="sidebar-item-box">
       <a href="/tags/">
-        <span class="site-item-stat-count">5</span>
+        <span class="site-item-stat-count">6</span>
         <span class="site-item-stat-name language" data-lan="tag">标签</span>
       </a>
     </div>
@@ -251,7 +251,7 @@
   <div class="archive-timeline-box">
     <div class="archive-timeline-title">
       
-        <h2 class="language" data-lan="archives" data-count="9">非常好！目前共计9篇日志，继续努力！</h2>
+        <h2 class="language" data-lan="archives" data-count="10">非常好！目前共计10篇日志，继续努力！</h2>
       
     </div>
     
@@ -261,6 +261,19 @@
           <h2 class="tag-year">2021</h2>
         </div>    
         
+      
+      <a href="https://cm940324.github.io/post/cms1/">
+        <div class="motion-warpper tag-archive-node">
+          <div class="tag-node">
+            <h1>
+              05-21
+              <small>搭建内容管理系统CMS（1）：如何支持内容生产？</small>
+            </h1>
+          </div>  
+      </div>
+      </a>
+    
+      
       
       <a href="https://cm940324.github.io/post/amazons3-util/">
         <div class="motion-warpper tag-archive-node">
@@ -1162,6 +1175,145 @@
       <hr>
     </div>
     <div class="result" id="result">
+      
+      <div class="item">
+        <a class="result-title" style="opacity: 0;" href="https://cm940324.github.io/post/cms1/"" data-c="
+          &lt;pre&gt;&lt;code&gt;内容管理系统是一种位于WEB 前端（Web 服务器）和后端办公系统或流程（内容创作、编辑）之间的软件系统，本文是对于内容管理系统CMS在内容生产环节的总结与分享。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;*关于CMS内容管理系统：*&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;内容管理系统（content management system，CMS）是一种位于WEB 前端（Web 服务器）和后端办公系统或流程（内容创作、编辑）之间的软件系统。&lt;/p&gt;
+&lt;p&gt;“内容”是任何类型的数字信息，可以是文本、图形图像、Web页面、业务文档、数据库表单、视频、声音、XML文件等。&lt;/p&gt;
+&lt;h3 id=&#34;1-关于cms搭建的思考&#34;&gt;1. 关于CMS搭建的思考&lt;/h3&gt;
+&lt;p&gt;通常，设计一个产品之前，我们需要思考以下几个基本的问题：&lt;/p&gt;
+&lt;p&gt;**产品目标：**我们希望通过这个产品得到什么？&lt;/p&gt;
+&lt;p&gt;——这决定我们要做成一个什么类型的产品&lt;/p&gt;
+&lt;p&gt;**目标用户：**产品面向的目标用户具有什么特征？&lt;/p&gt;
+&lt;p&gt;——这决定我们去哪找什么样的用户&lt;/p&gt;
+&lt;p&gt;**用户需求：**我们的用户希望通过这个产品得到什么？&lt;/p&gt;
+&lt;p&gt;——这决定我们要设计哪些功能模块&lt;/p&gt;
+&lt;p&gt;**场景动机：**我们的用户在什么样的场景下会有使用产品的动机？&lt;/p&gt;
+&lt;p&gt;——这决定我们要怎么设计产品&lt;/p&gt;
+&lt;p&gt;**标准指标：**想法正确、方案合理、市场匹配的标准/指标是什么？&lt;/p&gt;
+&lt;p&gt;——这决定我们的目标是否达成&lt;/p&gt;
+&lt;p&gt;我们需要思考和梳理的内容，可概括为3点：对象、痛点、解决方案。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;对象：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;内容的生产人员，例：运营、用户（由用户端满足需求）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;内容的审核人员，例：运营、客服&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;内容的推广人员，例：运营、用户（由用户端满足需求）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;相互作用的系统，例：过滤系统、推荐系统&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;痛点：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;运营：高效地完成内容生产、便捷地审核用户推荐、特定需求的人工推荐、推荐系统的精准度优化、及时直观地获取到内容运营的数据情况；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;客服：便捷地审核用户举报、问题用户的管理、推荐系统的精准度优化；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;过滤系统：对内容完成智能过滤；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;推荐系统：对内容完成智能推荐。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;解决方案：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;运营：好用的内容编辑、修改和发布工具；待审核的处理工作台；人工推荐配置支持、推荐系统的运作情况；内容运营数据的可视化呈现；&lt;/li&gt;
+&lt;li&gt;客服：待审核的处理工作台；用户标记管理、过滤系统的运作情况；&lt;/li&gt;
+&lt;li&gt;过滤系统：系统的搭建和持续优化方案；&lt;/li&gt;
+&lt;li&gt;推荐系统：系统的搭建和持续优化方案。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure data-type=&#34;image&#34; tabindex=&#34;1&#34;&gt;&lt;img src=&#34;https://cm940324.github.io/post-images/1621580833843.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34;&gt;&lt;/figure&gt;
+&lt;h3 id=&#34;2-内容的生产来源&#34;&gt;2. 内容的生产(来源)&lt;/h3&gt;
+&lt;p&gt;CMS内容管理系统，从字面意思就能知道，管理的对象是“内容”，而“内容”的具体类型是什么、“管理”的具体范畴是什么，这些都是要依据具体的业务而定。&lt;/p&gt;
+&lt;p&gt;得有内容才有管理，没内容谈何管理呢？那问题来了，内容从哪里来呢？来源都有哪些？&lt;/p&gt;
+&lt;h4 id=&#34;21-常见的内容生产模式&#34;&gt;2.1 常见的内容生产模式&lt;/h4&gt;
+&lt;p&gt;介绍一下常见的内容生产模式，有以下三种：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;UGC模式：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;全称：user generated content。即：用户输出内容。&lt;/li&gt;
+&lt;li&gt;产品代表：小红书。主要通过激励用户生产内容，形成社区氛围。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;PGC模式：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;全称：professionally generated content。即：专业输出内容。&lt;/li&gt;
+&lt;li&gt;产品代表：知乎。主要通过专业人员生产内容，提供给用户消费。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;OGC模式：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;全称：occupationally generated content。即：职业输出内容。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;产品代表：新闻资讯类。主要通过具有一定知识和专业背景的行业人士生产内容，并领取相应报酬。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;三者之间的区别：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;UGC与PGC的区别：生产内容的人有无专业知识、资质；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;PGC与OGC的区别：生产内容的人是否以此为职业，获得对应的报酬。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;往往PGC模式的内容生产者，也是产品的用户，还可能是种子用户、忠诚用户、意见领袖。&lt;/p&gt;
+&lt;p&gt;综上，我们可以将内容的来源分成4种：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;用户生产（UGC&amp;amp;PGC）&lt;/li&gt;
+&lt;li&gt;运营生产（OGC）&lt;/li&gt;
+&lt;li&gt;技术爬取（通过技术手段去爬取内容）&lt;/li&gt;
+&lt;li&gt;授权使用（以付费的形式购买内容版权）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;其中：用户生产内容的产品支持，可由用户端的产品设计来满足。&lt;/p&gt;
+&lt;p&gt;技术爬取和授权使用，在需求明确的前提下，主要是由技术人员来实现和对接。&lt;/p&gt;
+&lt;p&gt;如果存在与多家平台有版权内容的授权对接工作，那建议可开发统一的内容接入接口。不同的版权内容平台，可能对接的方式有着大大小小的差异，这里可能涉及到一定的开发工作量。作为一名尽职的B端产品经理，本着为公司降本（降低开发成本）提效（提高版本效率）的一贯原则，最理想的状态是把统一的接口文档一发，就能把部分的开发工作量给转移了出去。但现实往往都是很骨感的，如果对方是“爸爸”，愿意把内容的版权给你就已经很难得了，那还是得乖乖自个儿开发接入。&lt;/p&gt;
+&lt;p&gt;以过来人的经验（踩过坑的那种），这部分的工作不要过分依赖开发，由其独自对接完成，需要加入必要的管理和规划，以免重复低效的工作占用太多的开发资源，或是人员离职变动带来的麻烦。至于价值、重要程度和优先级，需依据自己的项目、产品和团队情况，具体评估。&lt;/p&gt;
+&lt;p&gt;而内容管理系统（CMS）在生产环节主要服务的对象是负责内容生产的运营小伙伴。&lt;/p&gt;
+&lt;p&gt;一般情况下，内容运营除了管理官方账号外，可能同时还在运营着多个个人账号，如果运营同事也是依靠用户端来完成内容发布的工作，那就会存在频繁切换登录不同账号的麻烦。而切换登录这个需求对于普通用户可能根本就不存在。&lt;/p&gt;
+&lt;p&gt;除此之外，内容运营还存在用户需求之上的发布需求，比如可以预设定时发布等等。&lt;/p&gt;
+&lt;h4 id=&#34;22-cms在生产环节的需求点&#34;&gt;2.2 CMS在生产环节的需求点&lt;/h4&gt;
+&lt;p&gt;总结一下，内容管理系统（CMS）在生产环节的需求概要有：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;账号关联：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;和CMS系统账号关联，支持系统账号和运营账号一对多的关系；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;使用CMS系统发布内容时候，可选择对应的运营账号；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;支持运营账号解除绑定或转移，以便应对人员调整或离职的变动。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;生产工具：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;提供便捷、好用的编辑功能；&lt;/li&gt;
+&lt;li&gt;支持效果预览；&lt;/li&gt;
+&lt;li&gt;可保存草稿。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;**素材管理：**如果对素材的复用度较高，可考虑增加素材管理，同时也方便随时随地有台电脑登录系统就能开展工作，避免素材要用起来才发现保存在某台电脑本地的尴尬。&lt;/p&gt;
+&lt;p&gt;**模板管理：**如果对特定内容的排版呈现有统一的要求，例如“每日推荐”等，只需要替换具体内容和素材即可，则可以增加模板管理，为运营减免重复不必要的排版布局工作。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;预设时间发布：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;内容通常都是提前就会准备好的，尤其是针对一些节日主题或活动营销的内容，会提前思考、撰写，并对更新的节奏做好规划排期（就像产品经理做版本规划一样）。&lt;/li&gt;
+&lt;li&gt;如果有提供定时发布功能，那负责内容运营的同事就可以集中时间一次性地把准备好的内容提前设置好发布时间，使其更合理的安排工作时间和实施内容计划，提高工作效率。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;早期的版本，可仅提供基本的、必要的管理、编辑和发布功能，保证内容运营的顺利生产。而更能提高效率的工具和功能，则可与运营部门确认整体的内容工作规划，在不同的时期配合新增上线。&lt;/p&gt;
+&lt;p&gt;具体的功能设计可参考：微信公众平台、秀米编辑器、365编辑器。&lt;/p&gt;
+&lt;p&gt;以上，就是对于内容管理系统CMS在内容生产环节的总结与分享。后面，还会有CMS在内容过滤、内容呈现和内容举报环节的文章更新。&lt;/p&gt;
+">搭建内容管理系统CMS（1）：如何支持内容生产？</a>
+      </div>
       
       <div class="item">
         <a class="result-title" style="opacity: 0;" href="https://cm940324.github.io/post/amazons3-util/"" data-c="
