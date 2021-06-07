@@ -9,7 +9,7 @@
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
 <title>关于 | Oasis</title>
-<link rel="shortcut icon" href="/favicon.ico?v=1622701610835">
+<link rel="shortcut icon" href="/favicon.ico?v=1623047513426">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
 <link
@@ -207,19 +207,19 @@
     <div class="sidebar-item-box">
       <a href="/archives/">
         
-        <span class="site-item-stat-count">13</span>
+        <span class="site-item-stat-count">14</span>
         <span class="site-item-stat-name language" data-lan="article">文章</span>
       </a>
     </div>
     <div class="sidebar-item-box">
       <a href="">
-        <span class="site-item-stat-count">7</span>
+        <span class="site-item-stat-count">8</span>
         <span class="site-item-stat-name language" data-lan="category">分类</span>
       </a>
     </div>
     <div class="sidebar-item-box">
       <a href="/tags/">
-        <span class="site-item-stat-count">7</span>
+        <span class="site-item-stat-count">8</span>
         <span class="site-item-stat-name language" data-lan="tag">标签</span>
       </a>
     </div>
@@ -1358,6 +1358,25 @@ JAVA PROGRAMMER👨‍💻</p>
       <hr>
     </div>
     <div class="result" id="result">
+      
+      <div class="item">
+        <a class="result-title" style="opacity: 0;" href="https://cm940324.github.io/post/hibernate-cascadetype/"" data-c="
+          &lt;h3 id=&#34;cascade属性-指定级联操作的行为可多选&#34;&gt;cascade属性： 指定级联操作的行为(可多选)&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;CascadeType.PERSIST 级联新增（又称级联保存）：&lt;/strong&gt;&lt;br&gt;
+获取A对象里也同时也重新获取最新的B时的对象。即会重新查询数据库里的最新数据，并且，只有A类新增时，会级联B对象新增。若B对象在数据库存（跟新）在则抛异常（让B变为持久态），对应EntityManager的presist方法,调用JPA规范中的persist()，不适用于Hibernate的save()方法&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;CascadeType.MERGE 级联合并（又称级联更新）&lt;/strong&gt;&lt;br&gt;
+指A类新增或者变化，会级联B对象（新增或者变化） ，对应EntityManager的merge方法，调用JPA规范中merge()时，不适用于Hibernate的update()方法&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;CascadeType.REMOVE 级联删除&lt;/strong&gt;&lt;br&gt;
+只有A类删除时，会级联删除B类,即在设置的那一端进行删除时，另一端才会级联删除，对应EntityManager的remove方法，调用JPA规范中的remove()时，适用于Hibernate的delete()方法&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;CascadeType.REFRESH 级联刷新&lt;/strong&gt;&lt;br&gt;
+获取order（一或多）对象里也同时也重新获取最新的items（多）的对象，对应EntityManager的refresh(object)，调用JPA规范中的refresh()时，适用于Hibernate的flush()方法&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;CascadeType.ALL&lt;/strong&gt;&lt;br&gt;
+包含所有持久化方法&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;综上：大多数情况用CascadeType.MERGE就能达到级联跟新又不报错，用CascadeType.ALL时要斟酌下CascadeType.REMOVE&lt;/strong&gt;&lt;/p&gt;
+">hibernate CascadeType属性说明</a>
+      </div>
       
       <div class="item">
         <a class="result-title" style="opacity: 0;" href="https://cm940324.github.io/post/postgresql-ques/"" data-c="

@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://cm940324.github.io</id>
     <title>Oasis</title>
-    <updated>2021-06-03T06:40:56.593Z</updated>
+    <updated>2021-06-07T06:31:57.789Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://cm940324.github.io"/>
     <link rel="self" href="https://cm940324.github.io/atom.xml"/>
@@ -10,6 +10,28 @@
     <logo>https://cm940324.github.io/images/avatar.png</logo>
     <icon>https://cm940324.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, Oasis</rights>
+    <entry>
+        <title type="html"><![CDATA[hibernate CascadeType属性说明]]></title>
+        <id>https://cm940324.github.io/post/hibernate-cascadetype/</id>
+        <link href="https://cm940324.github.io/post/hibernate-cascadetype/">
+        </link>
+        <updated>2021-06-07T06:31:17.000Z</updated>
+        <content type="html"><![CDATA[<h3 id="cascade属性-指定级联操作的行为可多选">cascade属性： 指定级联操作的行为(可多选)</h3>
+<ul>
+<li><strong>CascadeType.PERSIST 级联新增（又称级联保存）：</strong><br>
+获取A对象里也同时也重新获取最新的B时的对象。即会重新查询数据库里的最新数据，并且，只有A类新增时，会级联B对象新增。若B对象在数据库存（跟新）在则抛异常（让B变为持久态），对应EntityManager的presist方法,调用JPA规范中的persist()，不适用于Hibernate的save()方法</li>
+<li><strong>CascadeType.MERGE 级联合并（又称级联更新）</strong><br>
+指A类新增或者变化，会级联B对象（新增或者变化） ，对应EntityManager的merge方法，调用JPA规范中merge()时，不适用于Hibernate的update()方法</li>
+<li><strong>CascadeType.REMOVE 级联删除</strong><br>
+只有A类删除时，会级联删除B类,即在设置的那一端进行删除时，另一端才会级联删除，对应EntityManager的remove方法，调用JPA规范中的remove()时，适用于Hibernate的delete()方法</li>
+<li><strong>CascadeType.REFRESH 级联刷新</strong><br>
+获取order（一或多）对象里也同时也重新获取最新的items（多）的对象，对应EntityManager的refresh(object)，调用JPA规范中的refresh()时，适用于Hibernate的flush()方法</li>
+<li><strong>CascadeType.ALL</strong><br>
+包含所有持久化方法</li>
+</ul>
+<p><strong>综上：大多数情况用CascadeType.MERGE就能达到级联跟新又不报错，用CascadeType.ALL时要斟酌下CascadeType.REMOVE</strong></p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[PostgreSQL踩坑记录]]></title>
         <id>https://cm940324.github.io/post/postgresql-ques/</id>
@@ -1113,252 +1135,6 @@ public void whenEmptyStream_thenReturnDefaultOptional() {
 <p>它也是精心设计，自然融入 Java 8 函数式支持的功能。</p>
 <p>总的来说，这个简单而强大的类有助于创建简单、可读性更强、比对应程序错误更少的程序。</p>
 <p>转自 https://www.cnblogs.com/zhangboyu/p/7580262.html</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Spring Data REST 快速构建 restful api 应用]]></title>
-        <id>https://cm940324.github.io/post/spring-data-rest/</id>
-        <link href="https://cm940324.github.io/post/spring-data-rest/">
-        </link>
-        <updated>2021-04-22T06:00:24.000Z</updated>
-        <content type="html"><![CDATA[<h3 id="什么是spring-data-rest">什么是Spring Data REST</h3>
-<blockquote>
-<p>​		Spring Data REST是基于Spring Data的repository之上，可以把 repository 自动输出为REST资源，目前支持Spring Data JPA、Spring Data <a href="https://cloud.tencent.com/product/mongodb?from=10680">MongoDB</a>、Spring Data Neo4j、Spring Data GemFire、Spring Data Cassandra的 repository 自动转换成REST服务。注意是自动。简单点说，Spring Data REST把我们需要编写的大量REST模版接口做了自动化实现.</p>
-</blockquote>
-<h3 id="restful-api">restful api</h3>
-<p>​		REST是一种设计风格(与具体的语言无关)，它的URL主体是资源，是个名词。而且也仅支持HTTP协议，规定了使用HTTP Method表达本次要做的动作，类型一般也不超过那四五种。这些动作表达了对资源仅有的几种转化方式。</p>
-<p>​		常用的HTTP动词有下面五个（括号里是对应的SQL命令）。</p>
-<ul>
-<li>GET（SELECT）：从服务器取出资源（一项或多项）</li>
-<li>POST（CREATE）：在服务器新建一个资源。</li>
-<li>PUT（UPDATE）：在服务器更新资源（客户端提供改变后的完整资源）。</li>
-<li>PATCH（UPDATE）：在服务器更新资源（客户端提供改变的属性）。</li>
-<li>DELETE（DELETE）：从服务器删除资源。</li>
-<li>HEAD：获取资源的元数据。</li>
-<li>OPTIONS：获取信息，关于资源的哪些属性是客户端可以改变的。</li>
-</ul>
-<h3 id="实现">实现</h3>
-<h4 id="添加依赖">添加依赖</h4>
-<pre><code class="language-javascript">&lt;dependency&gt;
-    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-    &lt;artifactId&gt;spring-boot-starter-data-rest&lt;/artifactId&gt;
-&lt;/dependency&gt;
-</code></pre>
-<h4 id="定义domain">定义domain</h4>
-<pre><code class="language-javascript">package com.zyndev.springdatarestdemo.domain;
-
-import lombok.Data;
-
-import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Date;
-
-
-@Data
-@Entity
-@Table(name = &quot;tb_user&quot;)
-public class User implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;            // 用户id
-    private String userName;    // 用户名称
-    private String password;    // 用户密码
-    private Integer active;     // 是否可用
-    private Date lastLoginTime; // 最后登录时间
-    private Date createTime;    // 账户创建时间
-    private Date updateTime;    // 最后更新时间
-}
-</code></pre>
-<h4 id="定义-repository">定义 Repository</h4>
-<pre><code class="language-javascript">package com.zyndev.springdatarestdemo.controller;
-
-import com.zyndev.springdatarestdemo.domain.User;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.rest.core.annotation.RepositoryRestResource;
-
-@RepositoryRestResource(path=&quot;user&quot;)
-public interface UserRepository extends JpaRepository&lt;User, Long&gt; {
-}
-</code></pre>
-<h4 id="配置">配置</h4>
-<pre><code class="language-javascript">server:
-  port: 8080
-
-spring:
-  jpa:
-    hibernate:
-      ddl-auto: update
-</code></pre>
-<blockquote>
-<p>通过设置 <code>spring.jpa.hibernate.ddl-auto=update</code> 来自动创建表，如果你已经根据domain建好表，可忽略，配置中省略了数据库的配置，请根据情况自行添加</p>
-</blockquote>
-<h4 id="测试">测试</h4>
-<p>启动项目:</p>
-<p>​		<strong>1. GET 访问 localhost:8080/user</strong>这里我已经添加了一条数据</p>
-<pre><code class="language-javascript">{
-    &quot;_embedded&quot;: {
-        &quot;users&quot;: [
-            {
-                &quot;userName&quot;: &quot;abc&quot;,
-                &quot;password&quot;: &quot;abc&quot;,
-                &quot;active&quot;: 1,
-                &quot;lastLoginTime&quot;: null,
-                &quot;createTime&quot;: null,
-                &quot;updateTime&quot;: null,
-                &quot;_links&quot;: {
-                    &quot;self&quot;: {
-                        &quot;href&quot;: &quot;http://localhost:8080/user/1&quot;
-                    },
-                    &quot;user&quot;: {
-                        &quot;href&quot;: &quot;http://localhost:8080/user/1&quot;
-                    }
-                }
-            }
-        ]
-    },
-    &quot;_links&quot;: {
-        &quot;self&quot;: {
-            &quot;href&quot;: &quot;http://localhost:8080/user{?page,size,sort}&quot;,
-            &quot;templated&quot;: true
-        },
-        &quot;profile&quot;: {
-            &quot;href&quot;: &quot;http://localhost:8080/profile/user&quot;
-        }
-    },
-    &quot;page&quot;: {
-        &quot;size&quot;: 20,
-        &quot;totalElements&quot;: 1,
-        &quot;totalPages&quot;: 1,
-        &quot;number&quot;: 0
-    }
-}
-</code></pre>
-<p>​		<strong>2. GET 访问 localhost:8080/user/1</strong></p>
-<p>​		通过上面可以看出 <code>1</code> 是存在的</p>
-<pre><code class="language-javascript">{
-    &quot;userName&quot;: &quot;abc&quot;,
-    &quot;password&quot;: &quot;abc&quot;,
-    &quot;active&quot;: 1,
-    &quot;lastLoginTime&quot;: null,
-    &quot;createTime&quot;: null,
-    &quot;updateTime&quot;: null,
-    &quot;_links&quot;: {
-        &quot;self&quot;: {
-            &quot;href&quot;: &quot;http://localhost:8080/user/1&quot;
-        },
-        &quot;user&quot;: {
-            &quot;href&quot;: &quot;http://localhost:8080/user/1&quot;
-        }
-    }
-}
-</code></pre>
-<p>​		<strong>3. GET 访问 localhost:8080/user/2</strong></p>
-<p>​		因为 <code>2</code> 并不存在，这时返回 <code>404</code></p>
-<p>​		<strong>4. POST localhost:8080/user 创建一个资源</strong></p>
-<p>​		设置 <code>Content-Type=application/json</code></p>
-<p>​		<strong>body:</strong></p>
-<pre><code class="language-javascript">{
-    &quot;userName&quot;: &quot;abcdfasdfe&quot;,
-    &quot;password&quot;: &quot;abc&quot;,
-    &quot;active&quot;: 1,
-    &quot;lastLoginTime&quot;: null,
-    &quot;createTime&quot;: null,
-    &quot;updateTime&quot;: null
-}
-</code></pre>
-<p>返回状态码 <code>201</code></p>
-<p>返回数据：</p>
-<pre><code class="language-javascript">{
-    &quot;userName&quot;: &quot;abcdfasdfe&quot;,
-    &quot;password&quot;: &quot;abc&quot;,
-    &quot;active&quot;: 1,
-    &quot;lastLoginTime&quot;: null,
-    &quot;createTime&quot;: null,
-    &quot;updateTime&quot;: null,
-    &quot;_links&quot;: {
-        &quot;self&quot;: {
-            &quot;href&quot;: &quot;http://localhost:8080/user/4&quot;
-        },
-        &quot;user&quot;: {
-            &quot;href&quot;: &quot;http://localhost:8080/user/4&quot;
-        }
-    }
-}
-</code></pre>
-<p>​		<strong>5. 再次访问 GET 访问 localhost:8080/user</strong></p>
-<p>​		这时可以看出 users 的数量为 2 说明已经创建成功</p>
-<pre><code class="language-javascript">{
-    &quot;_embedded&quot;: {
-        &quot;users&quot;: [
-            {
-                &quot;userName&quot;: &quot;abc&quot;,
-                &quot;password&quot;: &quot;abc&quot;,
-                &quot;active&quot;: 1,
-                &quot;lastLoginTime&quot;: null,
-                &quot;createTime&quot;: null,
-                &quot;updateTime&quot;: null,
-                &quot;_links&quot;: {
-                    &quot;self&quot;: {
-                        &quot;href&quot;: &quot;http://localhost:8080/user/1&quot;
-                    },
-                    &quot;user&quot;: {
-                        &quot;href&quot;: &quot;http://localhost:8080/user/1&quot;
-                    }
-                }
-            },
-            {
-                &quot;userName&quot;: &quot;abcdfasdfe&quot;,
-                &quot;password&quot;: &quot;abc&quot;,
-                &quot;active&quot;: 1,
-                &quot;lastLoginTime&quot;: null,
-                &quot;createTime&quot;: null,
-                &quot;updateTime&quot;: null,
-                &quot;_links&quot;: {
-                    &quot;self&quot;: {
-                        &quot;href&quot;: &quot;http://localhost:8080/user/4&quot;
-                    },
-                    &quot;user&quot;: {
-                        &quot;href&quot;: &quot;http://localhost:8080/user/4&quot;
-                    }
-                }
-            }
-        ]
-    },
-    &quot;_links&quot;: {
-        &quot;self&quot;: {
-            &quot;href&quot;: &quot;http://localhost:8080/user{?page,size,sort}&quot;,
-            &quot;templated&quot;: true
-        },
-        &quot;profile&quot;: {
-            &quot;href&quot;: &quot;http://localhost:8080/profile/user&quot;
-        }
-    },
-    &quot;page&quot;: {
-        &quot;size&quot;: 20,
-        &quot;totalElements&quot;: 2,
-        &quot;totalPages&quot;: 1,
-        &quot;number&quot;: 0
-    }
-}
-</code></pre>
-<p>​		<strong>6. delete 访问 localhost:8080/user/1</strong></p>
-<p>返回状态码： <code>204</code></p>
-<p>再次访问 GET 访问 localhost:8080/user 会发现 users 的数量已经为1，说明已经删除成功</p>
-<blockquote>
-<p>可以使用 postman 测试，这里为了不贴图，就按上面的写了，希望理解</p>
-</blockquote>
-<p># 小功能</p>
-<p>为了方便查看和测试api,可以集成 <code>hal browser</code></p>
-<p>在 pom 文件添加依赖即可</p>
-<pre><code class="language-javascript">&lt;dependency&gt;
-    &lt;groupId&gt;org.springframework.data&lt;/groupId&gt;
-    &lt;artifactId&gt;spring-data-rest-hal-browser&lt;/artifactId&gt;
-&lt;/dependency&gt;
-</code></pre>
-<p>重启项目并访问： <code>http://127.0.0.1:8080/browser/index.html#/</code></p>
 ]]></content>
     </entry>
 </feed>
