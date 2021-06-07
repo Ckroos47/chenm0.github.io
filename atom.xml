@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://cm940324.github.io</id>
     <title>Oasis</title>
-    <updated>2021-06-07T06:34:01.607Z</updated>
+    <updated>2021-06-07T07:01:12.945Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://cm940324.github.io"/>
     <link rel="self" href="https://cm940324.github.io/atom.xml"/>
@@ -10,6 +10,87 @@
     <logo>https://cm940324.github.io/images/avatar.png</logo>
     <icon>https://cm940324.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, Oasis</rights>
+    <entry>
+        <title type="html"><![CDATA[微服务：服务注册发现+ API 网关+配置中心+配置中心+服务跟踪]]></title>
+        <id>https://cm940324.github.io/post/weifuwu-ques/</id>
+        <link href="https://cm940324.github.io/post/weifuwu-ques/">
+        </link>
+        <updated>2021-06-07T07:00:17.000Z</updated>
+        <content type="html"><![CDATA[<p><strong>服务注册发现</strong></p>
+<p>服务注册就是维护一个登记簿，它管理系统内所有的服务地址。当新的服务启动后，它会向登记簿交待自己的地址信息。服务的依赖方直接向登记簿要 Service Provider 地址就行了。当下用于服务注册的工具非常多 ZooKeeper，Consul，Etcd, 还有 Netflix 家的 eureka 等。服务注册有两种:</p>
+<p><strong>形式：客户端注册和第三方注册。</strong></p>
+<p><strong>客户端注册（zookeeper</strong>）<br>
+客户端注册是服务自身要负责注册与注销的工作。当服务启动后向注册中心注册自身，当服务下线时注销自己。期间还需要和注册中心保持心跳。心跳不一定要客户端来做，也可以由注册中心负责（这个过程叫探活）。这种方式的缺点是注册工作与服务耦合在一起，不同语言都要实现一套注册逻辑。</p>
+<p><strong>第三方注册（独立的服务 Registrar）</strong></p>
+<p>第三方注册由一个独立的服务Registrar负责注册与注销。当服务启动后以某种方式通知Registrar，然后 Registrar 负责向注册中心发起注册工作。同时注册中心要维护与服务之间的心跳，当服务不可用时，向注册中心注销服务。这种方式的缺点是 Registrar 必须是一个高可用的系统则注册工作没法进展。</p>
+<p><strong>客户端发现</strong></p>
+<p>客户端发现是指客户端负责查询可用服务地址，以及负载均衡的工作。这种方式最方便直接，而且也方便做负载均衡。再者一旦发现某个服务不可用立即换另外一个，非常直接。缺点也在于多语言时的重复工作，每个语言实现相同的逻辑。</p>
+<p><strong>服务端发现</strong></p>
+<p>服务端发现需要额外的 Router 服务，请求先打到 Router，然后 Router 负责查询服务与负载均衡。这种方式虽然没有客户端发现的缺点，但是它的缺点是保证 Router 的高可用。</p>
+<p><strong>API 网关</strong><br>
+API Gateway 是一个服务器，也可以说是进入系统的唯一节点。这跟面向对象设计模式中的<br>
+Facade 模式很像。API Gateway 封装内部系统的架构，并且提供 API 给各个客户端。它还可能有其他功能，如授权、监控、负载均衡、缓存、请求分片和管理、静态响应处理等。下图展示了一个适应当前架构的 API Gateway。<br>
+API Gateway 负责请求转发、合成和协议转换。所有来自客户端的请求都要先经过 API Gateway，然后路由这些请求到对应的微服务。API Gateway 将经常通过调用多个微服务来处理一个请求以及聚合多个服务的结果。它可以在 web 协议与内部使用的非 Web 友好型协议间进行转换，如HTTP 协议、WebSocket 协议。</p>
+<p><strong>请求转发</strong></p>
+<p>服务转发主要是对客户端的请求安装微服务的负载转发到不同的服务上</p>
+<p><strong>响应合并</strong></p>
+<p>把业务上需要调用多个服务接口才能完成的工作合并成一次调用对外统一提供服务。</p>
+<p><strong>协议转换</strong></p>
+<p>重点是支持 SOAP，JMS，Rest 间的协议转换。</p>
+<p><strong>数据转换</strong></p>
+<p>重点是支持 XML 和 Json 之间的报文格式转换能力（可选）</p>
+<p><strong>安全认证</strong></p>
+<ol>
+<li>
+<p>基于 Token 的客户端访问控制和安全策略</p>
+</li>
+<li>
+<p>传输数据和报文加密，到服务端解密，需要在客户端有独立的 SDK 代理包</p>
+</li>
+<li>
+<p>基于 Https 的传输加密，客户端和服务端数字证书支持</p>
+</li>
+<li>
+<p>基于 OAuth2.0 的服务安全认证(授权码，客户端，密码模式等）</p>
+</li>
+</ol>
+<p><strong>配置中心</strong><br>
+配置中心一般用作系统的参数配置，它需要满足如下几个要求：高效获取、实时感知、分布式访问。</p>
+<p><strong>zookeeper 配置中心</strong></p>
+<p>采取数据加载到内存方式解决高效获取的问题，借助 zookeeper 的节点监听机制来实现实时感知。</p>
+<p><strong>事件调度（kafka）</strong><br>
+消息服务和事件的统一调度，常用用 kafka ，activemq 等。</p>
+<p><strong>服务跟踪（starter-sleuth）</strong></p>
+<p>随着微服务数量不断增长，需要跟踪一个请求从一个微服务到下一个微服务的传播过程， SpringCloud Sleuth 正是解决这个问题，它在日志中引入唯一 ID，以保证微服务调用之间的一致性，这样你就能跟踪某个请求是如何从一个微服务传递到下一个。</p>
+<ol>
+<li>
+<p>为了实现请求跟踪，当请求发送到分布式系统的入口端点时，只需要服务跟踪框架为该请求创建一个唯一的跟踪标识，同时在分布式系统内部流转的时候，框架始终保持传递该唯一标识，直到返回给请求方为止，这个唯一标识就是前文中提到的 Trace ID。通过 Trace ID 的记录，我们就能将所有请求过程日志关联起来。</p>
+</li>
+<li>
+<p>为了统计各处理单元的时间延迟，当请求达到各个服务组件时，或是处理逻辑到达某个状态时，也通过一个唯一标识来标记它的开始、具体过程以及结束，该标识就是我们前文中提到的 Span ID，对于每个 Span 来说，它必须有开始和结束两个节点，通过记录开始 Span 和结束 Span 的时间戳，就能统计出该 Span 的时间延迟，除了时间戳记录之外，它还可以包含一些其他元数据，比如：事件名称、请求信息等。</p>
+</li>
+<li>
+<p>在快速入门示例中，我们轻松实现了日志级别的跟踪信息接入，这完全归功于spring-cloudstarter-sleuth 组件的实现。在 Spring Boot 应用中，通过在工程中引入 spring-cloud<br>
+starter-sleuth 依赖之后， 它会自动的为当前应用构建起各通信通道的跟踪机制，比如：</p>
+</li>
+</ol>
+<ul>
+<li>通过诸如 RabbitMQ、Kafka（或者其他任何 Spring Cloud Stream 绑定器实现的消息<br>
+中间件）传递的请求。</li>
+<li>通过 Zuul 代理传递的请求。</li>
+<li>通过 RestTemplate 发起的请求。</li>
+</ul>
+<p><strong>服务熔断（Hystrix）</strong><br>
+在微服务架构中通常会有多个服务层调用，基础服务的故障可能会导致级联故障，进而造成整个系统不可用的情况，这种现象被称为服务雪崩效应。服务雪崩效应是一种因“服务提供者”的不可用导致“服务消费者”的不可用,并将不可用逐渐放大的过程。</p>
+<p>熔断器的原理很简单，如同电力过载保护器。它可以实现快速失败，如果它在一段时间内侦测到许多类似的错误，会强迫其以后的多个调用快速失败，不再访问远程服务器，从而防止应用程序</p>
+<p>不断地尝试执行可能会失败的操作，使得应用程序继续执行而不用等待修正错误，或者浪费 CPU时间去等到长时间的超时产生。熔断器也可以使应用程序能够诊断错误是否已经修正，如果已经修正，应用程序会再次尝试调用操作。</p>
+<p><strong>Hystrix 断路器机制</strong></p>
+<p>断路器很好理解, 当 Hystrix Command 请求后端服务失败数量超过一定比例(默认 50%), 断路器会切换到开路状态(Open). 这时所有请求会直接失败而不会发送到后端服务. 断路器保持在开路状态一段时间后(默认 5 秒), 自动切换到半开路状态(HALF-OPEN). 这时会判断下一次请求的返回情况,</p>
+<p>如果请求成功, 断路器切回闭路状态(CLOSED), 否则重新切换到开路状态(OPEN). Hystrix 的断路器就像我们家庭电路中的保险丝, 一旦后端服务不可用, 断路器会直接切断请求链, 避免发送大量无效请求影响系统吞吐量, 并且断路器有自我检测并恢复的能力。</p>
+<p><strong>API 管理</strong></p>
+<p>SwaggerAPI 管理工具。</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[hibernate CascadeType属性说明]]></title>
         <id>https://cm940324.github.io/post/hibernate-cascadetype/</id>
@@ -836,305 +917,6 @@ tsvector 是 PostgreSQL 内置的一种字段类型, 用来保存的是分词后
 <p>根据coinmarketcap网站数据，目前全球仍有2109种数字货币在交易所交易，其中相当多的数字货币属于某一个企业所“研发”，它们背后拥有大股东的权力，违背了区块链的“去中心化”理念。</p>
 <p>Real Vision创始人兼首席执行官Raoul Pal日前透露了自己持有的加密资产组合，“我现在的资产50%是比特币，30%是以太坊，20%是其他代币，我试图在整个加密领域中保持平衡，因为我真的不知道在这个领域中什么币会赢，什么币不会赢。”关于最近大热的狗狗币，Pal表示：“它会永远持续下去吗？谁知道呢？但是我买了一些狗狗币，因为人群在涌入。”</p>
 <p>原标题：全面复盘：狗狗币是如何上涨400倍的？ 来源：链新</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[理解、学习与使用 JAVA 中的 OPTIONAL]]></title>
-        <id>https://cm940324.github.io/post/java8-optional/</id>
-        <link href="https://cm940324.github.io/post/java8-optional/">
-        </link>
-        <updated>2021-04-26T06:14:05.000Z</updated>
-        <content type="html"><![CDATA[<p>​		从 Java 8 引入的一个很有趣的特性是 <em>Optional</em>  类。Optional 类主要解决的问题是臭名昭著的空指针异常（NullPointerException） —— 每个 Java 程序员都非常了解的异常。</p>
-<p>​		本质上，这是一个包含有可选值的包装类，这意味着 Optional 类既可以含有对象也可以为空。Optional 是 Java 实现函数式编程的强劲一步，并且帮助在范式中实现。但是 Optional 的意义显然不止于此。</p>
-<pre><code>if (user != null) {
-    Address address = user.getAddress();
-    if (address != null) {
-        Country country = address.getCountry();
-        if (country != null) {
-            String isocode = country.getIsocode();
-            if (isocode != null) {
-                isocode = isocode.toUpperCase();
-            }
-        }
-    }
-}
-</code></pre>
-<p>​		你看到了，这很容易就变得冗长，难以维护。</p>
-<p>​		为了简化这个过程，我们来看看用 <em>Optional</em> 类是怎么做的。从创建和验证实例，到使用其不同的方法，并与其它返回相同类型的方法相结合，下面是见证 <em>Optional</em>  奇迹的时刻。</p>
-<h3 id="创建-optional-实例">创建 <em>Optional</em> 实例</h3>
-<p>​		重申一下，这个类型的对象可能包含值，也可能为空。你可以使用同名方法创建一个空的 Optional.</p>
-<pre><code>@Test(expected = NoSuchElementException.class)
-public void whenCreateEmptyOptional_thenNull() {
-    Optional&lt;User&gt; emptyOpt = Optional.empty();
-    emptyOpt.get();
-}
-</code></pre>
-<p>​		毫不奇怪，尝试访问 <em>emptyOpt</em> 变量的值会导致 <em>NoSuchElementException</em>。</p>
-<p>​		你可以使用 <em>of()</em> 和 ofNullable() 方法创建包含值的 <em>Optional</em>。两个方法的不同之处在于如果你把 <em>null</em> 值作为参数传递进去，<em>of()</em> 方法会抛出 <em>NullPointerException</em>：</p>
-<pre><code>@Test(expected = NullPointerException.class)
-public void whenCreateOfEmptyOptional_thenNullPointerException() {
-    Optional&lt;User&gt; opt = Optional.of(user);
-}
-</code></pre>
-<p>​		你看，我们并没有完全摆脱 <em>NullPointerException</em>。因此，你应该明确对象不为 <em>null</em> 的时候使用 <em>of()</em>。</p>
-<p>如果对象即可能是 <em>null</em> 也可能是非 null，你就应该使用 <em>ofNullable()</em> 方法：</p>
-<pre><code>Optional&lt;User&gt; opt = Optional.ofNullable(user);
-</code></pre>
-<h3 id="访问-optional-对象的值">访问 <em>Optional</em> 对象的值</h3>
-<p>​		从 <em>Optional</em> 实例中取回实际值对象的方法之一是使用 <em>get()</em> 方法：</p>
-<pre><code>@Test
-public void whenCreateOfNullableOptional_thenOk() {
-    String name = &quot;John&quot;;
-    Optional&lt;String&gt; opt = Optional.ofNullable(name);
-    assertEquals(&quot;John&quot;, opt.get());
-}
-</code></pre>
-<p>​		不过，你看到了，这个方法会在值为 <em>null</em> 的时候抛出异常。要避免异常，你可以选择首先验证是否有值：</p>
-<pre><code>@Test
-public void whenCheckIfPresent_thenOk() {
-    User user = new User(&quot;john@gmail.com&quot;, &quot;1234&quot;);
-    Optional&lt;User&gt; opt = Optional.ofNullable(user);
-    assertTrue(opt.isPresent());
-    assertEquals(user.getEmail(), opt.get().getEmail());
-}
-</code></pre>
-<p>​		检查是否有值的另一个选择是 <em>ifPresent()</em> 方法。该方法除了执行检查，还接受一个<em>Consumer(消费者</em>) 参数，如果对象不是空的，就对执行传入的 Lambda 表达式：</p>
-<pre><code>opt.ifPresent( u -&gt; assertEquals(user.getEmail(), u.getEmail()));
-</code></pre>
-<p>​		这个例子中，只有 user 用户不为 null 的时候才会执行断言。</p>
-<p>​		接下来，我们来看看提供空值的方法。</p>
-<h3 id="返回默认值">返回默认值</h3>
-<p>​		<em>Optional</em> 类提供了 API 用以返回对象值，或者在对象为空的时候返回默认值。</p>
-<p>​		这里你可以使用的第一个方法是 <em>orElse()</em>，它的工作方式非常直接，如果有值则返回该值，否则返回传递给它的参数值：</p>
-<pre><code>@Test
-public void whenEmptyValue_thenReturnDefault() {
-    User user = null;
-    User user2 = new User(&quot;anna@gmail.com&quot;, &quot;1234&quot;);
-    User result = Optional.ofNullable(user).orElse(user2);
-
-    assertEquals(user2.getEmail(), result.getEmail());
-}
-</code></pre>
-<p>​		这里 <em>user</em> 对象是空的，所以返回了作为默认值的 <em>user2</em>。</p>
-<p>​		如果对象的初始值不是 null，那么默认值会被忽略：</p>
-<pre><code>@Test
-public void whenValueNotNull_thenIgnoreDefault() {
-    User user = new User(&quot;john@gmail.com&quot;,&quot;1234&quot;);
-    User user2 = new User(&quot;anna@gmail.com&quot;, &quot;1234&quot;);
-    User result = Optional.ofNullable(user).orElse(user2);
-
-    assertEquals(&quot;john@gmail.com&quot;, result.getEmail());
-}
-</code></pre>
-<p>​		第二个同类型的 API 是 <em>orElseGet()</em> —— 其行为略有不同。这个方法会在有值的时候返回值，如果没有值，它会执行作为参数传入的 <em>Supplier(供应者)</em> 函数式接口，并将返回其执行结果：</p>
-<pre><code>User result = Optional.ofNullable(user).orElseGet( () -&gt; user2);
-</code></pre>
-<p>​		<em>orElse()</em> 和 <em>orElseGet()</em> 的不同之处</p>
-<p>​		乍一看，这两种方法似乎起着同样的作用。然而事实并非如此。我们创建一些示例来突出二者行为上的异同。</p>
-<p>我们先来看看对象为空时他们的行为：</p>
-<pre><code>@Test
-public void givenEmptyValue_whenCompare_thenOk() {
-    User user = null
-    logger.debug(&quot;Using orElse&quot;);
-    User result = Optional.ofNullable(user).orElse(createNewUser());
-    logger.debug(&quot;Using orElseGet&quot;);
-    User result2 = Optional.ofNullable(user).orElseGet(() -&gt; createNewUser());
-}
-
-private User createNewUser() {
-    logger.debug(&quot;Creating New User&quot;);
-    return new User(&quot;extra@gmail.com&quot;, &quot;1234&quot;);
-}
-</code></pre>
-<p>​		上面的代码中，两种方法都调用了 <em>createNewUser()</em> 方法，这个方法会记录一个消息并返回 <em>User</em> 对象。</p>
-<p>代码输出如下：</p>
-<pre><code>Using orElse
-Creating New User
-Using orElseGet
-Creating New User
-</code></pre>
-<p>​		由此可见，当对象为空而返回默认对象时，行为并无差异。</p>
-<p>​</p>
-<p>​		我们接下来看一个类似的示例，但这里 <em>Optional</em>  不为空：</p>
-<pre><code>@Test
-public void givenPresentValue_whenCompare_thenOk() {
-    User user = new User(&quot;john@gmail.com&quot;, &quot;1234&quot;);
-    logger.info(&quot;Using orElse&quot;);
-    User result = Optional.ofNullable(user).orElse(createNewUser());
-    logger.info(&quot;Using orElseGet&quot;);
-    User result2 = Optional.ofNullable(user).orElseGet(() -&gt; createNewUser());
-}
-</code></pre>
-<p>​		这次的输出：</p>
-<pre><code>Using orElse
-Creating New User
-Using orElseGet
-</code></pre>
-<p>​		这个示例中，两个 <em>Optional</em>  对象都包含非空值，两个方法都会返回对应的非空值。不过，<em>orElse()</em> 方法仍然创建了 <em>User</em> 对象。与之相反，<em>orElseGet()</em> 方法不创建 <em>User</em> 对象。</p>
-<p>​		在执行较密集的调用时，比如调用 Web 服务或数据查询，这个差异会对性能产生重大影响。</p>
-<h3 id="返回异常">返回异常</h3>
-<p>​		除了 <em>orElse()</em> 和 <em>orElseGet()</em> 方法，Optional 还定义了 <em>orElseThrow()</em> API —— 它会在对象为空的时候抛出异常，而不是返回备选的值：</p>
-<pre><code>@Test(expected = IllegalArgumentException.class)
-public void whenThrowException_thenOk() {
-    User result = Optional.ofNullable(user)
-      .orElseThrow( () -&gt; new IllegalArgumentException());
-}
-</code></pre>
-<p>​		这里，如果 <em>user</em> 值为 null，会抛出 <em>IllegalArgumentException</em>。</p>
-<p>​		这个方法让我们有更丰富的语义，可以决定抛出什么样的异常，而不总是抛出 <em>NullPointerException</em>。</p>
-<p>​		现在我们已经很好地理解了如何使用 Optional，我们来看看其它可以对 <em>Optional</em> 值进行转换和过滤的方法。</p>
-<h3 id="转换值">转换值</h3>
-<p>​		有很多种方法可以转换 <em>Optional</em> 的值。我们从 <em>map()</em> 和 <em>flatMap()</em> 方法开始。</p>
-<p>先来看一个使用 <em>map()</em> API 的例子：</p>
-<pre><code>@Test
-public void whenMap_thenOk() {
-    User user = new User(&quot;anna@gmail.com&quot;, &quot;1234&quot;);
-    String email = Optional.ofNullable(user)
-      .map(u -&gt; u.getEmail()).orElse(&quot;default@gmail.com&quot;);
-
-    assertEquals(email, user.getEmail());
-}
-</code></pre>
-<p>​		<em>map()</em> 对值应用(调用)作为参数的<em>函数</em>，然后将返回的值包装在 <em>Optional</em> 中。这就使对返回值进行链试调用的操作成为可能 —— 这里的下一环就是 <em>orElse()</em>。</p>
-<p>​		相比这下，<em>flatMap()</em> 也需要<em>函数</em>作为参数，并对值调用这个函数，然后直接返回结果。</p>
-<p>​		下面的操作中，我们给 <em>User</em> 类添加了一个方法，用来返回 <em>Optional</em>：</p>
-<pre><code>public class User {    
-    private String position;
-
-    public Optional&lt;String&gt; getPosition() {
-        return Optional.ofNullable(position);
-    }
-
-    //...
-}
-</code></pre>
-<p>​		既然 getter 方法返回 String 值的 <em>Optional</em>，你可以在对 <em>User</em> <em>的 Optional</em> 对象调用 <em>flatMap()</em> 时，用它作为参数。其返回的值是解除包装的 String 值</p>
-<pre><code>@Test
-public void whenFlatMap_thenOk() {
-    User user = new User(&quot;anna@gmail.com&quot;, &quot;1234&quot;);
-    user.setPosition(&quot;Developer&quot;);
-    String position = Optional.ofNullable(user)
-      .flatMap(u -&gt; u.getPosition()).orElse(&quot;default&quot;);
-
-    assertEquals(position, user.getPosition().get());
-}
-</code></pre>
-<p>​		过滤值</p>
-<p>​		除了转换值之外，<em>Optional</em> 类也提供了按条件“过滤”值的方法。<em>filter()</em> 接受一个 <em>Predicate</em> 参数，返回测试结果为 true 的值。如果测试结果为 false，会返回一个空的 <em>Optional</em>。</p>
-<p>来看一个根据基本的电子邮箱验证来决定接受或拒绝 <em>User</em>*(用户)* 的示例：</p>
-<pre><code>@Test
-public void whenFilter_thenOk() {
-    User user = new User(&quot;anna@gmail.com&quot;, &quot;1234&quot;);
-    Optional&lt;User&gt; result = Optional.ofNullable(user)
-      .filter(u -&gt; u.getEmail() != null &amp;&amp; u.getEmail().contains(&quot;@&quot;));
-
-    assertTrue(result.isPresent());
-}
-</code></pre>
-<p>​		如果通过过滤器测试，<em>result</em> 对象会包含非空值。</p>
-<h3 id="optional-类的链式方法"><em>Optional</em> 类的链式方法</h3>
-<p>​		为了更充分的使用 <em>Optional</em>，你可以链接组合其大部分方法，因为它们都返回相同类似的对象。</p>
-<p>​		我们使用 <em>Optional</em> 重写最早介绍的示例。</p>
-<p>​		首先，重构类，使其 getter 方法返回 <em>Optional</em> 引用</p>
-<pre><code>public class User {
-    private Address address;
-
-    public Optional&lt;Address&gt; getAddress() {
-        return Optional.ofNullable(address);
-    }
-
-    // ...
-}
-public class Address {
-    private Country country;
-
-    public Optional&lt;Country&gt; getCountry() {
-        return Optional.ofNullable(country);
-    }
-
-    // ...
-}
-</code></pre>
-<p>​		现在可以删除 <em>null</em> 检查，替换为 <em>Optional</em> 的方法</p>
-<pre><code>@Test
-public void whenChaining_thenOk() {
-    User user = new User(&quot;anna@gmail.com&quot;, &quot;1234&quot;);
-
-    String result = Optional.ofNullable(user)
-      .flatMap(u -&gt; u.getAddress())
-      .flatMap(a -&gt; a.getCountry())
-      .map(c -&gt; c.getIsocode())
-      .orElse(&quot;default&quot;);
-
-    assertEquals(result, &quot;default&quot;);
-}
-</code></pre>
-<p>​		上面的代码可以通过方法引用进一步缩减：</p>
-<pre><code>String result = Optional.ofNullable(user)
-  .flatMap(User::getAddress)
-  .flatMap(Address::getCountry)
-  .map(Country::getIsocode)
-  .orElse(&quot;default&quot;);
-</code></pre>
-<p>结果现在的代码看起来比之前采用条件分支的冗长代码简洁多了。</p>
-<h3 id="java-9-增强">Java 9 增强</h3>
-<p>​		我们介绍了 Java 8 的特性，Java 9 为 Optional 类添加了三个方法：<em>or()</em>、<em>ifPresentOrElse()</em> 和 <em>stream()</em>。</p>
-<p>​		<em>or()</em> 方法与 <em>orElse()</em> 和 <em>orElseGet()</em> 类似，它们都在对象为空的时候提供了替代情况。<em>or()</em> 的返回值是由 <em>Supplier</em> 参数产生的另一个 <em>Optional</em> 对象。</p>
-<p>​		如果对象包含值，则 Lambda 表达式不会执行：</p>
-<pre><code>@Test
-public void whenEmptyOptional_thenGetValueFromOr() {
-    User result = Optional.ofNullable(user)
-      .or( () -&gt; Optional.of(new User(&quot;default&quot;,&quot;1234&quot;))).get();
-
-    assertEquals(result.getEmail(), &quot;default&quot;);
-}
-</code></pre>
-<p>​		上面的示例中，如果 <em>user</em> 变量是 null，它会返回一个 <em>Optional</em>，它所包含的 <em>User</em> 对象，其电子邮件为 “default”。</p>
-<p><em>ifPresentOrElse()</em> 方法需要两个参数：一个 <em>Consumer</em> 和一个 <em>Runnable</em>。如果对象包含值，会执行 <em>Consumer</em> 的动作，否则运行 <em>Runnable</em>。</p>
-<p>​		如果你想在有值的时候执行某个动作，或者只是跟踪是否定义了某个值，那么这个方法非常有用：</p>
-<pre><code>Optional.ofNullable(user).ifPresentOrElse( u -&gt; logger.info(&quot;User is:&quot; + u.getEmail()),
-  () -&gt; logger.info(&quot;User not found&quot;));
-</code></pre>
-<p>​		最后介绍的是新的 <em>stream()</em> 方法，它通过把实例转换为 <em>Stream</em> 对象，让你从广大的 <em>Stream</em> API 中受益。如果没有值，它会得到空的 <em>Stream</em>；有值的情况下，<em>Stream</em> 则会包含单一值。</p>
-<p>​		我们来看一个把 <em>Optional</em> 处理成 <em>Stream</em> 的例子：</p>
-<pre><code>@Test
-public void whenGetStream_thenOk() {
-    User user = new User(&quot;john@gmail.com&quot;, &quot;1234&quot;);
-    List&lt;String&gt; emails = Optional.ofNullable(user)
-      .stream()
-      .filter(u -&gt; u.getEmail() != null &amp;&amp; u.getEmail().contains(&quot;@&quot;))
-      .map( u -&gt; u.getEmail())
-      .collect(Collectors.toList());
-
-    assertTrue(emails.size() == 1);
-    assertEquals(emails.get(0), user.getEmail());
-}
-</code></pre>
-<p>​		这里对 <em>Stream</em> 的使用带来了其 <em>filter()、map()</em> 和 <em>collect()</em> 接口，以获取 <em>List</em>。</p>
-<h3 id="optional-应该怎样用"><em>Optional</em> 应该怎样用？</h3>
-<p>​		在使用 <em>Optional</em> 的时候需要考虑一些事情，以决定什么时候怎样使用它。</p>
-<p>​		重要的一点是 <em>Optional</em> 不是 <em>Serializable</em>。因此，它不应该用作类的字段。</p>
-<p>​		如果你需要序列化的对象包含 <em>Optional</em> 值，<a href="https://stackify.com/java-xml-jackson/"><em>Jackson</em> 库</a>支持把 <em>Optional</em> 当作普通对象。也就是说，<em>Jackson</em> 会把空对象看作 <em>null</em>，而有值的对象则把其值看作对应域的值。这个功能在 <a href="https://github.com/FasterXML/jackson-modules-java8">jackson-modules-java8</a> 项目中。</p>
-<p>​		它在另一种情况下也并不怎么有用，就是在将其类型用作方法或构建方法的参数时。这样做会让代码变得复杂，完全没有必要：</p>
-<pre><code>User user = new User(&quot;john@gmail.com&quot;, &quot;1234&quot;, Optional.empty());
-</code></pre>
-<p>​		使用重载方法来处理非要的参数要容易得多。</p>
-<p>​		<em>Optional</em> 主要用作返回类型。在获取到这个类型的实例后，如果它有值，你可以取得这个值，否则可以进行一些替代行为。</p>
-<p>​		<em>Optional</em> 类有一个非常有用的用例，就是将其与流或其它返回 <em>Optional</em> 的方法结合，以构建流畅的API。</p>
-<p>​		我们来看一个示例，使用 <em>Stream</em> 返回 <em>Optional</em> 对象的 <em>findFirst()</em> 方法：</p>
-<pre><code>@Test
-public void whenEmptyStream_thenReturnDefaultOptional() {
-    List&lt;User&gt; users = new ArrayList&lt;&gt;();
-    User user = users.stream().findFirst().orElse(new User(&quot;default&quot;, &quot;1234&quot;));
-
-    assertEquals(user.getEmail(), &quot;default&quot;);
-}
-</code></pre>
-<h3 id="总结">总结</h3>
-<p><em>Optional</em> 是 Java 语言的有益补充 —— 它旨在减少代码中的 <em>NullPointerExceptions</em>，虽然还不能完全消除这些异常。</p>
-<p>它也是精心设计，自然融入 Java 8 函数式支持的功能。</p>
-<p>总的来说，这个简单而强大的类有助于创建简单、可读性更强、比对应程序错误更少的程序。</p>
-<p>转自 https://www.cnblogs.com/zhangboyu/p/7580262.html</p>
 ]]></content>
     </entry>
 </feed>
