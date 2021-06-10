@@ -8,7 +8,7 @@
 <meta name="keywords" content="个人博客">
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
-<title>PostgreSQL踩坑记录 | Oasis</title>
+<title>Spring Data Rest---Paging and Sorting  | Oasis</title>
 <link rel="shortcut icon" href="/favicon.ico?v=1623309330125">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
@@ -38,8 +38,8 @@
 
 
 
-  <meta name="description" content="PostgreSQL踩坑记录" />
-  <meta name="keywords" content="PostgreSQL" />
+  <meta name="description" content="Spring Data Rest---Paging and Sorting " />
+  <meta name="keywords" content="SpringDataRest" />
 </head>
 
 <body>
@@ -190,7 +190,8 @@
       <div class="sidebar-body pisces" id="sidebar_body">
         
           
-            
+            <div class="post-side-meta" id="post_side_meta">
+              
 <div class="sidebar-wrapper box-shadow-wrapper bg-color">
   <div class="sidebar-item">
     <img class="site-author-image right-motion" src="/images/avatar.png"/>
@@ -244,6 +245,201 @@
   </div>
 
 </div>
+            </div>
+            <div class="post-toc sidebar-body-active" id="post_toc" style="opacity: 1;">
+              <div class="toc-box right-motion">
+  <div class="toc-wrapper auto-number auto"
+    id="toc_wrapper">
+    <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#1-paging">1. Paging</a></li>
+<li><a href="#2-previous-and-next-links">2. Previous and Next Links</a></li>
+<li><a href="#3sorting">3.Sorting</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+</div>
+
+<script>
+
+  let lastTop = 0, lList = [], hList = [], postBody, lastIndex = -1;
+  let active = 'active-show', activeClass = 'active-current';
+  let tocWrapper = document.querySelector('#toc_wrapper');
+  let tocContent = tocWrapper.children[0];
+  let autoNumber = tocWrapper && tocWrapper.classList.contains('auto-number');
+
+  function addTocNumber(elem, deep) {
+    if (!elem) {
+      return;
+    }
+    let prop = elem.__proto__;
+
+    if (prop === HTMLUListElement.prototype) {
+      for (let i = 0; i < elem.children.length; i++) {
+        addTocNumber(elem.children[i], deep + (i + 1) + '.');
+      }
+    } else if (prop === HTMLLIElement.prototype) {
+      // 保存li元素
+      if (elem.children[0] && elem.children[0].__proto__ === HTMLAnchorElement.prototype) {
+        lList.push(elem);
+      }
+      for (let i = 0; i < elem.children.length; i++) {
+        let cur = elem.children[i];
+        if (cur.__proto__ === HTMLAnchorElement.prototype) {
+          if (autoNumber) {
+            cur.text = deep + ' ' + cur.text;
+          }
+        } else if (cur.__proto__ === HTMLUListElement.prototype) {
+          addTocNumber(cur, deep);
+        }
+      }
+    }
+  }
+
+  function removeParentActiveClass() {
+    let parents = tocContent.querySelectorAll('.' + active)
+    parents.forEach(function (elem) {
+      elem.classList.remove(active);
+    });
+  }
+
+  function addActiveClass(index) {
+    if (index >= 0 && index < hList.length) {
+      lList[index].classList.add(activeClass);
+    }
+  }
+
+  function removeActiveClass(index) {
+    if (index >= 0 && index < hList.length) {
+      lList[index].classList.remove(activeClass);
+    }
+  }
+
+  function addActiveLiElemment(elem, parent) {
+    if (!elem || elem === parent) {
+      return;
+    } else {
+      if (elem.__proto__ === HTMLLIElement.prototype) {
+        elem.classList.add(active);
+      }
+      addActiveLiElemment(elem.parentElement, parent);
+    }
+  }
+
+  function showToc() {
+    if (tocWrapper) {
+      postBody = document.querySelector('#post_body');
+      for (let i = 0; i < postBody.children.length; i++) {
+        if (postBody.children[i].__proto__ === HTMLHeadingElement.prototype) {
+          hList.push(postBody.children[i]);
+        }
+      }
+      if (tocWrapper.classList.contains('compress')) {
+        tocContent.classList.add('closed');
+      } else if (tocWrapper.classList.contains('no_compress')) {
+        tocContent.classList.add('expanded');
+      } else {
+        if (hList.length > 10) {
+          active = 'active-hidden'
+          tocContent.classList.add('closed');
+        } else {
+          tocContent.classList.add('expanded');
+        }
+      }
+    }
+  }
+
+  (function () {
+    // 处理不是从#一级标题开始目录
+    if (tocContent.children.length === 1 && tocContent.children[0].__proto__ === HTMLLIElement.prototype) {
+      let con = tocContent.children[0].children[0];
+      tocContent.innerHTML = con.innerHTML;
+    }
+    let markdownItTOC = document.querySelector('.markdownIt-TOC');
+    let innerHeight = window.innerHeight;
+    markdownItTOC.style = `max-height: ${innerHeight - 80 > 0 ? innerHeight - 80 : innerHeight}px`
+    addTocNumber(tocContent, '');
+  })();
+
+  document.addEventListener('scroll', function (e) {
+    if (lList.length <= 0) {
+      return;
+    }
+    let scrollTop = document.scrollingElement.scrollTop + 10;
+    let dir;
+
+    if (lastTop - scrollTop > 0) {
+      dir = 'up';
+    } else {
+      dir = 'down';
+    }
+
+    lastTop = scrollTop;
+    if (scrollTop <= 0) {
+      if (lastIndex >= 0 && lastIndex < hList.length) {
+        lList[lastIndex].classList.remove(activeClass);
+      }
+      return;
+    }
+
+    let current = 0, hasFind = false;
+    for (let i = 0; i < hList.length; i++) {
+      if (hList[i].offsetTop > scrollTop) {
+        current = i;
+        hasFind = true;
+        break;
+      }
+    }
+    if (!hasFind && scrollTop > lList[lList.length - 1].offsetTop) {
+      current = hList.length - 1;
+    } else {
+      current--;
+    }
+    if (dir === 'down') {
+      if (current > lastIndex) {
+        addActiveClass(current);
+        removeActiveClass(lastIndex)
+        lastIndex = current;
+        removeParentActiveClass();
+        lList[current] && addActiveLiElemment(lList[current].parentElement, tocContent);
+      }
+    } else {
+      if (current < lastIndex) {
+        addActiveClass(current);
+        removeActiveClass(lastIndex);
+        lastIndex = current;
+        removeParentActiveClass();
+        lList[current] && addActiveLiElemment(lList[current].parentElement, tocContent);
+      }
+    }
+  });
+
+
+  window.addEventListener('load', function () {
+    showToc();
+    document.querySelector('#sidebar').style = 'display: block;';
+    tocWrapper.classList.add('toc-active');
+    setTimeout(function () {
+      if ("createEvent" in document) {
+        let evt = document.createEvent("HTMLEvents");
+        evt.initEvent("scroll", false, true);
+        document.dispatchEvent(evt);
+      }
+      else {
+        document.fireEvent("scroll");
+      }
+    }, 500)
+  })
+
+</script>
+            </div>
           
         
       </div>
@@ -331,8 +527,8 @@
           <div class="section bg-color post post-page">
             <section class="post-header">
   <h1 class="post-title">
-    <a class="post-title-link" href="https://cm940324.github.io/post/postgresql-ques/">
-      PostgreSQL踩坑记录
+    <a class="post-title-link" href="https://cm940324.github.io/post/spring-data-rest-learn/">
+      Spring Data Rest---Paging and Sorting 
     </a>
   </h1>
   <div class="post-meta">
@@ -340,7 +536,7 @@
     <span class="meta-item pc-show">
       <i class="fa fa-calendar-o"></i>
       <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-06-03 14:26:03">2021-06-03</span>
+      <span class="publish-time" data-t="2021-06-10 15:11:22">2021-06-10</span>
       <span class="post-meta-divider pc-show">|</span>
     </span>
     
@@ -349,8 +545,8 @@
       <span class="pc-show language" data-lan="category-in">分类于</span>
       
       
-      <a href="https://cm940324.github.io/tag/kzUuE88e_/">
-        <span>PostgreSQL</span>
+      <a href="https://cm940324.github.io/tag/hB0nBywri/">
+        <span>SpringDataRest</span>
       </a>
       
       
@@ -359,17 +555,17 @@
     
     <span class="meta-item">
       <i class="fa fa-clock-o"></i>
-      <span>1<span class="language" data-lan="minute">分钟</span></span>
+      <span>3<span class="language" data-lan="minute">分钟</span></span>
     </span>
     <span class="meta-item">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-file-word-o"></i>
-      <span>40<span class="pc-show language" data-lan="words">字数</span></span>
+      <span>584<span class="pc-show language" data-lan="words">字数</span></span>
     </span>
     
     
     
-    <span id="/post/postgresql-ques/" data-flag-title="PostgreSQL踩坑记录" class="meta-item pc-show leancloud_visitors">
+    <span id="/post/spring-data-rest-learn/" data-flag-title="Spring Data Rest---Paging and Sorting " class="meta-item pc-show leancloud_visitors">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-eye"></i>
       <span><span class="language" data-lan="view">浏览量</span>：<span class="leancloud-visitors-count"></span></span>
@@ -378,14 +574,47 @@
   </div>
 </section>
             <div class="post-body next-md-body" id="post_body">
-              <ol>
-<li>在进行数据库记录的迁移和复制数据后容易出现错误</li>
-</ol>
-<pre><code>DETAIL:  Key (id)=(1) already exists
+              <h3 id="1-paging">1. Paging</h3>
+<p>Spring Data REST能识别含有分页和排序请求的URL，从而返回用户想要的数据，而不是直接返回一大堆数据集合。如果你继承PagingAndSortingRepository&lt;T, ID&gt;并获取实体类的列表集合，例如：</p>
+<pre><code>interface PersonRepository extends PagingAndSortingRepository&lt;Person, Long&gt; {}
 </code></pre>
-<p>解决方案：</p>
-<pre><code>select setval('tablename_id_seq', max(id)) from tablename;
+<p>那么请求数据分页默认数为20个，也就是说第一次请求为20个数据，并带有分页的参数，如果想要自定义分页的参数，可以采用更改请求的URL参数的办法进行更改：</p>
+<p><mark>http://localhost:8080/persons/?size=5</mark></p>
+<p>如果要在你自己的查询方法中使用分页，需要在方法的参数中添加一个Pageable参数，这样获得的数据是一页数据(Page)而不是一个列表(List):</p>
+<pre><code>@RestResource(path = &quot;nameStartsWith&quot;, rel = &quot;nameStartsWith&quot;)
+
+public PagefindByNameStartsWith(@Param(&quot;name&quot;) String name, Pageable p);
 </code></pre>
+<p>这样的一个查询方法，会输出到链接：/people/search/nameStartsWith 并且会支持分页，这个原理和Spring Data Jpa的类似。</p>
+<h3 id="2-previous-and-next-links">2. Previous and Next Links</h3>
+<p>每个分页的response数据返回到前端页面，都有一个prev和next链接，比如在浏览器中请求 localhost:8080/people?size=5 后得到的数据如下：</p>
+<pre><code>{
+&quot;_links&quot; : {
+	&quot;self&quot; : {
+		&quot;href&quot; : &quot;http://localhost:8080/persons{&amp;sort,page,size}&quot;, 
+	&quot;templated&quot; : true
+	},
+	&quot;next&quot; : {
+		&quot;href&quot; : &quot;http://localhost:8080/persons?page=1&amp;size=5{&amp;sort}&quot;, 
+		&quot;templated&quot; : true
+	}
+},
+	&quot;_embedded&quot; : {
+		... data ...
+	},
+	&quot;page&quot; : { ③
+	&quot;size&quot; : 5,
+	&quot;totalElements&quot; : 50,
+	&quot;totalPages&quot; : 10,
+	&quot;number&quot; : 0
+}
+</code></pre>
+<p>这两个链接是指向下一级链接(next)和上一级(prev)的链接的地址</p>
+<h3 id="3sorting">3.Sorting</h3>
+<p>和Paging一样，Spring Data Rest识别含有排序的URL请求参数，实体类对应的同样有一个实体仓库。为了让数据按照自己想要的参数进行排序，可以在URL请求中添加一个name属性，并指定属性的排序方式，指定排序的方向(正向asc,逆向desc),比如：</p>
+<pre><code class="language-html">http://localhost:8080/people/search/nameStartsWith?name=K&amp;sort=name,desc
+</code></pre>
+<p>这样一个语句是使用了定义在PersonRepository中的findByNameStartsWith查询方法进行查询所有Person的姓名中以字母K开头的并以name进行逆向排序的用户。通常为使用多个属性进行排序，往往可以添加sort=PROPERTY自己想要排序的参数进行排序。</p>
 
             </div>
             
@@ -398,7 +627,7 @@
     </li>
     <li class="post-copyright-link">
       <strong class="language" data-lan="link">本文链接：</strong>
-      <a href="https://cm940324.github.io/post/postgresql-ques/" title="PostgreSQL踩坑记录">https://cm940324.github.io/post/postgresql-ques/</a>
+      <a href="https://cm940324.github.io/post/spring-data-rest-learn/" title="Spring Data Rest---Paging and Sorting ">https://cm940324.github.io/post/spring-data-rest-learn/</a>
     </li>
     <li class="post-copyright-license">
       <strong class="language" data-lan="copyright">版权声明： </strong>
@@ -407,21 +636,17 @@
   </ul>
   <div class="tags">
     
-      <a href="https://cm940324.github.io/tag/kzUuE88e_/"># PostgreSQL</a>
+      <a href="https://cm940324.github.io/tag/hB0nBywri/"># SpringDataRest</a>
     
   </div>
   <div class="nav">
     <div class="nav-prev">
       
-        <i class="fa fa-chevron-left"></i>
-        <a class="nav-pc-next" title="hibernate CascadeType属性说明" href="https://cm940324.github.io/post/hibernate-cascadetype/">hibernate CascadeType属性说明</a class="nav-pc-next">
-        <a class="nav-mobile-prev" title="hibernate CascadeType属性说明" href="https://cm940324.github.io/post/hibernate-cascadetype/">上一篇</a>
-      
     </div>
     <div class="nav-next">
       
-        <a class="nav-pc-next" title="设计模式的通俗理解" href="https://cm940324.github.io/post/shejimoshi-tongsu/">设计模式的通俗理解</a>
-        <a class="nav-mobile-next" title="设计模式的通俗理解" href="https://cm940324.github.io/post/shejimoshi-tongsu/">下一篇</a>
+        <a class="nav-pc-next" title="微服务：服务注册发现+ API 网关+配置中心+配置中心+服务跟踪" href="https://cm940324.github.io/post/weifuwu-ques/">微服务：服务注册发现+ API 网关+配置中心+配置中心+服务跟踪</a>
+        <a class="nav-mobile-next" title="微服务：服务注册发现+ API 网关+配置中心+配置中心+服务跟踪" href="https://cm940324.github.io/post/weifuwu-ques/">下一篇</a>
         <i class="fa fa-chevron-right"></i>
       
     </div>

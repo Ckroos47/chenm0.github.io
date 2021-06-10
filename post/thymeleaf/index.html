@@ -9,7 +9,7 @@
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
 <title>Thymeleaf常用属性 | Oasis</title>
-<link rel="shortcut icon" href="/favicon.ico?v=1623049271050">
+<link rel="shortcut icon" href="/favicon.ico?v=1623309330125">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
 <link
@@ -208,7 +208,7 @@
     <div class="sidebar-item-box">
       <a href="/archives/">
         
-        <span class="site-item-stat-count">15</span>
+        <span class="site-item-stat-count">16</span>
         <span class="site-item-stat-name language" data-lan="article">文章</span>
       </a>
     </div>
@@ -1746,6 +1746,52 @@ public String login(@ModelAttribute(value = &quot;loginBean&quot;) LoginBean log
       <hr>
     </div>
     <div class="result" id="result">
+      
+      <div class="item">
+        <a class="result-title" style="opacity: 0;" href="https://cm940324.github.io/post/spring-data-rest-learn/"" data-c="
+          &lt;h3 id=&#34;1-paging&#34;&gt;1. Paging&lt;/h3&gt;
+&lt;p&gt;Spring Data REST能识别含有分页和排序请求的URL，从而返回用户想要的数据，而不是直接返回一大堆数据集合。如果你继承PagingAndSortingRepository&amp;lt;T, ID&amp;gt;并获取实体类的列表集合，例如：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface PersonRepository extends PagingAndSortingRepository&amp;lt;Person, Long&amp;gt; {}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;那么请求数据分页默认数为20个，也就是说第一次请求为20个数据，并带有分页的参数，如果想要自定义分页的参数，可以采用更改请求的URL参数的办法进行更改：&lt;/p&gt;
+&lt;p&gt;&lt;mark&gt;http://localhost:8080/persons/?size=5&lt;/mark&gt;&lt;/p&gt;
+&lt;p&gt;如果要在你自己的查询方法中使用分页，需要在方法的参数中添加一个Pageable参数，这样获得的数据是一页数据(Page)而不是一个列表(List):&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@RestResource(path = &amp;quot;nameStartsWith&amp;quot;, rel = &amp;quot;nameStartsWith&amp;quot;)
+
+public PagefindByNameStartsWith(@Param(&amp;quot;name&amp;quot;) String name, Pageable p);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这样的一个查询方法，会输出到链接：/people/search/nameStartsWith 并且会支持分页，这个原理和Spring Data Jpa的类似。&lt;/p&gt;
+&lt;h3 id=&#34;2-previous-and-next-links&#34;&gt;2. Previous and Next Links&lt;/h3&gt;
+&lt;p&gt;每个分页的response数据返回到前端页面，都有一个prev和next链接，比如在浏览器中请求 localhost:8080/people?size=5 后得到的数据如下：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+&amp;quot;_links&amp;quot; : {
+	&amp;quot;self&amp;quot; : {
+		&amp;quot;href&amp;quot; : &amp;quot;http://localhost:8080/persons{&amp;amp;sort,page,size}&amp;quot;, 
+	&amp;quot;templated&amp;quot; : true
+	},
+	&amp;quot;next&amp;quot; : {
+		&amp;quot;href&amp;quot; : &amp;quot;http://localhost:8080/persons?page=1&amp;amp;size=5{&amp;amp;sort}&amp;quot;, 
+		&amp;quot;templated&amp;quot; : true
+	}
+},
+	&amp;quot;_embedded&amp;quot; : {
+		... data ...
+	},
+	&amp;quot;page&amp;quot; : { ③
+	&amp;quot;size&amp;quot; : 5,
+	&amp;quot;totalElements&amp;quot; : 50,
+	&amp;quot;totalPages&amp;quot; : 10,
+	&amp;quot;number&amp;quot; : 0
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这两个链接是指向下一级链接(next)和上一级(prev)的链接的地址&lt;/p&gt;
+&lt;h3 id=&#34;3sorting&#34;&gt;3.Sorting&lt;/h3&gt;
+&lt;p&gt;和Paging一样，Spring Data Rest识别含有排序的URL请求参数，实体类对应的同样有一个实体仓库。为了让数据按照自己想要的参数进行排序，可以在URL请求中添加一个name属性，并指定属性的排序方式，指定排序的方向(正向asc,逆向desc),比如：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-html&#34;&gt;http://localhost:8080/people/search/nameStartsWith?name=K&amp;amp;sort=name,desc
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这样一个语句是使用了定义在PersonRepository中的findByNameStartsWith查询方法进行查询所有Person的姓名中以字母K开头的并以name进行逆向排序的用户。通常为使用多个属性进行排序，往往可以添加sort=PROPERTY自己想要排序的参数进行排序。&lt;/p&gt;
+">Spring Data Rest---Paging and Sorting </a>
+      </div>
       
       <div class="item">
         <a class="result-title" style="opacity: 0;" href="https://cm940324.github.io/post/weifuwu-ques/"" data-c="
