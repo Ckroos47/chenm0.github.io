@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://cm940324.github.io</id>
     <title>Oasis</title>
-    <updated>2021-06-10T09:53:00.260Z</updated>
+    <updated>2021-06-11T02:09:57.494Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://cm940324.github.io"/>
     <link rel="self" href="https://cm940324.github.io/atom.xml"/>
@@ -10,6 +10,46 @@
     <logo>https://cm940324.github.io/images/avatar.png</logo>
     <icon>https://cm940324.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, Oasis</rights>
+    <entry>
+        <title type="html"><![CDATA[两数之和]]></title>
+        <id>https://cm940324.github.io/post/twonum/</id>
+        <link href="https://cm940324.github.io/post/twonum/">
+        </link>
+        <updated>2021-06-11T01:50:16.000Z</updated>
+        <content type="html"><![CDATA[<p>给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出 和为目标值 target 的那 两个 整数，并返回它们的数组下标。 你可以假设每种输入只会对应一个答案。但是，数组中同一个元素在答案里不能重复出现。你可以按任意顺序返回答案。<br>
+示例 1：<br>
+//输入：nums = [2,7,11,15], target = 9<br>
+//输出：[0,1]<br>
+//解释：因为 nums[0] + nums[1] == 9 ，返回 [0, 1] 。</p>
+<p>// 示例 2：<br>
+//输入：nums = [3,2,4], target = 6<br>
+//输出：[1,2]</p>
+<p>// 示例 3：</p>
+<p>//输入：nums = [3,3], target = 6<br>
+//输出：[0,1]<br>
+// 提示：</p>
+<p>// 2 &lt;= nums.length &lt;= 104<br>
+// -109 &lt;= nums[i] &lt;= 109<br>
+// -109 &lt;= target &lt;= 109<br>
+// 只会存在一个有效答案</p>
+<p>// 进阶：你可以想出一个时间复杂度小于 O(n2) 的算法吗？<br>
+// Related Topics 数组 哈希表</p>
+<pre><code>class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        Map&lt;Integer,Integer&gt; map = new HashMap&lt;&gt;();
+        for (int i = 1; i &lt;= nums.length; i++) {
+            if (map.contains(target - nums[i])){
+                return new int[]{map.get(target - nums[i]),i};
+            }
+            map.put(map.contains(target - nums[i]), i);
+        }
+        return new int[0];
+    }
+    
+}
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Spring Data Rest---Paging and Sorting ]]></title>
         <id>https://cm940324.github.io/post/spring-data-rest-learn/</id>
@@ -854,69 +894,6 @@ public void depend5(Interface1 i) { i.operation5();
 }
 }
 
-</code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[PostgreSQL自带全文检索]]></title>
-        <id>https://cm940324.github.io/post/postgresql-jiansuo/</id>
-        <link href="https://cm940324.github.io/post/postgresql-jiansuo/">
-        </link>
-        <updated>2021-05-06T08:38:50.000Z</updated>
-        <content type="html"><![CDATA[<h3 id="相关文档">相关文档</h3>
-<pre><code>文本搜索的函数与操作符中文说明: 
-http://www.postgres.cn/docs/9.3.4/functions-textsearch.html
-PostgreSQL 文本搜索文档 : 
-https://www.postgresql.org/docs/9.4/textsearch-controls.html
-</code></pre>
-<h3 id="核心函数-关键字">核心函数、关键字</h3>
-<p>全文搜索的思想主要分两步：</p>
-<ul>
-<li>
-<p>将文本解析为对应的倒排索引</p>
-</li>
-<li>
-<p>搜索索引来找到对应的文本</p>
-</li>
-</ul>
-<p>要使用 PostgreSQL 的全文搜索, 那么就要了解到底是要用什么关键字和函数来<strong>构建索引</strong>和<strong>搜索</strong>， 这里主要涉及到<strong>一个关键字</strong>和<strong>四个函数</strong><br>
-可以看上边的文档了解函数的具体参数</p>
-<p><strong>关键字 tsvector:</strong><br>
-tsvector 是 PostgreSQL 内置的一种字段类型, 用来保存的是分词后的结果 (文本向量) 它是由 [词，序列， 权重] 三个东西共同组成的， 权重可能会没有</p>
-<p><strong>函数:</strong></p>
-<ul>
-<li>
-<p>to_tsvector()</p>
-<ul>
-<li>分词用, 将文本转为向量。 用它可以将字符串转成上边说的 tsvector , 遗憾的是默认不支持中文分词</li>
-</ul>
-</li>
-<li>
-<p>to_tsquery()</p>
-<ul>
-<li>构建搜索的关键字， 支持各种符号表示条件。 详情查看文档</li>
-</ul>
-</li>
-<li>
-<p>setweight()</p>
-<ul>
-<li>设置关键词权重， 总共四个权重从高到低为 A-B-C-D</li>
-</ul>
-</li>
-<li>
-<p>ts_rank ()</p>
-<ul>
-<li>排序用， 可以根据 to_tsquery 和 tsvector 的匹配度计算</li>
-</ul>
-<pre><code>//查询表中包含 aaa 并且包含 BBB或CCC任意一个 的记录
-  SELECT * FROM table
-  WHERE to_tsvector('parser_name', field) @@ to_tsquery('aaa &amp; (bbb | ccc)')
-</code></pre>
-</li>
-</ul>
-<p><strong>索引:</strong></p>
-<p>建立联合索引</p>
-<pre><code>create index document_title_idx on encms.article using gin (to_tsvector('english',&quot;content&quot; || &quot;title&quot;) tsvector_ops)
 </code></pre>
 ]]></content>
     </entry>

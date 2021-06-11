@@ -8,7 +8,7 @@
 <meta name="keywords" content="个人博客">
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
-<title>AmazonS3工具类 | Oasis</title>
+<title>两数之和 | Oasis</title>
 <link rel="shortcut icon" href="/favicon.ico?v=1623377394005">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
@@ -38,8 +38,8 @@
 
 
 
-  <meta name="description" content="AmazonS3工具类" />
-  <meta name="keywords" content="JAVA" />
+  <meta name="description" content="两数之和" />
+  <meta name="keywords" content="Leecode" />
 </head>
 
 <body>
@@ -331,8 +331,8 @@
           <div class="section bg-color post post-page">
             <section class="post-header">
   <h1 class="post-title">
-    <a class="post-title-link" href="https://cm940324.github.io/post/amazons3-util/">
-      AmazonS3工具类
+    <a class="post-title-link" href="https://cm940324.github.io/post/twonum/">
+      两数之和
     </a>
   </h1>
   <div class="post-meta">
@@ -340,7 +340,7 @@
     <span class="meta-item pc-show">
       <i class="fa fa-calendar-o"></i>
       <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-05-13 15:00:29">2021-05-13</span>
+      <span class="publish-time" data-t="2021-06-11 09:50:16">2021-06-11</span>
       <span class="post-meta-divider pc-show">|</span>
     </span>
     
@@ -349,8 +349,8 @@
       <span class="pc-show language" data-lan="category-in">分类于</span>
       
       
-      <a href="https://cm940324.github.io/tag/BuwDjq1zh0/">
-        <span>JAVA</span>
+      <a href="https://cm940324.github.io/tag/kzg0vA2rw/">
+        <span>Leecode</span>
       </a>
       
       
@@ -364,12 +364,12 @@
     <span class="meta-item">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-file-word-o"></i>
-      <span>265<span class="pc-show language" data-lan="words">字数</span></span>
+      <span>269<span class="pc-show language" data-lan="words">字数</span></span>
     </span>
     
     
     
-    <span id="/post/amazons3-util/" data-flag-title="AmazonS3工具类" class="meta-item pc-show leancloud_visitors">
+    <span id="/post/twonum/" data-flag-title="两数之和" class="meta-item pc-show leancloud_visitors">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-eye"></i>
       <span><span class="language" data-lan="view">浏览量</span>：<span class="leancloud-visitors-count"></span></span>
@@ -378,82 +378,36 @@
   </div>
 </section>
             <div class="post-body next-md-body" id="post_body">
-              <pre><code>/**
- * @author chenmo
- * @Date: Created in 2021/5/12 5:05 下午
- * @Utils: Intellij Idea
- * @Description: TODO
- */
-@Component
-@RequiredArgsConstructor
-public class AmazonS3Operator {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AmazonS3Operator.class);
-
-    final AmazonS3Configuration amazonS3Configuration;
-
-    //创建链接
-    public AmazonS3 createConnection(){
-        var credentials = new BasicAWSCredentials(amazonS3Configuration.getAccessKey(), amazonS3Configuration.getSecretKey());
-        var conn = new AmazonS3Client(credentials);
-        conn.setEndpoint(amazonS3Configuration.getEndPoint());
-        var buckets = conn.listBuckets();
-        LOGGER.info(&quot;amazonS3 bucket list ==========================================&quot;);
-        for (Bucket bucket : buckets) {
-            LOGGER.info(&quot;amazonS3 bucket =========&gt;&quot;+bucket.getName() + &quot;\t&quot; +
-                    StringUtils.fromDate(bucket.getCreationDate()));
-        }
-        LOGGER.info(&quot;================================================================&quot;);
-        return conn;
-    }
-
-    //创建Bucket
-    public Bucket createBucket(String name){
-        return createConnection().createBucket(name);
-    }
-
-    //上传一个文件
-    public String uploadFileToBucket(MultipartFile multipartFile){
-        var snowflake = new Snowflake(1,1);
-        var key = snowflake.nextIdStr();
-        FileInputStream fileInputStream = null;
-        try {
-            fileInputStream = (FileInputStream) multipartFile.getInputStream();
-            createConnection().putObject(amazonS3Configuration.getBucket(),key,fileInputStream,new ObjectMetadata());
-            LOGGER.info(&quot;上传文件&quot;+key+&quot;：&quot;+multipartFile.getName()+ &quot;到&quot;+amazonS3Configuration.getBucket()+&quot;成功！！！！&quot;);
-            return key;
-        }catch (FileNotFoundException e){
-            LOGGER.info(&quot;上传文件&quot;+key+&quot;：&quot;+multipartFile.getName()+  &quot;到&quot;+amazonS3Configuration.getBucket()+&quot;失败，文件未找到&quot;);
-            return null;
-        }catch (IOException e){
-            e.printStackTrace();
-            return null;
-        }finally {
-            try {
-                if(fileInputStream != null){
-                    fileInputStream.close();
-                }
-            }catch (IOException e){
-                LOGGER.debug(&quot;inputStream close IOException:&quot; + e.getMessage());
-                e.printStackTrace();
+              <p>给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出 和为目标值 target 的那 两个 整数，并返回它们的数组下标。 你可以假设每种输入只会对应一个答案。但是，数组中同一个元素在答案里不能重复出现。你可以按任意顺序返回答案。<br>
+示例 1：<br>
+//输入：nums = [2,7,11,15], target = 9<br>
+//输出：[0,1]<br>
+//解释：因为 nums[0] + nums[1] == 9 ，返回 [0, 1] 。</p>
+<p>// 示例 2：<br>
+//输入：nums = [3,2,4], target = 6<br>
+//输出：[1,2]</p>
+<p>// 示例 3：</p>
+<p>//输入：nums = [3,3], target = 6<br>
+//输出：[0,1]<br>
+// 提示：</p>
+<p>// 2 &lt;= nums.length &lt;= 104<br>
+// -109 &lt;= nums[i] &lt;= 109<br>
+// -109 &lt;= target &lt;= 109<br>
+// 只会存在一个有效答案</p>
+<p>// 进阶：你可以想出一个时间复杂度小于 O(n2) 的算法吗？<br>
+// Related Topics 数组 哈希表</p>
+<pre><code>class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        Map&lt;Integer,Integer&gt; map = new HashMap&lt;&gt;();
+        for (int i = 1; i &lt;= nums.length; i++) {
+            if (map.contains(target - nums[i])){
+                return new int[]{map.get(target - nums[i]),i};
             }
+            map.put(map.contains(target - nums[i]), i);
         }
+        return new int[0];
     }
-
-    //预览一个文件
-    public String reviewFileFromBucket(String key){
-        try {
-            if(StringUtils.isNullOrEmpty(key)){
-                return null;
-            }
-            var httpRequest = new GeneratePresignedUrlRequest(amazonS3Configuration.getBucket(), key);
-            return createConnection().generatePresignedUrl(httpRequest).toString();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return null;
-    }
-
+    
 }
 </code></pre>
 
@@ -468,7 +422,7 @@ public class AmazonS3Operator {
     </li>
     <li class="post-copyright-link">
       <strong class="language" data-lan="link">本文链接：</strong>
-      <a href="https://cm940324.github.io/post/amazons3-util/" title="AmazonS3工具类">https://cm940324.github.io/post/amazons3-util/</a>
+      <a href="https://cm940324.github.io/post/twonum/" title="两数之和">https://cm940324.github.io/post/twonum/</a>
     </li>
     <li class="post-copyright-license">
       <strong class="language" data-lan="copyright">版权声明： </strong>
@@ -477,21 +431,17 @@ public class AmazonS3Operator {
   </ul>
   <div class="tags">
     
-      <a href="https://cm940324.github.io/tag/BuwDjq1zh0/"># JAVA</a>
+      <a href="https://cm940324.github.io/tag/kzg0vA2rw/"># Leecode</a>
     
   </div>
   <div class="nav">
     <div class="nav-prev">
       
-        <i class="fa fa-chevron-left"></i>
-        <a class="nav-pc-next" title="搭建内容管理系统CMS（1）：如何支持内容生产？" href="https://cm940324.github.io/post/cms1/">搭建内容管理系统CMS（1）：如何支持内容生产？</a class="nav-pc-next">
-        <a class="nav-mobile-prev" title="搭建内容管理系统CMS（1）：如何支持内容生产？" href="https://cm940324.github.io/post/cms1/">上一篇</a>
-      
     </div>
     <div class="nav-next">
       
-        <a class="nav-pc-next" title="设计模式的学习" href="https://cm940324.github.io/post/design-study/">设计模式的学习</a>
-        <a class="nav-mobile-next" title="设计模式的学习" href="https://cm940324.github.io/post/design-study/">下一篇</a>
+        <a class="nav-pc-next" title="Spring Data Rest---Paging and Sorting " href="https://cm940324.github.io/post/spring-data-rest-learn/">Spring Data Rest---Paging and Sorting </a>
+        <a class="nav-mobile-next" title="Spring Data Rest---Paging and Sorting " href="https://cm940324.github.io/post/spring-data-rest-learn/">下一篇</a>
         <i class="fa fa-chevron-right"></i>
       
     </div>
