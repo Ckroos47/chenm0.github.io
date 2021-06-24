@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://cm940324.github.io</id>
     <title>Oasis</title>
-    <updated>2021-06-24T06:20:50.032Z</updated>
+    <updated>2021-06-24T06:28:03.702Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://cm940324.github.io"/>
     <link rel="self" href="https://cm940324.github.io/atom.xml"/>
@@ -31,6 +31,9 @@ clear()：清楚session中的所有缓存，所有持久化对象变为游离态
 evict(obj)：把某个持久化状态的对象从session中清除，该对象变为游离态</p>
 <p>根据三个方法的介绍，最好的处理方式应该选择evict(obj)方法。</p>
 <p>由于业务需求，我的解决方式是，新建一个临时态的临时表对象，将查询到的正式表对象赋值给临时态对象，这样就不会触发update语句，经测试，问题解决。</p>
+<p>`	@PersistenceContext<br>
+private EntityManager entityManager;</p>
+<pre><code>Session session = entityManager.unwrap(Session.class);`</code></pre>
 ]]></content>
     </entry>
     <entry>

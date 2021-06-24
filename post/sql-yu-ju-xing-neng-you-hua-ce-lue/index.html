@@ -9,7 +9,7 @@
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
 <title>SQL 语句性能优化策略 | Oasis</title>
-<link rel="shortcut icon" href="/favicon.ico?v=1624515026436">
+<link rel="shortcut icon" href="/favicon.ico?v=1624515737986">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
 <link
@@ -1563,6 +1563,9 @@ clear()：清楚session中的所有缓存，所有持久化对象变为游离态
 evict(obj)：把某个持久化状态的对象从session中清除，该对象变为游离态&lt;/p&gt;
 &lt;p&gt;根据三个方法的介绍，最好的处理方式应该选择evict(obj)方法。&lt;/p&gt;
 &lt;p&gt;由于业务需求，我的解决方式是，新建一个临时态的临时表对象，将查询到的正式表对象赋值给临时态对象，这样就不会触发update语句，经测试，问题解决。&lt;/p&gt;
+&lt;p&gt;`	@PersistenceContext&lt;br&gt;
+private EntityManager entityManager;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Session session = entityManager.unwrap(Session.class);`&lt;/code&gt;&lt;/pre&gt;
 ">JPA踩坑记录</a>
       </div>
       
