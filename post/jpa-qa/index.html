@@ -8,7 +8,7 @@
 <meta name="keywords" content="个人博客">
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
-<title>Spring Data Rest---Paging and Sorting  | Oasis</title>
+<title>JPA踩坑记录 | Oasis</title>
 <link rel="shortcut icon" href="/favicon.ico?v=1624515026436">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
@@ -38,8 +38,8 @@
 
 
 
-  <meta name="description" content="Spring Data Rest---Paging and Sorting " />
-  <meta name="keywords" content="SpringDataRest" />
+  <meta name="description" content="JPA踩坑记录" />
+  <meta name="keywords" content="Hibernate" />
 </head>
 
 <body>
@@ -255,9 +255,7 @@
 <ul>
 <li>
 <ul>
-<li><a href="#1-paging">1. Paging</a></li>
-<li><a href="#2-previous-and-next-links">2. Previous and Next Links</a></li>
-<li><a href="#3sorting">3.Sorting</a></li>
+<li><a href="#spring-data-jpa%E6%9F%A5%E8%AF%A2%E5%88%B0%E7%9A%84%E5%AF%B9%E8%B1%A1%E8%A2%ABset%E5%80%BC%E5%90%8E%E8%87%AA%E5%8A%A8%E6%9B%B4%E6%96%B0%E6%95%B0%E6%8D%AE%E5%BA%93">Spring data JPA查询到的对象被set值后，自动更新数据库</a></li>
 </ul>
 </li>
 </ul>
@@ -527,8 +525,8 @@
           <div class="section bg-color post post-page">
             <section class="post-header">
   <h1 class="post-title">
-    <a class="post-title-link" href="https://cm940324.github.io/post/spring-data-rest-learn/">
-      Spring Data Rest---Paging and Sorting 
+    <a class="post-title-link" href="https://cm940324.github.io/post/jpa-qa/">
+      JPA踩坑记录
     </a>
   </h1>
   <div class="post-meta">
@@ -536,7 +534,7 @@
     <span class="meta-item pc-show">
       <i class="fa fa-calendar-o"></i>
       <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-06-10 15:11:22">2021-06-10</span>
+      <span class="publish-time" data-t="2021-06-24 14:08:55">2021-06-24</span>
       <span class="post-meta-divider pc-show">|</span>
     </span>
     
@@ -545,8 +543,8 @@
       <span class="pc-show language" data-lan="category-in">分类于</span>
       
       
-      <a href="https://cm940324.github.io/tag/hB0nBywri/">
-        <span>SpringDataRest</span>
+      <a href="https://cm940324.github.io/tag/_LiUY5oMZ/">
+        <span>Hibernate</span>
       </a>
       
       
@@ -560,12 +558,12 @@
     <span class="meta-item">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-file-word-o"></i>
-      <span>586<span class="pc-show language" data-lan="words">字数</span></span>
+      <span>576<span class="pc-show language" data-lan="words">字数</span></span>
     </span>
     
     
     
-    <span id="/post/spring-data-rest-learn/" data-flag-title="Spring Data Rest---Paging and Sorting " class="meta-item pc-show leancloud_visitors">
+    <span id="/post/jpa-qa/" data-flag-title="JPA踩坑记录" class="meta-item pc-show leancloud_visitors">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-eye"></i>
       <span><span class="language" data-lan="view">浏览量</span>：<span class="leancloud-visitors-count"></span></span>
@@ -574,47 +572,21 @@
   </div>
 </section>
             <div class="post-body next-md-body" id="post_body">
-              <h3 id="1-paging">1. Paging</h3>
-<p>Spring Data REST能识别含有分页和排序请求的URL，从而返回用户想要的数据，而不是直接返回一大堆数据集合。如果你继承PagingAndSortingRepository&lt;T, ID&gt;并获取实体类的列表集合，例如：</p>
-<pre><code>interface PersonRepository extends PagingAndSortingRepository&lt;Person, Long&gt; {}
-</code></pre>
-<p>那么请求数据分页默认数为20个，也就是说第一次请求为20个数据，并带有分页的参数，如果想要自定义分页的参数，可以采用更改请求的URL参数的办法进行更改：</p>
-<p><mark>http://localhost:8080/persons/?size=5</mark></p>
-<p>如果要在你自己的查询方法中使用分页，需要在方法的参数中添加一个Pageable参数，这样获得的数据是一页数据(Page)而不是一个列表(List):</p>
-<pre><code>@RestResource(path = &quot;nameStartsWith&quot;, rel = &quot;nameStartsWith&quot;)
-
-public PagefindByNameStartsWith(@Param(&quot;name&quot;) String name, Pageable p);
-</code></pre>
-<p>这样的一个查询方法，会输出到链接：/people/search/nameStartsWith 并且会支持分页，这个原理和Spring Data Jpa的类似。</p>
-<h3 id="2-previous-and-next-links">2. Previous and Next Links</h3>
-<p>每个分页的response数据返回到前端页面，都有一个prev和next链接，比如在浏览器中请求 localhost:8080/people?size=5 后得到的数据如下：</p>
-<pre><code>{
-&quot;_links&quot; : {
-	&quot;self&quot; : {
-		&quot;href&quot; : &quot;http://localhost:8080/persons{&amp;sort,page,size}&quot;, 
-	&quot;templated&quot; : true
-	},
-	&quot;next&quot; : {
-		&quot;href&quot; : &quot;http://localhost:8080/persons?page=1&amp;size=5{&amp;sort}&quot;, 
-		&quot;templated&quot; : true
-	}
-},
-	&quot;_embedded&quot; : {
-		... data ...
-	},
-	&quot;page&quot; : { ③
-	&quot;size&quot; : 5,
-	&lt;!-- &quot;totalElements&quot; : 50 --&gt;
-	&quot;totalPages&quot; : 10,
-	&quot;number&quot; : 0
-}
-</code></pre>
-<p>这两个链接是指向下一级链接(next)和上一级(prev)的链接的地址</p>
-<h3 id="3sorting">3.Sorting</h3>
-<p>和Paging一样，Spring Data Rest识别含有排序的URL请求参数，实体类对应的同样有一个实体仓库。为了让数据按照自己想要的参数进行排序，可以在URL请求中添加一个name属性，并指定属性的排序方式，指定排序的方向(正向asc,逆向desc),比如：</p>
-<pre><code class="language-html">http://localhost:8080/people/search/nameStartsWith?name=K&amp;sort=name,desc
-</code></pre>
-<p>这样一个语句是使用了定义在PersonRepository中的findByNameStartsWith查询方法进行查询所有Person的姓名中以字母K开头的并以name进行逆向排序的用户。通常为使用多个属性进行排序，往往可以添加sort=PROPERTY自己想要排序的参数进行排序。</p>
+              <h3 id="spring-data-jpa查询到的对象被set值后自动更新数据库">Spring data JPA查询到的对象被set值后，自动更新数据库</h3>
+<p>做项目开发的时候遇到这样一个问题：数据库有临时表和正式表，数据审批通过后才会进入正式表，根据业务要求，页面的数据需要通过临时表对象来显示，当需要显示正式表数据时，先查询到临时表对象，再查询正式表对象，将正式表对象赋值给临时表对象用于页面显示，代码执行完毕后，发现数据库正式表数据覆盖了临时表数据，很纳闷，查看代码，在把正式表数据赋值给临时表对象后，并没有保存临时表对象的代码呀，数据库怎么会被更新？<br>
+后来查看日志发现，当将正式表数据赋值给临时表时，有一条update语句执行了。查看资料后才知道，使用JPA查询后的对象处于持久态，持久态的对象属性在被set后，会自动执行update语句更新数据库。<br>
+这才恍然大悟，基于这个原因，只要把持久态的对象转换为游离态或者是临时态，就可以解决问题。<br>
+先理解下Hibernate 中对象的三种状态：<br>
+(1)临时状态：通过new新建的对象，没有被持久化，也不在session缓存中<br>
+(2)游离状态：已经被持久化，但不在session缓存中<br>
+(3)持久状态：已经被持久化，也在session缓存中<br>
+(持久化：数据库有这条数据)<br>
+持久态到游离态的方法有：session.close()、session.evict(obj)、session.clear()<br>
+close()：关闭session，整个session中的持久态对象都成为游离态<br>
+clear()：清楚session中的所有缓存，所有持久化对象变为游离态<br>
+evict(obj)：把某个持久化状态的对象从session中清除，该对象变为游离态</p>
+<p>根据三个方法的介绍，最好的处理方式应该选择evict(obj)方法。</p>
+<p>由于业务需求，我的解决方式是，新建一个临时态的临时表对象，将查询到的正式表对象赋值给临时态对象，这样就不会触发update语句，经测试，问题解决。</p>
 
             </div>
             
@@ -627,7 +599,7 @@ public PagefindByNameStartsWith(@Param(&quot;name&quot;) String name, Pageable p
     </li>
     <li class="post-copyright-link">
       <strong class="language" data-lan="link">本文链接：</strong>
-      <a href="https://cm940324.github.io/post/spring-data-rest-learn/" title="Spring Data Rest---Paging and Sorting ">https://cm940324.github.io/post/spring-data-rest-learn/</a>
+      <a href="https://cm940324.github.io/post/jpa-qa/" title="JPA踩坑记录">https://cm940324.github.io/post/jpa-qa/</a>
     </li>
     <li class="post-copyright-license">
       <strong class="language" data-lan="copyright">版权声明： </strong>
@@ -636,21 +608,17 @@ public PagefindByNameStartsWith(@Param(&quot;name&quot;) String name, Pageable p
   </ul>
   <div class="tags">
     
-      <a href="https://cm940324.github.io/tag/hB0nBywri/"># SpringDataRest</a>
+      <a href="https://cm940324.github.io/tag/_LiUY5oMZ/"># Hibernate</a>
     
   </div>
   <div class="nav">
     <div class="nav-prev">
       
-        <i class="fa fa-chevron-left"></i>
-        <a class="nav-pc-next" title="两数之和" href="https://cm940324.github.io/post/twonum/">两数之和</a class="nav-pc-next">
-        <a class="nav-mobile-prev" title="两数之和" href="https://cm940324.github.io/post/twonum/">上一篇</a>
-      
     </div>
     <div class="nav-next">
       
-        <a class="nav-pc-next" title="微服务：服务注册发现+ API 网关+配置中心+配置中心+服务跟踪" href="https://cm940324.github.io/post/weifuwu-ques/">微服务：服务注册发现+ API 网关+配置中心+配置中心+服务跟踪</a>
-        <a class="nav-mobile-next" title="微服务：服务注册发现+ API 网关+配置中心+配置中心+服务跟踪" href="https://cm940324.github.io/post/weifuwu-ques/">下一篇</a>
+        <a class="nav-pc-next" title="springboot2的配置文件properties和yml的一些常用属性" href="https://cm940324.github.io/post/springboot2-yml/">springboot2的配置文件properties和yml的一些常用属性</a>
+        <a class="nav-mobile-next" title="springboot2的配置文件properties和yml的一些常用属性" href="https://cm940324.github.io/post/springboot2-yml/">下一篇</a>
         <i class="fa fa-chevron-right"></i>
       
     </div>

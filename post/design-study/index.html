@@ -9,7 +9,7 @@
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
 <title>设计模式的学习 | Oasis</title>
-<link rel="shortcut icon" href="/favicon.ico?v=1623917680144">
+<link rel="shortcut icon" href="/favicon.ico?v=1624515026436">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
 <link
@@ -208,7 +208,7 @@
     <div class="sidebar-item-box">
       <a href="/archives/">
         
-        <span class="site-item-stat-count">19</span>
+        <span class="site-item-stat-count">20</span>
         <span class="site-item-stat-name language" data-lan="article">文章</span>
       </a>
     </div>
@@ -1815,6 +1815,26 @@ public void depend5(Interface1 i) { i.operation5();
       <hr>
     </div>
     <div class="result" id="result">
+      
+      <div class="item">
+        <a class="result-title" style="opacity: 0;" href="https://cm940324.github.io/post/jpa-qa/"" data-c="
+          &lt;h3 id=&#34;spring-data-jpa查询到的对象被set值后自动更新数据库&#34;&gt;Spring data JPA查询到的对象被set值后，自动更新数据库&lt;/h3&gt;
+&lt;p&gt;做项目开发的时候遇到这样一个问题：数据库有临时表和正式表，数据审批通过后才会进入正式表，根据业务要求，页面的数据需要通过临时表对象来显示，当需要显示正式表数据时，先查询到临时表对象，再查询正式表对象，将正式表对象赋值给临时表对象用于页面显示，代码执行完毕后，发现数据库正式表数据覆盖了临时表数据，很纳闷，查看代码，在把正式表数据赋值给临时表对象后，并没有保存临时表对象的代码呀，数据库怎么会被更新？&lt;br&gt;
+后来查看日志发现，当将正式表数据赋值给临时表时，有一条update语句执行了。查看资料后才知道，使用JPA查询后的对象处于持久态，持久态的对象属性在被set后，会自动执行update语句更新数据库。&lt;br&gt;
+这才恍然大悟，基于这个原因，只要把持久态的对象转换为游离态或者是临时态，就可以解决问题。&lt;br&gt;
+先理解下Hibernate 中对象的三种状态：&lt;br&gt;
+(1)临时状态：通过new新建的对象，没有被持久化，也不在session缓存中&lt;br&gt;
+(2)游离状态：已经被持久化，但不在session缓存中&lt;br&gt;
+(3)持久状态：已经被持久化，也在session缓存中&lt;br&gt;
+(持久化：数据库有这条数据)&lt;br&gt;
+持久态到游离态的方法有：session.close()、session.evict(obj)、session.clear()&lt;br&gt;
+close()：关闭session，整个session中的持久态对象都成为游离态&lt;br&gt;
+clear()：清楚session中的所有缓存，所有持久化对象变为游离态&lt;br&gt;
+evict(obj)：把某个持久化状态的对象从session中清除，该对象变为游离态&lt;/p&gt;
+&lt;p&gt;根据三个方法的介绍，最好的处理方式应该选择evict(obj)方法。&lt;/p&gt;
+&lt;p&gt;由于业务需求，我的解决方式是，新建一个临时态的临时表对象，将查询到的正式表对象赋值给临时态对象，这样就不会触发update语句，经测试，问题解决。&lt;/p&gt;
+">JPA踩坑记录</a>
+      </div>
       
       <div class="item">
         <a class="result-title" style="opacity: 0;" href="https://cm940324.github.io/post/springboot2-yml/"" data-c="
