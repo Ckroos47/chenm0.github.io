@@ -8,7 +8,7 @@
 <meta name="keywords" content="个人博客">
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
-<title>hibernate CascadeType属性说明 | Oasis</title>
+<title>@Excel参数大全 | Oasis</title>
 <link rel="shortcut icon" href="/favicon.ico?v=1626685577535">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
@@ -38,8 +38,8 @@
 
 
 
-  <meta name="description" content="hibernate CascadeType属性说明" />
-  <meta name="keywords" content="Hibernate" />
+  <meta name="description" content="@Excel参数大全" />
+  <meta name="keywords" content="JAVA" />
 </head>
 
 <body>
@@ -190,8 +190,7 @@
       <div class="sidebar-body pisces" id="sidebar_body">
         
           
-            <div class="post-side-meta" id="post_side_meta">
-              
+            
 <div class="sidebar-wrapper box-shadow-wrapper bg-color">
   <div class="sidebar-item">
     <img class="site-author-image right-motion" src="/images/avatar.png"/>
@@ -245,199 +244,6 @@
   </div>
 
 </div>
-            </div>
-            <div class="post-toc sidebar-body-active" id="post_toc" style="opacity: 1;">
-              <div class="toc-box right-motion">
-  <div class="toc-wrapper auto-number auto"
-    id="toc_wrapper">
-    <ul class="markdownIt-TOC">
-<li>
-<ul>
-<li>
-<ul>
-<li><a href="#cascade%E5%B1%9E%E6%80%A7-%E6%8C%87%E5%AE%9A%E7%BA%A7%E8%81%94%E6%93%8D%E4%BD%9C%E7%9A%84%E8%A1%8C%E4%B8%BA%E5%8F%AF%E5%A4%9A%E9%80%89">cascade属性： 指定级联操作的行为(可多选)</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-  </div>
-</div>
-
-<script>
-
-  let lastTop = 0, lList = [], hList = [], postBody, lastIndex = -1;
-  let active = 'active-show', activeClass = 'active-current';
-  let tocWrapper = document.querySelector('#toc_wrapper');
-  let tocContent = tocWrapper.children[0];
-  let autoNumber = tocWrapper && tocWrapper.classList.contains('auto-number');
-
-  function addTocNumber(elem, deep) {
-    if (!elem) {
-      return;
-    }
-    let prop = elem.__proto__;
-
-    if (prop === HTMLUListElement.prototype) {
-      for (let i = 0; i < elem.children.length; i++) {
-        addTocNumber(elem.children[i], deep + (i + 1) + '.');
-      }
-    } else if (prop === HTMLLIElement.prototype) {
-      // 保存li元素
-      if (elem.children[0] && elem.children[0].__proto__ === HTMLAnchorElement.prototype) {
-        lList.push(elem);
-      }
-      for (let i = 0; i < elem.children.length; i++) {
-        let cur = elem.children[i];
-        if (cur.__proto__ === HTMLAnchorElement.prototype) {
-          if (autoNumber) {
-            cur.text = deep + ' ' + cur.text;
-          }
-        } else if (cur.__proto__ === HTMLUListElement.prototype) {
-          addTocNumber(cur, deep);
-        }
-      }
-    }
-  }
-
-  function removeParentActiveClass() {
-    let parents = tocContent.querySelectorAll('.' + active)
-    parents.forEach(function (elem) {
-      elem.classList.remove(active);
-    });
-  }
-
-  function addActiveClass(index) {
-    if (index >= 0 && index < hList.length) {
-      lList[index].classList.add(activeClass);
-    }
-  }
-
-  function removeActiveClass(index) {
-    if (index >= 0 && index < hList.length) {
-      lList[index].classList.remove(activeClass);
-    }
-  }
-
-  function addActiveLiElemment(elem, parent) {
-    if (!elem || elem === parent) {
-      return;
-    } else {
-      if (elem.__proto__ === HTMLLIElement.prototype) {
-        elem.classList.add(active);
-      }
-      addActiveLiElemment(elem.parentElement, parent);
-    }
-  }
-
-  function showToc() {
-    if (tocWrapper) {
-      postBody = document.querySelector('#post_body');
-      for (let i = 0; i < postBody.children.length; i++) {
-        if (postBody.children[i].__proto__ === HTMLHeadingElement.prototype) {
-          hList.push(postBody.children[i]);
-        }
-      }
-      if (tocWrapper.classList.contains('compress')) {
-        tocContent.classList.add('closed');
-      } else if (tocWrapper.classList.contains('no_compress')) {
-        tocContent.classList.add('expanded');
-      } else {
-        if (hList.length > 10) {
-          active = 'active-hidden'
-          tocContent.classList.add('closed');
-        } else {
-          tocContent.classList.add('expanded');
-        }
-      }
-    }
-  }
-
-  (function () {
-    // 处理不是从#一级标题开始目录
-    if (tocContent.children.length === 1 && tocContent.children[0].__proto__ === HTMLLIElement.prototype) {
-      let con = tocContent.children[0].children[0];
-      tocContent.innerHTML = con.innerHTML;
-    }
-    let markdownItTOC = document.querySelector('.markdownIt-TOC');
-    let innerHeight = window.innerHeight;
-    markdownItTOC.style = `max-height: ${innerHeight - 80 > 0 ? innerHeight - 80 : innerHeight}px`
-    addTocNumber(tocContent, '');
-  })();
-
-  document.addEventListener('scroll', function (e) {
-    if (lList.length <= 0) {
-      return;
-    }
-    let scrollTop = document.scrollingElement.scrollTop + 10;
-    let dir;
-
-    if (lastTop - scrollTop > 0) {
-      dir = 'up';
-    } else {
-      dir = 'down';
-    }
-
-    lastTop = scrollTop;
-    if (scrollTop <= 0) {
-      if (lastIndex >= 0 && lastIndex < hList.length) {
-        lList[lastIndex].classList.remove(activeClass);
-      }
-      return;
-    }
-
-    let current = 0, hasFind = false;
-    for (let i = 0; i < hList.length; i++) {
-      if (hList[i].offsetTop > scrollTop) {
-        current = i;
-        hasFind = true;
-        break;
-      }
-    }
-    if (!hasFind && scrollTop > lList[lList.length - 1].offsetTop) {
-      current = hList.length - 1;
-    } else {
-      current--;
-    }
-    if (dir === 'down') {
-      if (current > lastIndex) {
-        addActiveClass(current);
-        removeActiveClass(lastIndex)
-        lastIndex = current;
-        removeParentActiveClass();
-        lList[current] && addActiveLiElemment(lList[current].parentElement, tocContent);
-      }
-    } else {
-      if (current < lastIndex) {
-        addActiveClass(current);
-        removeActiveClass(lastIndex);
-        lastIndex = current;
-        removeParentActiveClass();
-        lList[current] && addActiveLiElemment(lList[current].parentElement, tocContent);
-      }
-    }
-  });
-
-
-  window.addEventListener('load', function () {
-    showToc();
-    document.querySelector('#sidebar').style = 'display: block;';
-    tocWrapper.classList.add('toc-active');
-    setTimeout(function () {
-      if ("createEvent" in document) {
-        let evt = document.createEvent("HTMLEvents");
-        evt.initEvent("scroll", false, true);
-        document.dispatchEvent(evt);
-      }
-      else {
-        document.fireEvent("scroll");
-      }
-    }, 500)
-  })
-
-</script>
-            </div>
           
         
       </div>
@@ -525,8 +331,8 @@
           <div class="section bg-color post post-page">
             <section class="post-header">
   <h1 class="post-title">
-    <a class="post-title-link" href="https://cm940324.github.io/post/hibernate-cascadetype/">
-      hibernate CascadeType属性说明
+    <a class="post-title-link" href="https://cm940324.github.io/post/excel-args/">
+      @Excel参数大全
     </a>
   </h1>
   <div class="post-meta">
@@ -534,7 +340,7 @@
     <span class="meta-item pc-show">
       <i class="fa fa-calendar-o"></i>
       <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-06-07 14:31:17">2021-06-07</span>
+      <span class="publish-time" data-t="2021-07-19 17:05:37">2021-07-19</span>
       <span class="post-meta-divider pc-show">|</span>
     </span>
     
@@ -543,8 +349,8 @@
       <span class="pc-show language" data-lan="category-in">分类于</span>
       
       
-      <a href="https://cm940324.github.io/tag/_LiUY5oMZ/">
-        <span>Hibernate</span>
+      <a href="https://cm940324.github.io/tag/BuwDjq1zh0/">
+        <span>JAVA</span>
       </a>
       
       
@@ -558,12 +364,12 @@
     <span class="meta-item">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-file-word-o"></i>
-      <span>334<span class="pc-show language" data-lan="words">字数</span></span>
+      <span>303<span class="pc-show language" data-lan="words">字数</span></span>
     </span>
     
     
     
-    <span id="/post/hibernate-cascadetype/" data-flag-title="hibernate CascadeType属性说明" class="meta-item pc-show leancloud_visitors">
+    <span id="/post/excel-args/" data-flag-title="@Excel参数大全" class="meta-item pc-show leancloud_visitors">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-eye"></i>
       <span><span class="language" data-lan="view">浏览量</span>：<span class="leancloud-visitors-count"></span></span>
@@ -572,20 +378,126 @@
   </div>
 </section>
             <div class="post-body next-md-body" id="post_body">
-              <h3 id="cascade属性-指定级联操作的行为可多选">cascade属性： 指定级联操作的行为(可多选)</h3>
-<ul>
-<li><strong>CascadeType.PERSIST 级联新增（又称级联保存）：</strong><br>
-获取A对象里也同时也重新获取最新的B时的对象。即会重新查询数据库里的最新数据，并且，只有A类新增时，会级联B对象新增。若B对象在数据库存（跟新）在则抛异常（让B变为持久态），对应EntityManager的presist方法,调用JPA规范中的persist()，不适用于Hibernate的save()方法</li>
-<li><strong>CascadeType.MERGE 级联合并（又称级联更新）</strong><br>
-指A类新增或者变化，会级联B对象（新增或者变化） ，对应EntityManager的merge方法，调用JPA规范中merge()时，不适用于Hibernate的update()方法</li>
-<li><strong>CascadeType.REMOVE 级联删除</strong><br>
-只有A类删除时，会级联删除B类,即在设置的那一端进行删除时，另一端才会级联删除，对应EntityManager的remove方法，调用JPA规范中的remove()时，适用于Hibernate的delete()方法</li>
-<li><strong>CascadeType.REFRESH 级联刷新</strong><br>
-获取order（一或多）对象里也同时也重新获取最新的items（多）的对象，对应EntityManager的refresh(object)，调用JPA规范中的refresh()时，适用于Hibernate的flush()方法</li>
-<li><strong>CascadeType.ALL</strong><br>
-包含所有持久化方法</li>
-</ul>
-<p><strong>综上：大多数情况用CascadeType.MERGE就能达到级联跟新又不报错，用CascadeType.ALL时要斟酌下CascadeType.REMOVE</strong></p>
+              <table>
+<thead>
+<tr>
+<th>参数</th>
+<th>类型</th>
+<th>默认值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>sort</td>
+<td>int</td>
+<td>Integer.MAX_VALUE</td>
+<td>导出时在excel中排序</td>
+</tr>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>空</td>
+<td>导出到Excel中的名字</td>
+</tr>
+<tr>
+<td>dateFormat</td>
+<td>String</td>
+<td>空</td>
+<td>日期格式, 如: yyyy-MM-dd</td>
+</tr>
+<tr>
+<td>dictType</td>
+<td>String</td>
+<td>空</td>
+<td>如果是字典类型，请设置字典的type值 (如: sys_user_sex)</td>
+</tr>
+<tr>
+<td>readConverterExp</td>
+<td>String</td>
+<td>空</td>
+<td>读取内容转表达式 (如: 0=男,1=女,2=未知)</td>
+</tr>
+<tr>
+<td>separator</td>
+<td>String</td>
+<td>,</td>
+<td>分隔符，读取字符串组内容</td>
+</tr>
+<tr>
+<td>scale</td>
+<td>int</td>
+<td>-1</td>
+<td>BigDecimal 精度 默认:-1(默认不开启BigDecimal格式化)</td>
+</tr>
+<tr>
+<td>roundingMode</td>
+<td>int</td>
+<td>BigDecimal.ROUND_HALF_EVEN</td>
+<td>BigDecimal 舍入规则 默认:BigDecimal.ROUND_HALF_EVEN</td>
+</tr>
+<tr>
+<td>columnType</td>
+<td>Enum</td>
+<td>Type.STRING</td>
+<td>导出类型（0数字 1字符串 2图片）</td>
+</tr>
+<tr>
+<td>height</td>
+<td>String</td>
+<td>14</td>
+<td>导出时在excel中每个列的高度 单位为字符</td>
+</tr>
+<tr>
+<td>width</td>
+<td>String</td>
+<td>16</td>
+<td>导出时在excel中每个列的宽 单位为字符</td>
+</tr>
+<tr>
+<td>suffix</td>
+<td>String</td>
+<td>空</td>
+<td>文字后缀,如% 90 变成90%</td>
+</tr>
+<tr>
+<td>defaultValue</td>
+<td>String</td>
+<td>空</td>
+<td>当值为空时,字段的默认值</td>
+</tr>
+<tr>
+<td>prompt</td>
+<td>String</td>
+<td>空</td>
+<td>提示信息</td>
+</tr>
+<tr>
+<td>combo</td>
+<td>String</td>
+<td>Null</td>
+<td>设置只能选择不能输入的列内容</td>
+</tr>
+<tr>
+<td>targetAttr</td>
+<td>String</td>
+<td>空</td>
+<td>另一个类中的属性名称,支持多级获取,以小数点隔开</td>
+</tr>
+<tr>
+<td>isStatistics</td>
+<td>boolean</td>
+<td>false</td>
+<td>是否自动统计数据,在最后追加一行统计数据总和</td>
+</tr>
+<tr>
+<td>type</td>
+<td>Enum</td>
+<td>Type.ALL</td>
+<td>字段类型（0：导出导入；1：仅导出；2：仅导入）</td>
+</tr>
+</tbody>
+</table>
 
             </div>
             
@@ -598,7 +510,7 @@
     </li>
     <li class="post-copyright-link">
       <strong class="language" data-lan="link">本文链接：</strong>
-      <a href="https://cm940324.github.io/post/hibernate-cascadetype/" title="hibernate CascadeType属性说明">https://cm940324.github.io/post/hibernate-cascadetype/</a>
+      <a href="https://cm940324.github.io/post/excel-args/" title="@Excel参数大全">https://cm940324.github.io/post/excel-args/</a>
     </li>
     <li class="post-copyright-license">
       <strong class="language" data-lan="copyright">版权声明： </strong>
@@ -607,21 +519,17 @@
   </ul>
   <div class="tags">
     
-      <a href="https://cm940324.github.io/tag/_LiUY5oMZ/"># Hibernate</a>
+      <a href="https://cm940324.github.io/tag/BuwDjq1zh0/"># JAVA</a>
     
   </div>
   <div class="nav">
     <div class="nav-prev">
       
-        <i class="fa fa-chevron-left"></i>
-        <a class="nav-pc-next" title="微服务：服务注册发现+ API 网关+配置中心+配置中心+服务跟踪" href="https://cm940324.github.io/post/weifuwu-ques/">微服务：服务注册发现+ API 网关+配置中心+配置中心+服务跟踪</a class="nav-pc-next">
-        <a class="nav-mobile-prev" title="微服务：服务注册发现+ API 网关+配置中心+配置中心+服务跟踪" href="https://cm940324.github.io/post/weifuwu-ques/">上一篇</a>
-      
     </div>
     <div class="nav-next">
       
-        <a class="nav-pc-next" title="PostgreSQL踩坑记录" href="https://cm940324.github.io/post/postgresql-ques/">PostgreSQL踩坑记录</a>
-        <a class="nav-mobile-next" title="PostgreSQL踩坑记录" href="https://cm940324.github.io/post/postgresql-ques/">下一篇</a>
+        <a class="nav-pc-next" title="JPA踩坑记录" href="https://cm940324.github.io/post/jpa-qa/">JPA踩坑记录</a>
+        <a class="nav-mobile-next" title="JPA踩坑记录" href="https://cm940324.github.io/post/jpa-qa/">下一篇</a>
         <i class="fa fa-chevron-right"></i>
       
     </div>

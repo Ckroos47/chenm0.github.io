@@ -9,7 +9,7 @@
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
 <title>微服务的数据库设计 | Oasis</title>
-<link rel="shortcut icon" href="/favicon.ico?v=1624515737986">
+<link rel="shortcut icon" href="/favicon.ico?v=1626685577535">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
 <link
@@ -208,7 +208,7 @@
     <div class="sidebar-item-box">
       <a href="/archives/">
         
-        <span class="site-item-stat-count">20</span>
+        <span class="site-item-stat-count">21</span>
         <span class="site-item-stat-name language" data-lan="article">文章</span>
       </a>
     </div>
@@ -1656,6 +1656,131 @@
       <hr>
     </div>
     <div class="result" id="result">
+      
+      <div class="item">
+        <a class="result-title" style="opacity: 0;" href="https://cm940324.github.io/post/excel-args/"" data-c="
+          &lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;参数&lt;/th&gt;
+&lt;th&gt;类型&lt;/th&gt;
+&lt;th&gt;默认值&lt;/th&gt;
+&lt;th&gt;描述&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;sort&lt;/td&gt;
+&lt;td&gt;int&lt;/td&gt;
+&lt;td&gt;Integer.MAX_VALUE&lt;/td&gt;
+&lt;td&gt;导出时在excel中排序&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;name&lt;/td&gt;
+&lt;td&gt;String&lt;/td&gt;
+&lt;td&gt;空&lt;/td&gt;
+&lt;td&gt;导出到Excel中的名字&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;dateFormat&lt;/td&gt;
+&lt;td&gt;String&lt;/td&gt;
+&lt;td&gt;空&lt;/td&gt;
+&lt;td&gt;日期格式, 如: yyyy-MM-dd&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;dictType&lt;/td&gt;
+&lt;td&gt;String&lt;/td&gt;
+&lt;td&gt;空&lt;/td&gt;
+&lt;td&gt;如果是字典类型，请设置字典的type值 (如: sys_user_sex)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;readConverterExp&lt;/td&gt;
+&lt;td&gt;String&lt;/td&gt;
+&lt;td&gt;空&lt;/td&gt;
+&lt;td&gt;读取内容转表达式 (如: 0=男,1=女,2=未知)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;separator&lt;/td&gt;
+&lt;td&gt;String&lt;/td&gt;
+&lt;td&gt;,&lt;/td&gt;
+&lt;td&gt;分隔符，读取字符串组内容&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;scale&lt;/td&gt;
+&lt;td&gt;int&lt;/td&gt;
+&lt;td&gt;-1&lt;/td&gt;
+&lt;td&gt;BigDecimal 精度 默认:-1(默认不开启BigDecimal格式化)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;roundingMode&lt;/td&gt;
+&lt;td&gt;int&lt;/td&gt;
+&lt;td&gt;BigDecimal.ROUND_HALF_EVEN&lt;/td&gt;
+&lt;td&gt;BigDecimal 舍入规则 默认:BigDecimal.ROUND_HALF_EVEN&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;columnType&lt;/td&gt;
+&lt;td&gt;Enum&lt;/td&gt;
+&lt;td&gt;Type.STRING&lt;/td&gt;
+&lt;td&gt;导出类型（0数字 1字符串 2图片）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;height&lt;/td&gt;
+&lt;td&gt;String&lt;/td&gt;
+&lt;td&gt;14&lt;/td&gt;
+&lt;td&gt;导出时在excel中每个列的高度 单位为字符&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;width&lt;/td&gt;
+&lt;td&gt;String&lt;/td&gt;
+&lt;td&gt;16&lt;/td&gt;
+&lt;td&gt;导出时在excel中每个列的宽 单位为字符&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;suffix&lt;/td&gt;
+&lt;td&gt;String&lt;/td&gt;
+&lt;td&gt;空&lt;/td&gt;
+&lt;td&gt;文字后缀,如% 90 变成90%&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;defaultValue&lt;/td&gt;
+&lt;td&gt;String&lt;/td&gt;
+&lt;td&gt;空&lt;/td&gt;
+&lt;td&gt;当值为空时,字段的默认值&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;prompt&lt;/td&gt;
+&lt;td&gt;String&lt;/td&gt;
+&lt;td&gt;空&lt;/td&gt;
+&lt;td&gt;提示信息&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;combo&lt;/td&gt;
+&lt;td&gt;String&lt;/td&gt;
+&lt;td&gt;Null&lt;/td&gt;
+&lt;td&gt;设置只能选择不能输入的列内容&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;targetAttr&lt;/td&gt;
+&lt;td&gt;String&lt;/td&gt;
+&lt;td&gt;空&lt;/td&gt;
+&lt;td&gt;另一个类中的属性名称,支持多级获取,以小数点隔开&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;isStatistics&lt;/td&gt;
+&lt;td&gt;boolean&lt;/td&gt;
+&lt;td&gt;false&lt;/td&gt;
+&lt;td&gt;是否自动统计数据,在最后追加一行统计数据总和&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;type&lt;/td&gt;
+&lt;td&gt;Enum&lt;/td&gt;
+&lt;td&gt;Type.ALL&lt;/td&gt;
+&lt;td&gt;字段类型（0：导出导入；1：仅导出；2：仅导入）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+">@Excel参数大全</a>
+      </div>
       
       <div class="item">
         <a class="result-title" style="opacity: 0;" href="https://cm940324.github.io/post/jpa-qa/"" data-c="
