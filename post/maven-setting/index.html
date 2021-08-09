@@ -8,7 +8,7 @@
 <meta name="keywords" content="个人博客">
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
-<title>Thymeleaf常用属性 | Oasis</title>
+<title>Maven setting | Oasis</title>
 <link rel="shortcut icon" href="/favicon.ico?v=1628471844793">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
@@ -38,8 +38,8 @@
 
 
 
-  <meta name="description" content="Thymeleaf常用属性" />
-  <meta name="keywords" content="Thymeleaf" />
+  <meta name="description" content="Maven setting" />
+  <meta name="keywords" content="Maven" />
 </head>
 
 <body>
@@ -190,8 +190,7 @@
       <div class="sidebar-body pisces" id="sidebar_body">
         
           
-            <div class="post-side-meta" id="post_side_meta">
-              
+            
 <div class="sidebar-wrapper box-shadow-wrapper bg-color">
   <div class="sidebar-item">
     <img class="site-author-image right-motion" src="/images/avatar.png"/>
@@ -245,203 +244,6 @@
   </div>
 
 </div>
-            </div>
-            <div class="post-toc sidebar-body-active" id="post_toc" style="opacity: 1;">
-              <div class="toc-box right-motion">
-  <div class="toc-wrapper auto-number auto"
-    id="toc_wrapper">
-    <ul class="markdownIt-TOC">
-<li><a href="#thaction"><strong>th:action</strong></a></li>
-<li><a href="#theach"><strong>th:each</strong></a></li>
-<li><a href="#thfield"><strong>th:field</strong></a></li>
-<li><a href="#thhref"><strong>th:href</strong></a></li>
-<li><a href="#thid"><strong>th:id</strong></a></li>
-<li><a href="#thif"><strong>th:if</strong></a></li>
-<li><a href="#thinclude"><strong>th:include</strong></a></li>
-<li><a href="#thfragment"><strong>th:fragment</strong></a></li>
-<li><a href="#thobject"><strong>th:object</strong></a></li>
-<li><a href="#thsrc"><strong>th:src</strong></a></li>
-<li><a href="#threplace"><strong>th:replace</strong></a></li>
-<li><a href="#thtext"><strong>th:text</strong></a></li>
-<li><a href="#thvalue"><strong>th:value</strong></a></li>
-</ul>
-
-  </div>
-</div>
-
-<script>
-
-  let lastTop = 0, lList = [], hList = [], postBody, lastIndex = -1;
-  let active = 'active-show', activeClass = 'active-current';
-  let tocWrapper = document.querySelector('#toc_wrapper');
-  let tocContent = tocWrapper.children[0];
-  let autoNumber = tocWrapper && tocWrapper.classList.contains('auto-number');
-
-  function addTocNumber(elem, deep) {
-    if (!elem) {
-      return;
-    }
-    let prop = elem.__proto__;
-
-    if (prop === HTMLUListElement.prototype) {
-      for (let i = 0; i < elem.children.length; i++) {
-        addTocNumber(elem.children[i], deep + (i + 1) + '.');
-      }
-    } else if (prop === HTMLLIElement.prototype) {
-      // 保存li元素
-      if (elem.children[0] && elem.children[0].__proto__ === HTMLAnchorElement.prototype) {
-        lList.push(elem);
-      }
-      for (let i = 0; i < elem.children.length; i++) {
-        let cur = elem.children[i];
-        if (cur.__proto__ === HTMLAnchorElement.prototype) {
-          if (autoNumber) {
-            cur.text = deep + ' ' + cur.text;
-          }
-        } else if (cur.__proto__ === HTMLUListElement.prototype) {
-          addTocNumber(cur, deep);
-        }
-      }
-    }
-  }
-
-  function removeParentActiveClass() {
-    let parents = tocContent.querySelectorAll('.' + active)
-    parents.forEach(function (elem) {
-      elem.classList.remove(active);
-    });
-  }
-
-  function addActiveClass(index) {
-    if (index >= 0 && index < hList.length) {
-      lList[index].classList.add(activeClass);
-    }
-  }
-
-  function removeActiveClass(index) {
-    if (index >= 0 && index < hList.length) {
-      lList[index].classList.remove(activeClass);
-    }
-  }
-
-  function addActiveLiElemment(elem, parent) {
-    if (!elem || elem === parent) {
-      return;
-    } else {
-      if (elem.__proto__ === HTMLLIElement.prototype) {
-        elem.classList.add(active);
-      }
-      addActiveLiElemment(elem.parentElement, parent);
-    }
-  }
-
-  function showToc() {
-    if (tocWrapper) {
-      postBody = document.querySelector('#post_body');
-      for (let i = 0; i < postBody.children.length; i++) {
-        if (postBody.children[i].__proto__ === HTMLHeadingElement.prototype) {
-          hList.push(postBody.children[i]);
-        }
-      }
-      if (tocWrapper.classList.contains('compress')) {
-        tocContent.classList.add('closed');
-      } else if (tocWrapper.classList.contains('no_compress')) {
-        tocContent.classList.add('expanded');
-      } else {
-        if (hList.length > 10) {
-          active = 'active-hidden'
-          tocContent.classList.add('closed');
-        } else {
-          tocContent.classList.add('expanded');
-        }
-      }
-    }
-  }
-
-  (function () {
-    // 处理不是从#一级标题开始目录
-    if (tocContent.children.length === 1 && tocContent.children[0].__proto__ === HTMLLIElement.prototype) {
-      let con = tocContent.children[0].children[0];
-      tocContent.innerHTML = con.innerHTML;
-    }
-    let markdownItTOC = document.querySelector('.markdownIt-TOC');
-    let innerHeight = window.innerHeight;
-    markdownItTOC.style = `max-height: ${innerHeight - 80 > 0 ? innerHeight - 80 : innerHeight}px`
-    addTocNumber(tocContent, '');
-  })();
-
-  document.addEventListener('scroll', function (e) {
-    if (lList.length <= 0) {
-      return;
-    }
-    let scrollTop = document.scrollingElement.scrollTop + 10;
-    let dir;
-
-    if (lastTop - scrollTop > 0) {
-      dir = 'up';
-    } else {
-      dir = 'down';
-    }
-
-    lastTop = scrollTop;
-    if (scrollTop <= 0) {
-      if (lastIndex >= 0 && lastIndex < hList.length) {
-        lList[lastIndex].classList.remove(activeClass);
-      }
-      return;
-    }
-
-    let current = 0, hasFind = false;
-    for (let i = 0; i < hList.length; i++) {
-      if (hList[i].offsetTop > scrollTop) {
-        current = i;
-        hasFind = true;
-        break;
-      }
-    }
-    if (!hasFind && scrollTop > lList[lList.length - 1].offsetTop) {
-      current = hList.length - 1;
-    } else {
-      current--;
-    }
-    if (dir === 'down') {
-      if (current > lastIndex) {
-        addActiveClass(current);
-        removeActiveClass(lastIndex)
-        lastIndex = current;
-        removeParentActiveClass();
-        lList[current] && addActiveLiElemment(lList[current].parentElement, tocContent);
-      }
-    } else {
-      if (current < lastIndex) {
-        addActiveClass(current);
-        removeActiveClass(lastIndex);
-        lastIndex = current;
-        removeParentActiveClass();
-        lList[current] && addActiveLiElemment(lList[current].parentElement, tocContent);
-      }
-    }
-  });
-
-
-  window.addEventListener('load', function () {
-    showToc();
-    document.querySelector('#sidebar').style = 'display: block;';
-    tocWrapper.classList.add('toc-active');
-    setTimeout(function () {
-      if ("createEvent" in document) {
-        let evt = document.createEvent("HTMLEvents");
-        evt.initEvent("scroll", false, true);
-        document.dispatchEvent(evt);
-      }
-      else {
-        document.fireEvent("scroll");
-      }
-    }, 500)
-  })
-
-</script>
-            </div>
           
         
       </div>
@@ -529,8 +331,8 @@
           <div class="section bg-color post post-page">
             <section class="post-header">
   <h1 class="post-title">
-    <a class="post-title-link" href="https://cm940324.github.io/post/thymeleaf/">
-      Thymeleaf常用属性
+    <a class="post-title-link" href="https://cm940324.github.io/post/maven-setting/">
+      Maven setting
     </a>
   </h1>
   <div class="post-meta">
@@ -538,7 +340,7 @@
     <span class="meta-item pc-show">
       <i class="fa fa-calendar-o"></i>
       <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-05-21 17:12:09">2021-05-21</span>
+      <span class="publish-time" data-t="2021-08-09 09:16:36">2021-08-09</span>
       <span class="post-meta-divider pc-show">|</span>
     </span>
     
@@ -547,8 +349,8 @@
       <span class="pc-show language" data-lan="category-in">分类于</span>
       
       
-      <a href="https://cm940324.github.io/tag/IviFwFxex/">
-        <span>Thymeleaf</span>
+      <a href="https://cm940324.github.io/tag/u1uivsuho/">
+        <span>Maven</span>
       </a>
       
       
@@ -557,17 +359,17 @@
     
     <span class="meta-item">
       <i class="fa fa-clock-o"></i>
-      <span>5<span class="language" data-lan="minute">分钟</span></span>
+      <span>1<span class="language" data-lan="minute">分钟</span></span>
     </span>
     <span class="meta-item">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-file-word-o"></i>
-      <span>836<span class="pc-show language" data-lan="words">字数</span></span>
+      <span>108<span class="pc-show language" data-lan="words">字数</span></span>
     </span>
     
     
     
-    <span id="/post/thymeleaf/" data-flag-title="Thymeleaf常用属性" class="meta-item pc-show leancloud_visitors">
+    <span id="/post/maven-setting/" data-flag-title="Maven setting" class="meta-item pc-show leancloud_visitors">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-eye"></i>
       <span><span class="language" data-lan="view">浏览量</span>：<span class="leancloud-visitors-count"></span></span>
@@ -576,153 +378,177 @@
   </div>
 </section>
             <div class="post-body next-md-body" id="post_body">
-              <p>如需了解Thymeleaf 基本表达式，请参考《<a href="http://www.cnblogs.com/hjwublog/p/5051632.html">Thymeleaf </a><a href="http://www.cnblogs.com/hjwublog/p/5051632.html">基本表达式</a>》一文</p>
-<h1 id="thaction"><strong>th:action</strong></h1>
-<p>定义后台控制器路径，类似<form>标签的action属性。</p>
-<p>例如：</p>
-<pre><code>&lt;form id=&quot;login-form&quot; th:action=&quot;@{/login}&quot;&gt;...&lt;/form&gt;
-</code></pre>
-<h1 id="theach"><strong>th:each</strong></h1>
-<p>对象遍历，功能类似jstl中的&lt;c:forEach&gt;标签。</p>
-<p>例如：</p>
-<pre><code>public class StudentRequestBean {
-
-private List&lt;Student&gt; students;
-
-...
-
-}
-
-public class Student implements Serializable{
-
-private String firstName;
-
-private String school;
-
-...}
-
-@RequestMapping(value = &quot;/addStudent&quot;, method = RequestMethod.POST)
-
-public String addStudent(@ModelAttribute(value = &quot;stuReqBean&quot;) 
-
-StudentRequestBean stuReqBean，ModelMap model) {...}
-</code></pre>
-<form id="login-form" th:action="@{/addStudent}" 
-```
-th:object="${stuReqBean}" method="POST">
-<div class="student" th:each="stuIter,rowStat:${stuReqBean.students}">
-<p>&lt;input type=&quot;text&quot; class=&quot;firstName&quot; value=&quot;&quot;</p>
-<p>th:field=&quot;*{students[<strong>${rowStat.index}</strong>].firstName}&quot;&gt;</input></p>
-<p>&lt;input type=&quot;text&quot; class=&quot;school&quot; value=&quot;&quot;</p>
-<p>th:field=&quot;*{students[<strong>${rowStat.index}</strong>].school}&quot;&gt;</input></p>
-<p>...</p>
-</div>
-</form>
-```
-<p>上面的例子中通过选择表达式*{}既能将表单绑定到后台的StudentRequestBean中的集合属性students，也能将Servlet上下文中的StudentRequestBean中的List类型的students变量回显，回显时通过th:each进行遍历。</p>
-<p>注意1：绑定集合属性元素下标的用法*{students[<strong>${rowStat.index}</strong>].firstName}</p>
-<p>注意2：如果List<Student> students为null，页面将无法显示表单，后台必须给students初始化一个值，即:</p>
-<pre><code>List&lt;Student &gt; stus = new ArrayList&lt;Student &gt;();
-
-stus .add(new Student ());
-
-StudentRequestBean.setStudents(stus );
-</code></pre>
-<p>注意3：stuIter代表students的迭代器</p>
-<h1 id="thfield"><strong>th:field</strong></h1>
-<p>常用于表单字段绑定。通常与th:object一起使用。 属性绑定、集合绑定。</p>
-<p>如：</p>
-<pre><code>public class LoginBean implements Serializable{...
-
-private String username;
-
-private List&lt;User&gt; user;
-
-...}
-
-
-public class User implements Serializable{...
-
-private String username;;
-
-...}
-
-
-@RequestMapping(value = &quot;/login&quot;, method = RequestMethod.POST)
-
-public String login(@ModelAttribute(value = &quot;loginBean&quot;) LoginBean loginBean，ModelMap model) {..}
-</code></pre>
-<pre><code>&lt;form id=&quot;login-form&quot; th:action=&quot;@{/login}&quot; th:object=&quot;${loginBean}&quot;&gt;...
-
-&lt;input type=&quot;text&quot; value=&quot;&quot; th:field=&quot;*{username}&quot;&gt;&lt;/input&gt;
-
-&lt;input type=&quot;text&quot; value=&quot;&quot; th:field=&quot;*{user[0].username}&quot;&gt;&lt;/input&gt;
-
-&lt;/form&gt;
-</code></pre>
-<h1 id="thhref"><strong>th:href</strong></h1>
-<p>定义超链接，类似<a>标签的href 属性。value形式为@{/logout}</p>
-<p>例如：</p>
-<pre><code>&lt;a th:href=&quot;@{/logout}&quot; class=&quot;signOut&quot;&gt;&lt;/a&gt;
-</code></pre>
-<h1 id="thid"><strong>th:id</strong></h1>
-<p>div id声明，类似html标签中的id属性。</p>
-<p>例如：</p>
-<pre><code>&lt;div class=&quot;student&quot; th:id = &quot;stu+(${rowStat.index}+1)&quot;&gt;&lt;/div&gt;
-</code></pre>
-<h1 id="thif"><strong>th:if</strong></h1>
-<p>条件判断。</p>
-<p>例如：</p>
-<pre><code>&lt;div th:if=&quot;${rowStat.index} == 0&quot;&gt;... do something ...&lt;/div&gt;
-</code></pre>
-<h1 id="thinclude"><strong>th:include</strong></h1>
-<p>见th:fragment</p>
-<h1 id="thfragment"><strong>th:fragment</strong></h1>
-<p>声明定义该属性的div为模板片段，常用与头文件、页尾文件的引入。常与th:include，th:replace一起使用。</p>
-<p>例如：</p>
-<p>声明模板片段/WEBINF/templates/footer. html</p>
-<pre><code>&lt;div th: fragment=&quot; copy&quot; &gt;
-
-© 2011 The Good Thymes Virtual Grocery
-
-&lt;/div&gt;
-</code></pre>
-<p>引入模板片段</p>
-<pre><code>&lt;div th: include=&quot; /templates/footer : : copy&quot; &gt;&lt;/div&gt;
-
-&lt;div th: replace=&quot; /templates/footer : : copy&quot; &gt;&lt;/div&gt;
-</code></pre>
-<h1 id="thobject"><strong>th:object</strong></h1>
-<p>用于表单数据对象绑定，将表单绑定到后台controller的一个JavaBean参数。常与th:field一起使用进行表单数据绑定。</p>
-<p>例如：</p>
-<pre><code>public class LoginBean implements Serializable{...}
-
-
-@RequestMapping(value = &quot;/login&quot;, method = RequestMethod.POST)
-
-public String login(@ModelAttribute(value = &quot;loginBean&quot;) LoginBean loginBean，ModelMap model) {...}
-</code></pre>
-<pre><code>&lt;form id=&quot;login-form&quot; th:action=&quot;@{/login}&quot; th:object=&quot;${loginBean}&quot;&gt;...&lt;/form&gt;
-</code></pre>
-<h1 id="thsrc"><strong>th:src</strong></h1>
-<p>用于外部资源引入，类似于<script>标签的src属性，常与@{}一起使用。</p>
-<p>例如：</p>
-<pre><code>&lt;script th:src=&quot;@{/resources/js/jquery/jquery.json-2.4.min.js}&quot;
-</code></pre>
-<h1 id="threplace"><strong>th:replace</strong></h1>
-<p>见th:fragment</p>
-<h1 id="thtext"><strong>th:text</strong></h1>
-<p>文本显示。</p>
-<p>例如：</p>
-<pre><code>&lt;td class=&quot;text&quot; th:text=&quot;${username}&quot; &gt;&lt;/td&gt;
-</code></pre>
-<h1 id="thvalue"><strong>th:value</strong></h1>
-<p>用于标签复制，类似<option>标签的value属性。</p>
-<p>例如:</p>
-<pre><code>&lt;option th:value=&quot;Adult&quot;&gt;Adult&lt;/option&gt;
-
-&lt;input  id=&quot;msg&quot; type=&quot;hidden&quot; th:value=&quot;${msg}&quot; /&gt;
-</code></pre>
+              <?xml version="1.0" encoding="UTF-8"?> 
+<p><settings xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd"></p>
+ <!--本地仓库。该值表示构建系统本地仓库的路径。其默认值为~/.m2/repository。 --> 
+<p><localRepository>usr/local/maven</localRepository></p>
+ <!--Maven是否需要和用户交互以获得输入。如果Maven需要和用户交互以获得输入，则设置成true，反之则应为false。默认为true。--> 
+<p><interactiveMode>true</interactiveMode></p>
+ <!--Maven是否需要使用plugin-registry.xml文件来管理插件版本。如果需要让Maven使用文件~/.m2/plugin-registry.xml来管理插件版本，则设为true。默认为false。--> 
+<p><usePluginRegistry>false</usePluginRegistry></p>
+ <!--表示Maven是否需要在离线模式下运行。如果构建系统需要在离线模式下运行，则为true，默认为false。当由于网络设置原因或者安全因素，构建服务器不能连接远程仓库的时候，该配置就十分有用。 --> 
+<p><offline>false</offline></p>
+ <!--当插件的组织Id（groupId）没有显式提供时，供搜寻插件组织Id（groupId）的列表。该元素包含一个pluginGroup元素列表，每个子元素包含了一个组织Id（groupId）。当我们使用某个插件，并且没有在命令行为其提供组织Id（groupId）的时候，Maven就会使用该列表。默认情况下该列表包含了org.apache.maven.plugins。 --> 
+ <pluginGroups> 
+ <!--plugin的组织Id（groupId） --> 
+ <pluginGroup>org.codehaus.mojo</pluginGroup> 
+ </pluginGroups> 
+ <!--用来配置不同的代理，多代理profiles 可以应对笔记本或移动设备的工作环境：通过简单的设置profile id就可以很容易的更换整个代理配置。 --> 
+ <proxies> 
+ <!--代理元素包含配置代理时需要的信息--> 
+ <proxy> 
+ <!--代理的唯一定义符，用来区分不同的代理元素。--> 
+ <id>myproxy</id> 
+ <!--该代理是否是激活的那个。true则激活代理。当我们声明了一组代理，而某个时候只需要激活一个代理的时候，该元素就可以派上用处。 --> 
+ <active>true</active> 
+ <!--代理的协议。 协议://主机名:端口，分隔成离散的元素以方便配置。--> 
+ <protocol>http</protocol> 
+ <!--代理的主机名。协议://主机名:端口，分隔成离散的元素以方便配置。 --> 
+ <host>proxy.somewhere.com</host> 
+ <!--代理的端口。协议://主机名:端口，分隔成离散的元素以方便配置。 --> 
+ <port>8080</port> 
+ <!--代理的用户名，用户名和密码表示代理服务器认证的登录名和密码。 --> 
+ <username>proxyuser</username> 
+ <!--代理的密码，用户名和密码表示代理服务器认证的登录名和密码。 --> 
+ <password>somepassword</password> 
+ <!--不该被代理的主机名列表。该列表的分隔符由代理服务器指定；例子中使用了竖线分隔符，使用逗号分隔也很常见。--> 
+ <nonProxyHosts>*.google.com|ibiblio.org</nonProxyHosts> 
+ </proxy> 
+ </proxies> 
+ <!--配置服务端的一些设置。一些设置如安全证书不应该和pom.xml一起分发。这种类型的信息应该存在于构建服务器上的settings.xml文件中。--> 
+ <servers> 
+ <!--服务器元素包含配置服务器时需要的信息 --> 
+ <server> 
+ <!--这是server的id（注意不是用户登陆的id），该id与distributionManagement中repository元素的id相匹配。--> 
+ <id>server001</id> 
+ <!--鉴权用户名。鉴权用户名和鉴权密码表示服务器认证所需要的登录名和密码。 --> 
+ <username>my_login</username> 
+ <!--鉴权密码 。鉴权用户名和鉴权密码表示服务器认证所需要的登录名和密码。 --> 
+ <password>my_password</password> 
+ <!--鉴权时使用的私钥位置。和前两个元素类似，私钥位置和私钥密码指定了一个私钥的路径（默认是/home/hudson/.ssh/id_dsa）以及如果需要的话，一个密语。将来passphrase和password元素可能会被提取到外部，但目前它们必须在settings.xml文件以纯文本的形式声明。 --> 
+ <privateKey>${usr.home}/.ssh/id_dsa</privateKey> 
+ <!--鉴权时使用的私钥密码。--> 
+ <passphrase>some_passphrase</passphrase> 
+ <!--文件被创建时的权限。如果在部署的时候会创建一个仓库文件或者目录，这时候就可以使用权限（permission）。这两个元素合法的值是一个三位数字，其对应了unix文件系统的权限，如664，或者775。 --> 
+ <filePermissions>664</filePermissions> 
+ <!--目录被创建时的权限。 --> 
+ <directoryPermissions>775</directoryPermissions> 
+ <!--传输层额外的配置项 --> 
+ <configuration></configuration> 
+ </server> 
+ </servers> 
+ <!--为仓库列表配置的下载镜像列表。 --> 
+ <mirrors> 
+ <!--给定仓库的下载镜像。 --> 
+ <mirror> 
+ <!--该镜像的唯一标识符。id用来区分不同的mirror元素。 --> 
+ <id>planetmirror.com</id> 
+ <!--镜像名称 --> 
+ <name>PlanetMirror Australia</name> 
+ <!--该镜像的URL。构建系统会优先考虑使用该URL，而非使用默认的服务器URL。 --> 
+ <url>http://downloads.planetmirror.com/pub/maven2</url> 
+ <!--被镜像的服务器的id。例如，如果我们要设置了一个Maven中央仓库（http://repo1.maven.org/maven2）的镜像，就需要将该元素设置成central。这必须和中央仓库的id central完全一致。--> 
+ <mirrorOf>central</mirrorOf> 
+ </mirror> 
+ </mirrors> 
+ <!--根据环境参数来调整构建配置的列表。settings.xml中的profile元素是pom.xml中profile元素的裁剪版本。它包含了id，activation, repositories, pluginRepositories和 properties元素。这里的profile元素只包含这五个子元素是因为这里只关心构建系统这个整体（这正是settings.xml文件的角色定位），而非单独的项目对象模型设置。如果一个settings中的profile被激活，它的值会覆盖任何其它定义在POM中或者profile.xml中的带有相同id的profile。 --> 
+ <profiles> 
+ <!--根据环境参数来调整的构件的配置--> 
+ <profile> 
+ <!--该配置的唯一标识符。 --> 
+ <id>test</id> 
+ <!--自动触发profile的条件逻辑。Activation是profile的开启钥匙。如POM中的profile一样，profile的力量来自于它能够在某些特定的环境中自动使用某些特定的值；这些环境通过activation元素指定。activation元素并不是激活profile的唯一方式。settings.xml文件中的activeProfile元素可以包含profile的id。profile也可以通过在命令行，使用-P标记和逗号分隔的列表来显式的激活（如，-P test）。--> 
+ <activation> 
+ <!--profile默认是否激活的标识--> 
+ <activeByDefault>false</activeByDefault> 
+ <!--当匹配的jdk被检测到，profile被激活。例如，1.4激活JDK1.4，1.4.0_2，而!1.4激活所有版本不是以1.4开头的JDK。--> 
+ <jdk>1.5</jdk> 
+ <!--当匹配的操作系统属性被检测到，profile被激活。os元素可以定义一些操作系统相关的属性。--> 
+ <os> 
+ <!--激活profile的操作系统的名字 --> 
+ <name>Windows XP</name> 
+ <!--激活profile的操作系统所属家族(如 'windows') --> 
+ <family>Windows</family> 
+ <!--激活profile的操作系统体系结构 --> 
+ <arch>x86</arch> 
+ <!--激活profile的操作系统版本--> 
+ <version>5.1.2600</version> 
+ </os> 
+ <!--如果Maven检测到某一个属性（其值可以在POM中通过${名称}引用），其拥有对应的名称和值，Profile就会被激活。如果值字段是空的，那么存在属性名称字段就会激活profile，否则按区分大小写方式匹配属性值字段--> 
+ <property> 
+ <!--激活profile的属性的名称--> 
+ <name>mavenVersion</name> 
+ <!--激活profile的属性的值 --> 
+ <value>2.0.3</value> 
+ </property> 
+ <!--提供一个文件名，通过检测该文件的存在或不存在来激活profile。missing检查文件是否存在，如果不存在则激活profile。另一方面，exists则会检查文件是否存在，如果存在则激活profile。--> 
+ <file> 
+ <!--如果指定的文件存在，则激活profile。 --> 
+ <exists>/usr/local/hudson/hudson-home/jobs/maven-guide-zh-to-production/workspace/</exists> 
+ <!--如果指定的文件不存在，则激活profile。--> 
+ <missing>/usr/local/hudson/hudson-home/jobs/maven-guide-zh-to-production/workspace/</missing> 
+ </file> 
+ </activation> 
+ <!--对应profile的扩展属性列表。Maven属性和Ant中的属性一样，可以用来存放一些值。这些值可以在POM中的任何地方使用标记${X}来使用，这里X是指属性的名称。属性有五种不同的形式，并且都能在settings.xml文件中访问。 
+ 1. env.X: 在一个变量前加上"env."的前缀，会返回一个shell环境变量。例如,"env.PATH"指代了$path环境变量（在Windows上是%PATH%）。 
+ 2. project.x：指代了POM中对应的元素值。 
+ 3. settings.x: 指代了settings.xml中对应元素的值。 
+ 4. Java System Properties: 所有可通过java.lang.System.getProperties()访问的属性都能在POM中使用该形式访问， 
+ 如/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0/jre。 
+ 5. x: 在<properties/>元素中，或者外部文件中设置，以${someVar}的形式使用。 --> 
+ <properties> 
+ <user.install>/ebs1/build-machine/usr/local/hudson/hudson-home/jobs/maven-guide-</user.install> 
+ </properties> 
+ <!--远程仓库列表，它是Maven用来填充构建系统本地仓库所使用的一组远程项目。 --> 
+ <repositories> 
+ <!--包含需要连接到远程仓库的信息 --> 
+ <repository> 
+ <!--远程仓库唯一标识--> 
+ <id>codehausSnapshots</id> 
+ <!--远程仓库名称 --> 
+ <name>Codehaus Snapshots</name> 
+ <!--如何处理远程仓库里发布版本的下载--> 
+ <releases> 
+ <!--true或者false表示该仓库是否为下载某种类型构件（发布版，快照版）开启。 --> 
+ <enabled>false</enabled> 
+ <!--该元素指定更新发生的频率。Maven会比较本地POM和远程POM的时间戳。这里的选项是：always（一直），daily（默认，每日），interval：X（这里X是以分钟为单位的时间间隔），或者never（从不）。 --> 
+ <updatePolicy>always</updatePolicy> 
+ <!--当Maven验证构件校验文件失败时该怎么做-ignore（忽略），fail（失败），或者warn（警告）。--> 
+ <checksumPolicy>warn</checksumPolicy> 
+ </releases> 
+ <!--如何处理远程仓库里快照版本的下载。有了releases和snapshots这两组配置，POM就可以在每个单独的仓库中，为每种类型的构件采取不同的策略。例如，可能有人会决定只为开发目的开启对快照版本下载的支持。参见repositories/repository/releases元素--> 
+ <snapshots> 
+ <enabled/><updatePolicy/><checksumPolicy/> 
+ </snapshots> 
+ <!--远程仓库URL，按protocol://hostname/path形式 --> 
+ <url>http://snapshots.maven.codehaus.org/maven2</url> 
+ <!--用于定位和排序构件的仓库布局类型-可以是default（默认）或者legacy（遗留）。Maven 2为其仓库提供了一个默认的布局；然而，Maven 1.x有一种不同的布局。我们可以使用该元素指定布局是default（默认）还是legacy（遗留）。 --> 
+ <layout>default</layout> 
+ </repository> 
+ </repositories> 
+ <!--发现插件的远程仓库列表。仓库是两种主要构件的家。第一种构件被用作其它构件的依赖。这是中央仓库中存储的大部分构件类型。另外一种构件类型是插件。Maven插件是一种特殊类型的构件。由于这个原因，插件仓库独立于其它仓库。pluginRepositories元素的结构和repositories元素的结构类似。每个pluginRepository元素指定一个Maven可以用来寻找新插件的远程地址。--> 
+ <pluginRepositories> 
+ <!--包含需要连接到远程插件仓库的信息.参见profiles/profile/repositories/repository元素的说明--> 
+ <pluginRepository> 
+ <releases> 
+ <enabled/><updatePolicy/><checksumPolicy/> 
+ </releases> 
+ <snapshots> 
+ <enabled/><updatePolicy/><checksumPolicy/> 
+ </snapshots> 
+ <id/><name/><url/><layout/> 
+ </pluginRepository> 
+ </pluginRepositories> 
+ <!--手动激活profiles的列表，按照profile被应用的顺序定义activeProfile。 该元素包含了一组activeProfile元素，每个activeProfile都含有一个profile id。任何在activeProfile中定义的profile id，不论环境设置如何，其对应的 
+ profile都会被激活。如果没有匹配的profile，则什么都不会发生。例如，env-test是一个activeProfile，则在pom.xml（或者profile.xml）中对应id的profile会被激活。如果运行过程中找不到这样一个profile，Maven则会像往常一样运行。 --> 
+ <activeProfiles> 
+ <!-- --> 
+ <activeProfile>env-test</activeProfile> 
+ </activeProfiles> 
+ </profile> 
+ </profiles> 
+</settings> 
 
             </div>
             
@@ -735,7 +561,7 @@ public String login(@ModelAttribute(value = &quot;loginBean&quot;) LoginBean log
     </li>
     <li class="post-copyright-link">
       <strong class="language" data-lan="link">本文链接：</strong>
-      <a href="https://cm940324.github.io/post/thymeleaf/" title="Thymeleaf常用属性">https://cm940324.github.io/post/thymeleaf/</a>
+      <a href="https://cm940324.github.io/post/maven-setting/" title="Maven setting">https://cm940324.github.io/post/maven-setting/</a>
     </li>
     <li class="post-copyright-license">
       <strong class="language" data-lan="copyright">版权声明： </strong>
@@ -744,21 +570,17 @@ public String login(@ModelAttribute(value = &quot;loginBean&quot;) LoginBean log
   </ul>
   <div class="tags">
     
-      <a href="https://cm940324.github.io/tag/IviFwFxex/"># Thymeleaf</a>
+      <a href="https://cm940324.github.io/tag/u1uivsuho/"># Maven</a>
     
   </div>
   <div class="nav">
     <div class="nav-prev">
       
-        <i class="fa fa-chevron-left"></i>
-        <a class="nav-pc-next" title="设计模式的通俗理解" href="https://cm940324.github.io/post/shejimoshi-tongsu/">设计模式的通俗理解</a class="nav-pc-next">
-        <a class="nav-mobile-prev" title="设计模式的通俗理解" href="https://cm940324.github.io/post/shejimoshi-tongsu/">上一篇</a>
-      
     </div>
     <div class="nav-next">
       
-        <a class="nav-pc-next" title="搭建内容管理系统CMS（1）：如何支持内容生产？" href="https://cm940324.github.io/post/cms1/">搭建内容管理系统CMS（1）：如何支持内容生产？</a>
-        <a class="nav-mobile-next" title="搭建内容管理系统CMS（1）：如何支持内容生产？" href="https://cm940324.github.io/post/cms1/">下一篇</a>
+        <a class="nav-pc-next" title="@Excel参数大全" href="https://cm940324.github.io/post/excel-args/">@Excel参数大全</a>
+        <a class="nav-mobile-next" title="@Excel参数大全" href="https://cm940324.github.io/post/excel-args/">下一篇</a>
         <i class="fa fa-chevron-right"></i>
       
     </div>
