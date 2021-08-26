@@ -9,7 +9,7 @@
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
 <title>关于 | Oasis</title>
-<link rel="shortcut icon" href="/favicon.ico?v=1629937497503">
+<link rel="shortcut icon" href="/favicon.ico?v=1629966193055">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
 <link
@@ -1361,7 +1361,7 @@ JAVA PROGRAMMER👨‍💻</p>
       
       <div class="item">
         <a class="result-title" style="opacity: 0;" href="https://cm940324.github.io/post/leetcode-sql/"" data-c="
-          &lt;h3 id=&#34;1&#34;&gt;1.&lt;/h3&gt;
+          &lt;h2 id=&#34;1&#34;&gt;1.&lt;/h2&gt;
 &lt;p&gt;表1: Person&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;+-------------+---------+
 
@@ -1394,9 +1394,46 @@ AddressId 是上表主键
 &lt;pre&gt;&lt;code&gt;FirstName, LastName, City, State
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h3 id=&#34;解答&#34;&gt;解答&lt;/h3&gt;
-&lt;p&gt;思路: 根据题目要求得知,需要查询的为Person表的FirstName,LastName和Address表的City,State字段,以Person表为主表,Address表的PersonId为外键进行查询,可保证无论Address表中是否有关联的值,Person表都能展示其信息。&lt;/p&gt;
-&lt;p&gt;答案：1. SELECT p.FirstName,p.LastName,a.City,a.State FROM Person p left join Address a  on  p.PersonId = a.PersonId&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;重点：&lt;/strong&gt; 连表查询中，主表的内容都会被展示&lt;/p&gt;
+&lt;h5 id=&#34;思路-根据题目要求得知需要查询的为person表的firstnamelastname和address表的citystate字段以person表为主表address表的personid为外键进行查询可保证无论address表中是否有关联的值person表都能展示其信息&#34;&gt;思路: 根据题目要求得知,需要查询的为Person表的FirstName,LastName和Address表的City,State字段,以Person表为主表,Address表的PersonId为外键进行查询,可保证无论Address表中是否有关联的值,Person表都能展示其信息。&lt;/h5&gt;
+&lt;h5 id=&#34;答案1-select-pfirstnameplastnameacityastate-from-person-p-left-join-address-a-on-ppersonid-apersonid&#34;&gt;答案：1. SELECT p.FirstName,p.LastName,a.City,a.State FROM Person p left join Address a  on  p.PersonId = a.PersonId&lt;/h5&gt;
+&lt;h5 id=&#34;重点-连表查询中主表的内容都会被展示&#34;&gt;&lt;strong&gt;重点：&lt;/strong&gt; 连表查询中，主表的内容都会被展示&lt;/h5&gt;
+&lt;h2 id=&#34;2&#34;&gt;2.&lt;/h2&gt;
+&lt;p&gt;编写一个 SQL 查询，获取 &lt;code&gt;Employee&lt;/code&gt; 表中第二高的薪水（Salary） 。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;+----+--------+
+| Id | Salary |
++----+--------+
+| 1  | 100    |
+| 2  | 200    |
+| 3  | 300    |
++----+--------+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;例如上述 &lt;code&gt;Employee&lt;/code&gt; 表，SQL查询应该返回 &lt;code&gt;200&lt;/code&gt; 作为第二高的薪水。如果不存在第二高的薪水，那么查询应返回 &lt;code&gt;null&lt;/code&gt;。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;+---------------------+
+| SecondHighestSalary |
++---------------------+
+| 200                 |
++---------------------+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;解答-2&#34;&gt;解答&lt;/h3&gt;
+&lt;h5 id=&#34;思路&#34;&gt;思路：&lt;/h5&gt;
+&lt;p&gt;审题发现几个本题重要的考点：&lt;/p&gt;
+&lt;p&gt;1.获取第二高的薪水，需要掌握orderby和limit的使用，‘第二高’ 是降序的排序方式，所以需要使用order by  。。 desc。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt; 			limit y 分句表示: 读取 y 条数据
+	  	limit x, y 分句表示: 跳过 x 条数据，读取 y 条数据
+      limit y offset x 分句表示: 跳过 x 条数据，读取 y 条数据
+      limit n 等价于 limit 0,n
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;2.其次需要考虑特殊情况，首先需要去重同样的salary，其次就是如果不存在第二高的薪水，结果应为null，可以有两种解决方式：一种是用临时表，还有一种就是使用IFNULL函数。&lt;/p&gt;
+&lt;h5 id=&#34;答案&#34;&gt;答案：&lt;/h5&gt;
+&lt;p&gt;select IFNULL((select distinct Salary from Employee order by Salary desc limit 1,1),null) as SecondHighestSalary;&lt;/p&gt;
+&lt;h5 id=&#34;重点&#34;&gt;&lt;strong&gt;重点&lt;/strong&gt;：&lt;/h5&gt;
+&lt;p&gt;1.limit的使用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;	  	limit y 分句表示: 读取 y 条数据
+	  	limit x, y 分句表示: 跳过 x 条数据，读取 y 条数据
+      limit y offset x 分句表示: 跳过 x 条数据，读取 y 条数据
+      limit n 等价于 limit 0,n
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;2.IFNULL和临时表判空的方式&lt;/p&gt;
 ">Leetcode sql题详解</a>
       </div>
       
