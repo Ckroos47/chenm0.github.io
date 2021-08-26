@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://cm940324.github.io</id>
     <title>Oasis</title>
-    <updated>2021-08-09T03:15:21.414Z</updated>
+    <updated>2021-08-26T00:25:03.197Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://cm940324.github.io"/>
     <link rel="self" href="https://cm940324.github.io/atom.xml"/>
@@ -10,6 +10,50 @@
     <logo>https://cm940324.github.io/images/avatar.png</logo>
     <icon>https://cm940324.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, Oasis</rights>
+    <entry>
+        <title type="html"><![CDATA[Leetcode sql题详解]]></title>
+        <id>https://cm940324.github.io/post/leetcode-sql/</id>
+        <link href="https://cm940324.github.io/post/leetcode-sql/">
+        </link>
+        <updated>2021-08-26T00:03:11.000Z</updated>
+        <content type="html"><![CDATA[<h3 id="1">1.</h3>
+<p>表1: Person</p>
+<pre><code>+-------------+---------+
+
+| 列名         | 类型     |
+
++-------------+---------+
+
+| PersonId    | int     |
+
+| FirstName   | varchar |
+
+| LastName    | varchar |
+
++-------------+---------+
+
+PersonId 是上表主键
+</code></pre>
+<p>表2: <code>Address</code></p>
+<pre><code>+-------------+---------+
+| 列名         | 类型    |
++-------------+---------+
+| AddressId   | int     |
+| PersonId    | int     |
+| City        | varchar |
+| State       | varchar |
++-------------+---------+
+AddressId 是上表主键
+</code></pre>
+<p>编写一个 SQL 查询，满足条件：无论 person 是否有地址信息，都需要基于上述两表提供 person 的以下信息：</p>
+<pre><code>FirstName, LastName, City, State
+</code></pre>
+<h3 id="解答">解答</h3>
+<p>思路: 根据题目要求得知,需要查询的为Person表的FirstName,LastName和Address表的City,State字段,以Person表为主表,Address表的PersonId为外键进行查询,可保证无论Address表中是否有关联的值,Person表都能展示其信息。</p>
+<p>答案：1. SELECT p.FirstName,p.LastName,a.City,a.State FROM Person p left join Address a  on  p.PersonId = a.PersonId</p>
+<p><strong>重点：</strong> 连表查询中，主表的内容都会被展示</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Maven setting]]></title>
         <id>https://cm940324.github.io/post/maven-setting/</id>
@@ -2023,22 +2067,6 @@ starter-sleuth 依赖之后， 它会自动的为当前应用构建起各通信�
 包含所有持久化方法</li>
 </ul>
 <p><strong>综上：大多数情况用CascadeType.MERGE就能达到级联跟新又不报错，用CascadeType.ALL时要斟酌下CascadeType.REMOVE</strong></p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[PostgreSQL踩坑记录]]></title>
-        <id>https://cm940324.github.io/post/postgresql-ques/</id>
-        <link href="https://cm940324.github.io/post/postgresql-ques/">
-        </link>
-        <updated>2021-06-03T06:26:03.000Z</updated>
-        <content type="html"><![CDATA[<ol>
-<li>在进行数据库记录的迁移和复制数据后容易出现错误</li>
-</ol>
-<pre><code>DETAIL:  Key (id)=(1) already exists
-</code></pre>
-<p>解决方案：</p>
-<pre><code>select setval('tablename_id_seq', max(id)) from tablename;
-</code></pre>
 ]]></content>
     </entry>
 </feed>
