@@ -9,7 +9,7 @@
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
 <title>Oasis</title>
-<link rel="shortcut icon" href="/favicon.ico?v=1630052096092">
+<link rel="shortcut icon" href="/favicon.ico?v=1630074964628">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
 <link
@@ -1330,6 +1330,38 @@ Result 表：
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h5 id=&#34;重点-5&#34;&gt;&lt;strong&gt;重点:&lt;/strong&gt;&lt;/h5&gt;
 &lt;p&gt;活用子查询&lt;/p&gt;
+&lt;h2 id=&#34;6&#34;&gt;6.&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;Employee&lt;/code&gt; 表包含所有员工，他们的经理也属于员工。每个员工都有一个 Id，此外还有一列对应员工的经理的 Id。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;+----+-------+--------+-----------+
+| Id | Name  | Salary | ManagerId |
++----+-------+--------+-----------+
+| 1  | Joe   | 70000  | 3         |
+| 2  | Henry | 80000  | 4         |
+| 3  | Sam   | 60000  | NULL      |
+| 4  | Max   | 90000  | NULL      |
++----+-------+--------+-----------+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;给定 &lt;code&gt;Employee&lt;/code&gt; 表，编写一个 SQL 查询，该查询可以获取收入超过他们经理的员工的姓名。在上面的表格中，Joe 是唯一一个收入超过他的经理的员工。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;+----------+
+| Employee |
++----------+
+| Joe      |
++----------+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;解答-6&#34;&gt;&lt;strong&gt;解答&lt;/strong&gt;&lt;/h3&gt;
+&lt;h5 id=&#34;思路-6&#34;&gt;&lt;strong&gt;思路:&lt;/strong&gt;&lt;/h5&gt;
+&lt;p&gt;本题需要使用子链接或自链接&lt;/p&gt;
+&lt;h5 id=&#34;答案-6&#34;&gt;&lt;strong&gt;答案：&lt;/strong&gt;&lt;/h5&gt;
+&lt;p&gt;子链接：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;select a.Name as Employee from Employee a where a.Salary &amp;gt; 
+
+(select b.Salary from Employee b where b.Id = a.ManagerId) 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;自链接：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;select a.Name as Employee from Employee a join Employee b where b.id = a.ManagerId and b.Salary &amp;lt; a.Salary
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h5 id=&#34;重点-6&#34;&gt;&lt;strong&gt;重点：&lt;/strong&gt;&lt;/h5&gt;
+&lt;p&gt;加强自链接和子链接的使用&lt;/p&gt;
 ">Leetcode sql题每日三题</a>
       </div>
       

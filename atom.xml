@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://cm940324.github.io</id>
     <title>Oasis</title>
-    <updated>2021-08-27T08:14:59.993Z</updated>
+    <updated>2021-08-27T14:36:08.741Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://cm940324.github.io"/>
     <link rel="self" href="https://cm940324.github.io/atom.xml"/>
@@ -222,6 +222,38 @@ Result 表：
 </code></pre>
 <h5 id="重点-5"><strong>重点:</strong></h5>
 <p>活用子查询</p>
+<h2 id="6">6.</h2>
+<p><code>Employee</code> 表包含所有员工，他们的经理也属于员工。每个员工都有一个 Id，此外还有一列对应员工的经理的 Id。</p>
+<pre><code>+----+-------+--------+-----------+
+| Id | Name  | Salary | ManagerId |
++----+-------+--------+-----------+
+| 1  | Joe   | 70000  | 3         |
+| 2  | Henry | 80000  | 4         |
+| 3  | Sam   | 60000  | NULL      |
+| 4  | Max   | 90000  | NULL      |
++----+-------+--------+-----------+
+</code></pre>
+<p>给定 <code>Employee</code> 表，编写一个 SQL 查询，该查询可以获取收入超过他们经理的员工的姓名。在上面的表格中，Joe 是唯一一个收入超过他的经理的员工。</p>
+<pre><code>+----------+
+| Employee |
++----------+
+| Joe      |
++----------+
+</code></pre>
+<h3 id="解答-6"><strong>解答</strong></h3>
+<h5 id="思路-6"><strong>思路:</strong></h5>
+<p>本题需要使用子链接或自链接</p>
+<h5 id="答案-6"><strong>答案：</strong></h5>
+<p>子链接：</p>
+<pre><code>select a.Name as Employee from Employee a where a.Salary &gt; 
+
+(select b.Salary from Employee b where b.Id = a.ManagerId) 
+</code></pre>
+<p>自链接：</p>
+<pre><code>select a.Name as Employee from Employee a join Employee b where b.id = a.ManagerId and b.Salary &lt; a.Salary
+</code></pre>
+<h5 id="重点-6"><strong>重点：</strong></h5>
+<p>加强自链接和子链接的使用</p>
 ]]></content>
     </entry>
     <entry>
