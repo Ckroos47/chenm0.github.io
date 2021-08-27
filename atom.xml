@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://cm940324.github.io</id>
     <title>Oasis</title>
-    <updated>2021-08-27T00:51:37.202Z</updated>
+    <updated>2021-08-27T00:52:32.080Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://cm940324.github.io"/>
     <link rel="self" href="https://cm940324.github.io/atom.xml"/>
@@ -92,7 +92,7 @@ AddressId 是上表主键
       limit n 等价于 limit 0,n
 </code></pre>
 <p>2.IFNULL和临时表判空的方式</p>
-<h2 id="2-2">2.</h2>
+<h2 id="3">3.</h2>
 <p>编写一个 SQL 查询，获取 <code>Employee</code> 表中第 <em>n</em> 高的薪水（Salary）。</p>
 <pre><code>+----+--------+
 | Id | Salary |
