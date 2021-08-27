@@ -9,7 +9,7 @@
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
 <title>Thymeleaf常用属性 | Oasis</title>
-<link rel="shortcut icon" href="/favicon.ico?v=1630075113515">
+<link rel="shortcut icon" href="/favicon.ico?v=1630075324899">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
 <link
@@ -1949,7 +1949,7 @@ Result 表：
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h3 id=&#34;解答-5&#34;&gt;&lt;strong&gt;解答&lt;/strong&gt;&lt;/h3&gt;
 &lt;h5 id=&#34;思路-5&#34;&gt;&lt;strong&gt;思路:&lt;/strong&gt;&lt;/h5&gt;
-&lt;p&gt;本题根据题目要求，需查询出连续出现至少三次的同一个数字，所以distinct函数是一定需要使用的；三次同一个数字的id分别为id，id+1，id+2，而num是相同的，所以需要两个自查询作为筛选条件&lt;/p&gt;
+&lt;p&gt;本题根据题目要求，需查询出连续出现至少三次的同一个数字，所以distinct函数是一定需要使用的；三次同一个数字的id分别为id，id+1，id+2，而num是相同的，所以需要两个子查询作为筛选条件&lt;/p&gt;
 &lt;h5 id=&#34;答案-5&#34;&gt;&lt;strong&gt;答案:&lt;/strong&gt;&lt;/h5&gt;
 &lt;pre&gt;&lt;code&gt;select distinct Num as ConsecutiveNums from Logs where (Id+1,Num) in (select * from Logs) and (Id+2,Num) in (select * from Logs)
 &lt;/code&gt;&lt;/pre&gt;

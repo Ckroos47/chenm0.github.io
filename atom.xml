@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://cm940324.github.io</id>
     <title>Oasis</title>
-    <updated>2021-08-27T14:38:46.202Z</updated>
+    <updated>2021-08-27T14:42:07.586Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://cm940324.github.io"/>
     <link rel="self" href="https://cm940324.github.io/atom.xml"/>
@@ -216,7 +216,7 @@ Result 表：
 </code></pre>
 <h3 id="解答-5"><strong>解答</strong></h3>
 <h5 id="思路-5"><strong>思路:</strong></h5>
-<p>本题根据题目要求，需查询出连续出现至少三次的同一个数字，所以distinct函数是一定需要使用的；三次同一个数字的id分别为id，id+1，id+2，而num是相同的，所以需要两个自查询作为筛选条件</p>
+<p>本题根据题目要求，需查询出连续出现至少三次的同一个数字，所以distinct函数是一定需要使用的；三次同一个数字的id分别为id，id+1，id+2，而num是相同的，所以需要两个子查询作为筛选条件</p>
 <h5 id="答案-5"><strong>答案:</strong></h5>
 <pre><code>select distinct Num as ConsecutiveNums from Logs where (Id+1,Num) in (select * from Logs) and (Id+2,Num) in (select * from Logs)
 </code></pre>
