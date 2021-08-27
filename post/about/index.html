@@ -9,7 +9,7 @@
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
 <title>关于 | Oasis</title>
-<link rel="shortcut icon" href="/favicon.ico?v=1629970630499">
+<link rel="shortcut icon" href="/favicon.ico?v=1630025493622">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
 <link
@@ -1437,6 +1437,51 @@ AddressId 是上表主键
       limit n 等价于 limit 0,n
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;2.IFNULL和临时表判空的方式&lt;/p&gt;
+&lt;h2 id=&#34;2-2&#34;&gt;2.&lt;/h2&gt;
+&lt;p&gt;编写一个 SQL 查询，获取 &lt;code&gt;Employee&lt;/code&gt; 表中第 &lt;em&gt;n&lt;/em&gt; 高的薪水（Salary）。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;+----+--------+
+| Id | Salary |
++----+--------+
+| 1  | 100    |
+| 2  | 200    |
+| 3  | 300    |
++----+--------+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;例如上述 &lt;code&gt;Employee&lt;/code&gt; 表，&lt;em&gt;n = 2&lt;/em&gt; 时，应返回第二高的薪水 &lt;code&gt;200&lt;/code&gt;。如果不存在第 &lt;em&gt;n&lt;/em&gt; 高的薪水，那么查询应返回 &lt;code&gt;null&lt;/code&gt;。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;+------------------------+
+| getNthHighestSalary(2) |
++------------------------+
+| 200                    |
++------------------------+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;解答-3&#34;&gt;&lt;strong&gt;解答&lt;/strong&gt;&lt;/h3&gt;
+&lt;h5 id=&#34;思路-3&#34;&gt;&lt;strong&gt;思路:&lt;/strong&gt;&lt;/h5&gt;
+&lt;p&gt;首先对存储过程的语法进行了基本的了解，题目的要求和上一题基本相同，但需要查的位置变成了变量，所以需要在limit后用变量选择跳过的个数&lt;/p&gt;
+&lt;h5 id=&#34;答案-3&#34;&gt;&lt;strong&gt;答案：&lt;/strong&gt;&lt;/h5&gt;
+&lt;pre&gt;&lt;code&gt;CREATE FUNCTION getNthHighestSalary(N INT) RETURNS INT
+
+BEGIN
+
+  set N = N - 1;
+
+  RETURN (
+
+​      \# Write your MySQL query statement below.
+
+​      SELECT IFNULl((SELECT distinct Salary from Employee order by Salary desc limit N,1),null)
+
+  );
+
+END
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h5 id=&#34;重点-3&#34;&gt;&lt;strong&gt;重点：&lt;/strong&gt;&lt;/h5&gt;
+&lt;p&gt;1.存储结构的基础语法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;create procedure sp_name()
+begin
+.........
+end
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;2.limit后不能进行运算，所以应该在begin前就将需要跳过的数算好，这里需要跳过的数应为需要查到的位数-1&lt;/p&gt;
 ">Leetcode sql题每日三题</a>
       </div>
       
