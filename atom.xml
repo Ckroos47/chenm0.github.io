@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://cm940324.github.io</id>
     <title>Oasis</title>
-    <updated>2021-08-27T14:42:07.586Z</updated>
+    <updated>2021-08-28T03:55:04.665Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://cm940324.github.io"/>
     <link rel="self" href="https://cm940324.github.io/atom.xml"/>
@@ -254,6 +254,33 @@ Result 表：
 </code></pre>
 <h5 id="重点-6"><strong>重点：</strong></h5>
 <p>加强自链接和子链接的使用</p>
+<h2 id="7">7.</h2>
+<p>编写一个 SQL 查询，查找 <code>Person</code> 表中所有重复的电子邮箱。</p>
+<p><strong>示例：</strong></p>
+<pre><code>+----+---------+
+| Id | Email   |
++----+---------+
+| 1  | a@b.com |
+| 2  | c@d.com |
+| 3  | a@b.com |
++----+---------+
+</code></pre>
+<p>根据以上输入，你的查询应返回以下结果：</p>
+<pre><code>+---------+
+| Email   |
++---------+
+| a@b.com |
++---------+
+</code></pre>
+<p>**说明：**所有电子邮箱都是小写字母。</p>
+<h3 id="解答-7"><strong>解答</strong></h3>
+<h5 id="思路-7"><strong>思路:</strong></h5>
+<p>需要使用group by将结果集归类，然后使用count函数判断是否重复</p>
+<h5 id="答案-7"><strong>答案:</strong></h5>
+<pre><code>select Email from Person group by Email having count(Email) &gt; 1
+</code></pre>
+<h5 id="重点-7"><strong>重点:</strong></h5>
+<p>group by...having和计数函数的使用</p>
 ]]></content>
     </entry>
     <entry>

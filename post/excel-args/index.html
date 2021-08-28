@@ -9,7 +9,7 @@
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
 <title>@Excel参数大全 | Oasis</title>
-<link rel="shortcut icon" href="/favicon.ico?v=1630075324899">
+<link rel="shortcut icon" href="/favicon.ico?v=1630122899019">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
 <link
@@ -1762,6 +1762,33 @@ Result 表：
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h5 id=&#34;重点-6&#34;&gt;&lt;strong&gt;重点：&lt;/strong&gt;&lt;/h5&gt;
 &lt;p&gt;加强自链接和子链接的使用&lt;/p&gt;
+&lt;h2 id=&#34;7&#34;&gt;7.&lt;/h2&gt;
+&lt;p&gt;编写一个 SQL 查询，查找 &lt;code&gt;Person&lt;/code&gt; 表中所有重复的电子邮箱。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;+----+---------+
+| Id | Email   |
++----+---------+
+| 1  | a@b.com |
+| 2  | c@d.com |
+| 3  | a@b.com |
++----+---------+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;根据以上输入，你的查询应返回以下结果：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;+---------+
+| Email   |
++---------+
+| a@b.com |
++---------+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;**说明：**所有电子邮箱都是小写字母。&lt;/p&gt;
+&lt;h3 id=&#34;解答-7&#34;&gt;&lt;strong&gt;解答&lt;/strong&gt;&lt;/h3&gt;
+&lt;h5 id=&#34;思路-7&#34;&gt;&lt;strong&gt;思路:&lt;/strong&gt;&lt;/h5&gt;
+&lt;p&gt;需要使用group by将结果集归类，然后使用count函数判断是否重复&lt;/p&gt;
+&lt;h5 id=&#34;答案-7&#34;&gt;&lt;strong&gt;答案:&lt;/strong&gt;&lt;/h5&gt;
+&lt;pre&gt;&lt;code&gt;select Email from Person group by Email having count(Email) &amp;gt; 1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h5 id=&#34;重点-7&#34;&gt;&lt;strong&gt;重点:&lt;/strong&gt;&lt;/h5&gt;
+&lt;p&gt;group by...having和计数函数的使用&lt;/p&gt;
 ">Leetcode sql题每日三题</a>
       </div>
       
