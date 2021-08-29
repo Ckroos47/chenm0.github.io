@@ -9,7 +9,7 @@
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
 <title>@Excel参数大全 | Oasis</title>
-<link rel="shortcut icon" href="/favicon.ico?v=1630251403814">
+<link rel="shortcut icon" href="/favicon.ico?v=1630252978637">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
 <link
@@ -1878,6 +1878,60 @@ where s.rn = 1
 3. partition by相比较于group by，能够在保留全部数据的基础上，只对其中某些字段做分组排序（类似excel中的操作），而group by则只保留参与分组的字段和聚合函数的结果（类似excel中的pivot）&lt;br&gt;
 4. 如果在partition结果上聚合，千万注意聚合函数是逐条累计运行结果的！而在group by后的结果集上使用聚合函数，会作用在分组下的所有记录上。&lt;br&gt;
 2.活用自查询&lt;/p&gt;
+&lt;h2 id=&#34;10&#34;&gt;10.&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;Employee&lt;/code&gt; 表包含所有员工信息，每个员工有其对应的工号 &lt;code&gt;Id&lt;/code&gt;，姓名 &lt;code&gt;Name&lt;/code&gt;，工资 &lt;code&gt;Salary&lt;/code&gt; 和部门编号 &lt;code&gt;DepartmentId&lt;/code&gt; 。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;+----+-------+--------+--------------+
+| Id | Name  | Salary | DepartmentId |
++----+-------+--------+--------------+
+| 1  | Joe   | 85000  | 1            |
+| 2  | Henry | 80000  | 2            |
+| 3  | Sam   | 60000  | 2            |
+| 4  | Max   | 90000  | 1            |
+| 5  | Janet | 69000  | 1            |
+| 6  | Randy | 85000  | 1            |
+| 7  | Will  | 70000  | 1            |
++----+-------+--------+--------------+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;Department&lt;/code&gt; 表包含公司所有部门的信息。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;+----+----------+
+| Id | Name     |
++----+----------+
+| 1  | IT       |
+| 2  | Sales    |
++----+----------+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;编写一个 SQL 查询，找出每个部门获得前三高工资的所有员工。例如，根据上述给定的表，查询结果应返回：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;+------------+----------+--------+
+| Department | Employee | Salary |
++------------+----------+--------+
+| IT         | Max      | 90000  |
+| IT         | Randy    | 85000  |
+| IT         | Joe      | 85000  |
+| IT         | Will     | 70000  |
+| Sales      | Henry    | 80000  |
+| Sales      | Sam      | 60000  |
++------------+----------+--------+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;解释：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;IT 部门中，Max 获得了最高的工资，Randy 和 Joe 都拿到了第二高的工资，Will 的工资排第三。销售部门（Sales）只有两名员工，Henry 的工资最高，Sam 的工资排第二。&lt;/p&gt;
+&lt;h3 id=&#34;解答-10&#34;&gt;&lt;strong&gt;解答&lt;/strong&gt;&lt;/h3&gt;
+&lt;h5 id=&#34;思路-10&#34;&gt;&lt;strong&gt;思路:&lt;/strong&gt;&lt;/h5&gt;
+&lt;p&gt;根据上题的一道扩展问题，可延续上题思路，更改排序的筛选条件&lt;/p&gt;
+&lt;h5 id=&#34;答案-10&#34;&gt;&lt;strong&gt;答案:&lt;/strong&gt;&lt;/h5&gt;
+&lt;pre&gt;&lt;code&gt;SELECT s.Department,s.Employee,S.Salary from 
+
+(SELECT
+
+​    d.Name as Department,e.Name as Employee,e.Salary as Salary, e.DepartmentId as did,DENSE_RANK() over (Partition by DepartmentID order by Salary DESC) as rn
+
+​    FROM
+
+​        Employee e join Department d on e.DepartmentID = d.Id) s
+
+where s.rn &amp;lt;= 3 order by s.did asc,S.Salary DESC
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h5 id=&#34;重点-10&#34;&gt;&lt;strong&gt;重点:&lt;/strong&gt;&lt;/h5&gt;
+&lt;p&gt;主要思路延续上一题&lt;/p&gt;
 ">Leetcode sql题每日三题</a>
       </div>
       
