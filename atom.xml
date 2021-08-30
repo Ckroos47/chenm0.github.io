@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://cm940324.github.io</id>
     <title>Oasis</title>
-    <updated>2021-08-30T15:03:18.873Z</updated>
+    <updated>2021-08-30T15:05:32.510Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://cm940324.github.io"/>
     <link rel="self" href="https://cm940324.github.io/atom.xml"/>
@@ -529,7 +529,7 @@ Result table:
 </code></pre>
 <h5 id="重点-13"><strong>重点:</strong></h5>
 <p>or的使用方式</p>
-<h2 id="12-超过5名学生的课">12. 超过5名学生的课</h2>
+<h2 id="14-超过5名学生的课">14. 超过5名学生的课</h2>
 <p>有一个courses 表 ，有: student (学生) 和 class (课程)。<br>
 请列出所有超过或等于5名学生的课。<br>
 例如，表：</p>
@@ -566,7 +566,7 @@ Result table:
 </code></pre>
 <h5 id="重点-14"><strong>重点:</strong></h5>
 <p>注意提示，需要进行去重操作</p>
-<h2 id="12-有趣的电影">12. 有趣的电影</h2>
+<h2 id="15-有趣的电影">15. 有趣的电影</h2>
 <p>某城市开了一家新的电影院，吸引了很多人过来看电影。该电影院特别注意用户体验，专门有个 LED显示板做电影推荐，上面公布着影评和相关电影描述。<br>
 作为该电影院的信息部主管，您需要编写一个 SQL查询，找出所有影片描述为非 boring (不无聊) 的并且 id 为奇数 的影片，结果请按等级 rating 排列。<br>
 例如，下表 cinema:</p>
