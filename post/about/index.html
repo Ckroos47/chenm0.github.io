@@ -9,7 +9,7 @@
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
 <title>关于 | Oasis</title>
-<link rel="shortcut icon" href="/favicon.ico?v=1630291137966">
+<link rel="shortcut icon" href="/favicon.ico?v=1630291455302">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
 <link
@@ -1361,7 +1361,7 @@ JAVA PROGRAMMER👨‍💻</p>
       
       <div class="item">
         <a class="result-title" style="opacity: 0;" href="https://cm940324.github.io/post/leetcode-sql/"" data-c="
-          &lt;h2 id=&#34;1&#34;&gt;1.&lt;/h2&gt;
+          &lt;h2 id=&#34;1-组合两个表&#34;&gt;1. 组合两个表&lt;/h2&gt;
 &lt;p&gt;表1: Person&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;+-------------+---------+
 
@@ -1400,7 +1400,7 @@ AddressId 是上表主键
 &lt;p&gt;SELECT p.FirstName,p.LastName,a.City,a.State FROM Person p left join Address a  on  p.PersonId = a.PersonId&lt;/p&gt;
 &lt;h5 id=&#34;重点&#34;&gt;&lt;strong&gt;重点：&lt;/strong&gt;&lt;/h5&gt;
 &lt;p&gt;连表查询中，主表的内容都会被展示&lt;/p&gt;
-&lt;h2 id=&#34;2&#34;&gt;2.&lt;/h2&gt;
+&lt;h2 id=&#34;2第二高的薪水&#34;&gt;2.第二高的薪水&lt;/h2&gt;
 &lt;p&gt;编写一个 SQL 查询，获取 &lt;code&gt;Employee&lt;/code&gt; 表中第二高的薪水（Salary） 。&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;+----+--------+
 | Id | Salary |
@@ -1437,7 +1437,7 @@ AddressId 是上表主键
       limit n 等价于 limit 0,n
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;2.IFNULL和临时表判空的方式&lt;/p&gt;
-&lt;h2 id=&#34;3&#34;&gt;3.&lt;/h2&gt;
+&lt;h2 id=&#34;3第n高的薪水&#34;&gt;3.第N高的薪水&lt;/h2&gt;
 &lt;p&gt;编写一个 SQL 查询，获取 &lt;code&gt;Employee&lt;/code&gt; 表中第 &lt;em&gt;n&lt;/em&gt; 高的薪水（Salary）。&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;+----+--------+
 | Id | Salary |
@@ -1482,7 +1482,7 @@ begin
 end
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;2.limit后不能进行运算，所以应该在begin前就将需要跳过的数算好，这里需要跳过的数应为需要查到的位数-1&lt;/p&gt;
-&lt;h2 id=&#34;4&#34;&gt;4.&lt;/h2&gt;
+&lt;h2 id=&#34;4分数排名&#34;&gt;4.分数排名&lt;/h2&gt;
 &lt;p&gt;编写一个 SQL 查询来实现分数排名。&lt;/p&gt;
 &lt;p&gt;如果两个分数相同，则两个分数排名（Rank）相同。请注意，平分后的下一个名次应该是下一个连续的整数值。换句话说，名次之间不应该有“间隔”。&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;+----+-------+
@@ -1523,7 +1523,7 @@ end
 ​    所以，按照题目要求，应采取DENSE_RANK()无间隔的排名函数&lt;br&gt;
 2.对于 MySQL 解决方案，如果要转义用作列名的保留字，可以在关键字之前和之后使用撇号。例如 &lt;code&gt;Rank&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id=&#34;5&#34;&gt;5.&lt;/h2&gt;
+&lt;h2 id=&#34;5连续出现的数字&#34;&gt;5.连续出现的数字&lt;/h2&gt;
 &lt;p&gt;表：&lt;code&gt;Logs&lt;/code&gt;&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;+-------------+---------+
 | Column Name | Type    |
@@ -1567,7 +1567,7 @@ Result 表：
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h5 id=&#34;重点-5&#34;&gt;&lt;strong&gt;重点:&lt;/strong&gt;&lt;/h5&gt;
 &lt;p&gt;活用子查询&lt;/p&gt;
-&lt;h2 id=&#34;6&#34;&gt;6.&lt;/h2&gt;
+&lt;h2 id=&#34;6超过经理收入的员工&#34;&gt;6.超过经理收入的员工&lt;/h2&gt;
 &lt;p&gt;&lt;code&gt;Employee&lt;/code&gt; 表包含所有员工，他们的经理也属于员工。每个员工都有一个 Id，此外还有一列对应员工的经理的 Id。&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;+----+-------+--------+-----------+
 | Id | Name  | Salary | ManagerId |
@@ -1599,7 +1599,7 @@ Result 表：
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h5 id=&#34;重点-6&#34;&gt;&lt;strong&gt;重点：&lt;/strong&gt;&lt;/h5&gt;
 &lt;p&gt;加强自链接和子链接的使用&lt;/p&gt;
-&lt;h2 id=&#34;7&#34;&gt;7.&lt;/h2&gt;
+&lt;h2 id=&#34;7查找重复的电子邮箱&#34;&gt;7.查找重复的电子邮箱&lt;/h2&gt;
 &lt;p&gt;编写一个 SQL 查询，查找 &lt;code&gt;Person&lt;/code&gt; 表中所有重复的电子邮箱。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;示例：&lt;/strong&gt;&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;+----+---------+
@@ -1626,7 +1626,7 @@ Result 表：
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h5 id=&#34;重点-7&#34;&gt;&lt;strong&gt;重点:&lt;/strong&gt;&lt;/h5&gt;
 &lt;p&gt;group by...having和计数函数的使用&lt;/p&gt;
-&lt;h2 id=&#34;8&#34;&gt;8.&lt;/h2&gt;
+&lt;h2 id=&#34;8从不订购的客户&#34;&gt;8.从不订购的客户&lt;/h2&gt;
 &lt;p&gt;某网站包含两个表，Customers 表和 Orders 表。编写一个 SQL 查询，找出所有从不订购任何东西的客户。&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;Customers&lt;/code&gt; 表：&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;+----+-------+
@@ -1662,7 +1662,7 @@ Result 表：
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h5 id=&#34;重点-8&#34;&gt;&lt;strong&gt;重点:&lt;/strong&gt;&lt;/h5&gt;
 &lt;p&gt;注意关联查询配合子查询&lt;/p&gt;
-&lt;h2 id=&#34;9&#34;&gt;9.&lt;/h2&gt;
+&lt;h2 id=&#34;9部门工资最高的员工&#34;&gt;9.部门工资最高的员工&lt;/h2&gt;
 &lt;p&gt;&lt;code&gt;Employee&lt;/code&gt; 表包含所有员工信息，每个员工有其对应的 Id, salary 和 department Id。&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;+----+-------+--------+--------------+
 | Id | Name  | Salary | DepartmentId |
@@ -1715,7 +1715,7 @@ where s.rn = 1
 3. partition by相比较于group by，能够在保留全部数据的基础上，只对其中某些字段做分组排序（类似excel中的操作），而group by则只保留参与分组的字段和聚合函数的结果（类似excel中的pivot）&lt;br&gt;
 4. 如果在partition结果上聚合，千万注意聚合函数是逐条累计运行结果的！而在group by后的结果集上使用聚合函数，会作用在分组下的所有记录上。&lt;br&gt;
 2.活用自查询&lt;/p&gt;
-&lt;h2 id=&#34;10&#34;&gt;10.&lt;/h2&gt;
+&lt;h2 id=&#34;10部门工资前三高的所有员工&#34;&gt;10.部门工资前三高的所有员工&lt;/h2&gt;
 &lt;p&gt;&lt;code&gt;Employee&lt;/code&gt; 表包含所有员工信息，每个员工有其对应的工号 &lt;code&gt;Id&lt;/code&gt;，姓名 &lt;code&gt;Name&lt;/code&gt;，工资 &lt;code&gt;Salary&lt;/code&gt; 和部门编号 &lt;code&gt;DepartmentId&lt;/code&gt; 。&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;+----+-------+--------+--------------+
 | Id | Name  | Salary | DepartmentId |
