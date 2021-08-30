@@ -9,7 +9,7 @@
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
 <title>Oasis</title>
-<link rel="shortcut icon" href="/favicon.ico?v=1630291455302">
+<link rel="shortcut icon" href="/favicon.ico?v=1630293497704">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
 <link
@@ -1575,6 +1575,79 @@ Id 是这个表的主键。
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h5 id=&#34;重点-11&#34;&gt;&lt;strong&gt;重点:&lt;/strong&gt;&lt;/h5&gt;
 &lt;p&gt;活用自链接&lt;/p&gt;
+&lt;h2 id=&#34;12上升的温度&#34;&gt;12.上升的温度&lt;/h2&gt;
+&lt;p&gt;表 Weather&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;+---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| id            | int     |
+| recordDate    | date    |
+| temperature   | int     |
++---------------+---------+
+id 是这个表的主键
+该表包含特定日期的温度信息
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;编写一个 SQL 查询，来查找与之前（昨天的）日期相比温度更高的所有日期的 id 。&lt;br&gt;
+返回结果 不要求顺序 。&lt;br&gt;
+查询结果格式如下例：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Weather
++----+------------+-------------+
+| id | recordDate | Temperature |
++----+------------+-------------+
+| 1  | 2015-01-01 | 10          |
+| 2  | 2015-01-02 | 25          |
+| 3  | 2015-01-03 | 20          |
+| 4  | 2015-01-04 | 30          |
++----+------------+-------------+
+
+Result table:
++----+
+| id |
++----+
+| 2  |
+| 4  |
++----+
+2015-01-02 的温度比前一天高（10 -&amp;gt; 25）
+2015-01-04 的温度比前一天高（20 -&amp;gt; 30）
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;解答-12&#34;&gt;&lt;strong&gt;解答&lt;/strong&gt;&lt;/h3&gt;
+&lt;h5 id=&#34;思路-12&#34;&gt;&lt;strong&gt;思路:&lt;/strong&gt;&lt;/h5&gt;
+&lt;p&gt;这里需要使用datediff函数来判断前一天，== datediff(日期1, 日期2)： 得到的结果是日期1与日期2相差的天数。 如果日期1比日期2大，结果为正；如果日期1比日期2小，结果为负。==&lt;/p&gt;
+&lt;h5 id=&#34;答案-12&#34;&gt;&lt;strong&gt;答案:&lt;/strong&gt;&lt;/h5&gt;
+&lt;pre&gt;&lt;code&gt;select w1.id from Weather w1,Weather w2 where w1.Temperature &amp;gt; w2.Temperature and datediff(w1.recordDate,w2.recordDate) = 1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h5 id=&#34;重点-12&#34;&gt;&lt;strong&gt;重点:&lt;/strong&gt;&lt;/h5&gt;
+&lt;p&gt;== datediff(日期1, 日期2)： 得到的结果是日期1与日期2相差的天数。 如果日期1比日期2大，结果为正；如果日期1比日期2小，结果为负。==&lt;/p&gt;
+&lt;h2 id=&#34;13大的国家&#34;&gt;13.大的国家&lt;/h2&gt;
+&lt;p&gt;这里有张 World 表&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;+-----------------+------------+------------+--------------+---------------+
+| name            | continent  | area       | population   | gdp           |
++-----------------+------------+------------+--------------+---------------+
+| Afghanistan     | Asia       | 652230     | 25500100     | 20343000      |
+| Albania         | Europe     | 28748      | 2831741      | 12960000      |
+| Algeria         | Africa     | 2381741    | 37100000     | 188681000     |
+| Andorra         | Europe     | 468        | 78115        | 3712000       |
+| Angola          | Africa     | 1246700    | 20609294     | 100990000     |
++-----------------+------------+------------+--------------+---------------+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果一个国家的面积超过 300 万平方公里，或者人口超过 2500 万，那么这个国家就是大国家。&lt;br&gt;
+编写一个 SQL 查询，输出表中所有大国家的名称、人口和面积。&lt;br&gt;
+例如，根据上表，我们应该输出:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;+--------------+-------------+--------------+
+| name         | population  | area         |
++--------------+-------------+--------------+
+| Afghanistan  | 25500100    | 652230       |
+| Algeria      | 37100000    | 2381741      |
++--------------+-------------+--------------+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;解答-13&#34;&gt;&lt;strong&gt;解答&lt;/strong&gt;&lt;/h3&gt;
+&lt;h5 id=&#34;思路-13&#34;&gt;&lt;strong&gt;思路:&lt;/strong&gt;&lt;/h5&gt;
+&lt;p&gt;此题比较简单，使用or进行筛选即可&lt;/p&gt;
+&lt;h5 id=&#34;答案-13&#34;&gt;&lt;strong&gt;答案:&lt;/strong&gt;&lt;/h5&gt;
+&lt;pre&gt;&lt;code&gt;select name,population,area from World where area &amp;gt; 3000000 or population &amp;gt; 25000000
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h5 id=&#34;重点-13&#34;&gt;&lt;strong&gt;重点:&lt;/strong&gt;&lt;/h5&gt;
+&lt;p&gt;or的使用方式&lt;/p&gt;
 ">Leetcode sql题每日三题</a>
       </div>
       
