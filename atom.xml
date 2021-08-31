@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://cm940324.github.io</id>
     <title>Oasis</title>
-    <updated>2021-08-31T10:13:14.391Z</updated>
+    <updated>2021-08-31T10:30:52.120Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://cm940324.github.io"/>
     <link rel="self" href="https://cm940324.github.io/atom.xml"/>
@@ -11,7 +11,7 @@
     <icon>https://cm940324.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, Oasis</rights>
     <entry>
-        <title type="html"><![CDATA[Leetcode sql题每日三题]]></title>
+        <title type="html"><![CDATA[Leetcode sql题个人题解方案]]></title>
         <id>https://cm940324.github.io/post/leetcode-sql/</id>
         <link href="https://cm940324.github.io/post/leetcode-sql/">
         </link>
@@ -634,6 +634,33 @@ Result table:
 <h5 id="重点-16"><strong>重点:</strong></h5>
 <p>^(位异或)的使用方式：<br>
 上下运算,按照与的运算规则：0&amp;0=0 ；0&amp;1=1；1&amp;1=0</p>
+<h2 id="17-变更性别">17. 变更性别</h2>
+<p>给定一个 salary 表，如下所示，有 m = 男性 和 f = 女性 的值。交换所有的 f 和 m 值（例如，将所有 f 值更改为 m，反之亦然）。要求只使用一个更新（Update）语句，并且没有中间的临时表。</p>
+<p>注意，您必只能写一个 Update 语句，请不要编写任何 Select 语句。<br>
+例如：</p>
+<pre><code>| id | name | sex | salary |
+|----|------|-----|--------|
+| 1  | A    | m   | 2500   |
+| 2  | B    | f   | 1500   |
+| 3  | C    | m   | 5500   |
+| 4  | D    | f   | 500    |
+</code></pre>
+<p>运行你所编写的更新语句之后，将会得到以下表:</p>
+<pre><code>| id | name | sex | salary |
+|----|------|-----|--------|
+| 1  | A    | f   | 2500   |
+| 2  | B    | m   | 1500   |
+| 3  | C    | f   | 5500   |
+| 4  | D    | m   | 500    |
+</code></pre>
+<h3 id="解答-17"><strong>解答</strong></h3>
+<h5 id="思路-17"><strong>思路:</strong></h5>
+<p>此题涉及到sql语句中的if用法</p>
+<h5 id="答案-17"><strong>答案:</strong></h5>
+<pre><code>update salary set sex = if(sex = 'f','m','f')
+</code></pre>
+<h5 id="重点-17"><strong>重点:</strong></h5>
+<p>在sql的update语句中，if语句类似于三目运算符的作用</p>
 ]]></content>
     </entry>
     <entry>

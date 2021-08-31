@@ -9,7 +9,7 @@
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
 <title>Oasis</title>
-<link rel="shortcut icon" href="/favicon.ico?v=1630404788373">
+<link rel="shortcut icon" href="/favicon.ico?v=1630405846909">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
 <link
@@ -263,7 +263,7 @@
           <div class="tag-post-node">
             <h1>
               08-26
-              <small>Leetcode sql题每日三题</small>
+              <small>Leetcode sql题个人题解方案</small>
             </h1>
           </div>
         </div>
@@ -1753,7 +1753,34 @@ Result table:
 &lt;h5 id=&#34;重点-16&#34;&gt;&lt;strong&gt;重点:&lt;/strong&gt;&lt;/h5&gt;
 &lt;p&gt;^(位异或)的使用方式：&lt;br&gt;
 上下运算,按照与的运算规则：0&amp;amp;0=0 ；0&amp;amp;1=1；1&amp;amp;1=0&lt;/p&gt;
-">Leetcode sql题每日三题</a>
+&lt;h2 id=&#34;17-变更性别&#34;&gt;17. 变更性别&lt;/h2&gt;
+&lt;p&gt;给定一个 salary 表，如下所示，有 m = 男性 和 f = 女性 的值。交换所有的 f 和 m 值（例如，将所有 f 值更改为 m，反之亦然）。要求只使用一个更新（Update）语句，并且没有中间的临时表。&lt;/p&gt;
+&lt;p&gt;注意，您必只能写一个 Update 语句，请不要编写任何 Select 语句。&lt;br&gt;
+例如：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;| id | name | sex | salary |
+|----|------|-----|--------|
+| 1  | A    | m   | 2500   |
+| 2  | B    | f   | 1500   |
+| 3  | C    | m   | 5500   |
+| 4  | D    | f   | 500    |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;运行你所编写的更新语句之后，将会得到以下表:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;| id | name | sex | salary |
+|----|------|-----|--------|
+| 1  | A    | f   | 2500   |
+| 2  | B    | m   | 1500   |
+| 3  | C    | f   | 5500   |
+| 4  | D    | m   | 500    |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;解答-17&#34;&gt;&lt;strong&gt;解答&lt;/strong&gt;&lt;/h3&gt;
+&lt;h5 id=&#34;思路-17&#34;&gt;&lt;strong&gt;思路:&lt;/strong&gt;&lt;/h5&gt;
+&lt;p&gt;此题涉及到sql语句中的if用法&lt;/p&gt;
+&lt;h5 id=&#34;答案-17&#34;&gt;&lt;strong&gt;答案:&lt;/strong&gt;&lt;/h5&gt;
+&lt;pre&gt;&lt;code&gt;update salary set sex = if(sex = &#39;f&#39;,&#39;m&#39;,&#39;f&#39;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h5 id=&#34;重点-17&#34;&gt;&lt;strong&gt;重点:&lt;/strong&gt;&lt;/h5&gt;
+&lt;p&gt;在sql的update语句中，if语句类似于三目运算符的作用&lt;/p&gt;
+">Leetcode sql题个人题解方案</a>
       </div>
       
       <div class="item">
