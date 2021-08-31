@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://cm940324.github.io</id>
     <title>Oasis</title>
-    <updated>2021-08-30T15:05:32.510Z</updated>
+    <updated>2021-08-31T10:13:14.391Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://cm940324.github.io"/>
     <link rel="self" href="https://cm940324.github.io/atom.xml"/>
@@ -596,6 +596,44 @@ Result table:
 </code></pre>
 <h5 id="重点-15"><strong>重点:</strong></h5>
 <p>奇数的算法和不等于符号</p>
+<h2 id="16-换座位">16. 换座位</h2>
+<p>小美是一所中学的信息科技老师，她有一张 seat 座位表，平时用来储存学生名字和与他们相对应的座位 id。<br>
+其中纵列的 id 是连续递增的<br>
+小美想改变相邻俩学生的座位。<br>
+你能不能帮她写一个 SQL query 来输出小美想要的结果呢？<br>
+示例：</p>
+<pre><code>+---------+---------+
+|    id   | student |
++---------+---------+
+|    1    | Abbot   |
+|    2    | Doris   |
+|    3    | Emerson |
+|    4    | Green   |
+|    5    | Jeames  |
++---------+---------+
+</code></pre>
+<p>假如数据输入的是上表，则输出结果如下：</p>
+<pre><code>+---------+---------+
+|    id   | student |
++---------+---------+
+|    1    | Doris   |
+|    2    | Abbot   |
+|    3    | Green   |
+|    4    | Emerson |
+|    5    | Jeames  |
++---------+---------+
+</code></pre>
+<p>注意：<br>
+如果学生人数是奇数，则不需要改变最后一个同学的座位。</p>
+<h3 id="解答-16"><strong>解答</strong></h3>
+<h5 id="思路-16"><strong>思路:</strong></h5>
+<p>此题涉及到异或运算符的使用，需要对异或运算符有所了解</p>
+<h5 id="答案-16"><strong>答案:</strong></h5>
+<pre><code>select rank() over (order by ((id-1)^1)) as id,student from seat
+</code></pre>
+<h5 id="重点-16"><strong>重点:</strong></h5>
+<p>^(位异或)的使用方式：<br>
+上下运算,按照与的运算规则：0&amp;0=0 ；0&amp;1=1；1&amp;1=0</p>
 ]]></content>
     </entry>
     <entry>

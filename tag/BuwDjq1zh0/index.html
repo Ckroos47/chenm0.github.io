@@ -9,7 +9,7 @@
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
 <title>Oasis</title>
-<link rel="shortcut icon" href="/favicon.ico?v=1630335928788">
+<link rel="shortcut icon" href="/favicon.ico?v=1630404788373">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
 <link
@@ -1759,6 +1759,44 @@ Result table:
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h5 id=&#34;重点-15&#34;&gt;&lt;strong&gt;重点:&lt;/strong&gt;&lt;/h5&gt;
 &lt;p&gt;奇数的算法和不等于符号&lt;/p&gt;
+&lt;h2 id=&#34;16-换座位&#34;&gt;16. 换座位&lt;/h2&gt;
+&lt;p&gt;小美是一所中学的信息科技老师，她有一张 seat 座位表，平时用来储存学生名字和与他们相对应的座位 id。&lt;br&gt;
+其中纵列的 id 是连续递增的&lt;br&gt;
+小美想改变相邻俩学生的座位。&lt;br&gt;
+你能不能帮她写一个 SQL query 来输出小美想要的结果呢？&lt;br&gt;
+示例：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;+---------+---------+
+|    id   | student |
++---------+---------+
+|    1    | Abbot   |
+|    2    | Doris   |
+|    3    | Emerson |
+|    4    | Green   |
+|    5    | Jeames  |
++---------+---------+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;假如数据输入的是上表，则输出结果如下：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;+---------+---------+
+|    id   | student |
++---------+---------+
+|    1    | Doris   |
+|    2    | Abbot   |
+|    3    | Green   |
+|    4    | Emerson |
+|    5    | Jeames  |
++---------+---------+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;注意：&lt;br&gt;
+如果学生人数是奇数，则不需要改变最后一个同学的座位。&lt;/p&gt;
+&lt;h3 id=&#34;解答-16&#34;&gt;&lt;strong&gt;解答&lt;/strong&gt;&lt;/h3&gt;
+&lt;h5 id=&#34;思路-16&#34;&gt;&lt;strong&gt;思路:&lt;/strong&gt;&lt;/h5&gt;
+&lt;p&gt;此题涉及到异或运算符的使用，需要对异或运算符有所了解&lt;/p&gt;
+&lt;h5 id=&#34;答案-16&#34;&gt;&lt;strong&gt;答案:&lt;/strong&gt;&lt;/h5&gt;
+&lt;pre&gt;&lt;code&gt;select rank() over (order by ((id-1)^1)) as id,student from seat
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h5 id=&#34;重点-16&#34;&gt;&lt;strong&gt;重点:&lt;/strong&gt;&lt;/h5&gt;
+&lt;p&gt;^(位异或)的使用方式：&lt;br&gt;
+上下运算,按照与的运算规则：0&amp;amp;0=0 ；0&amp;amp;1=1；1&amp;amp;1=0&lt;/p&gt;
 ">Leetcode sql题每日三题</a>
       </div>
       
