@@ -8,7 +8,7 @@
 <meta name="keywords" content="个人博客">
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
-<title>Spring Data Rest---Paging and Sorting  | Oasis</title>
+<title>Mybatis动态SQL | Oasis</title>
 <link rel="shortcut icon" href="/favicon.ico?v=1630632352875">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
@@ -38,8 +38,8 @@
 
 
 
-  <meta name="description" content="Spring Data Rest---Paging and Sorting " />
-  <meta name="keywords" content="SpringDataRest" />
+  <meta name="description" content="Mybatis动态SQL" />
+  <meta name="keywords" content="Mybatis" />
 </head>
 
 <body>
@@ -255,9 +255,14 @@
 <ul>
 <li>
 <ul>
-<li><a href="#1-paging">1. Paging</a></li>
-<li><a href="#2-previous-and-next-links">2. Previous and Next Links</a></li>
-<li><a href="#3sorting">3.Sorting</a></li>
+<li><a href="#if">if</a></li>
+<li><a href="#choose-when-otherwise">choose、when、otherwise</a></li>
+<li><a href="#trim-where-set">trim、where、set</a></li>
+<li><a href="#foreach">foreach</a></li>
+<li><a href="#script">script</a></li>
+<li><a href="#bind">bind</a></li>
+<li><a href="#%E5%A4%9A%E6%95%B0%E6%8D%AE%E5%BA%93%E6%94%AF%E6%8C%81">多数据库支持</a></li>
+<li><a href="#%E5%8A%A8%E6%80%81-sql-%E4%B8%AD%E7%9A%84%E6%8F%92%E5%85%A5%E8%84%9A%E6%9C%AC%E8%AF%AD%E8%A8%80">动态 SQL 中的插入脚本语言</a></li>
 </ul>
 </li>
 </ul>
@@ -527,8 +532,8 @@
           <div class="section bg-color post post-page">
             <section class="post-header">
   <h1 class="post-title">
-    <a class="post-title-link" href="https://cm940324.github.io/post/spring-data-rest-learn/">
-      Spring Data Rest---Paging and Sorting 
+    <a class="post-title-link" href="https://cm940324.github.io/post/mybatis-sql/">
+      Mybatis动态SQL
     </a>
   </h1>
   <div class="post-meta">
@@ -536,7 +541,7 @@
     <span class="meta-item pc-show">
       <i class="fa fa-calendar-o"></i>
       <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-06-10 15:11:22">2021-06-10</span>
+      <span class="publish-time" data-t="2021-09-03 09:24:52">2021-09-03</span>
       <span class="post-meta-divider pc-show">|</span>
     </span>
     
@@ -545,8 +550,8 @@
       <span class="pc-show language" data-lan="category-in">分类于</span>
       
       
-      <a href="https://cm940324.github.io/tag/hB0nBywri/">
-        <span>SpringDataRest</span>
+      <a href="https://cm940324.github.io/tag/7c45kaxXH/">
+        <span>Mybatis</span>
       </a>
       
       
@@ -555,17 +560,17 @@
     
     <span class="meta-item">
       <i class="fa fa-clock-o"></i>
-      <span>3<span class="language" data-lan="minute">分钟</span></span>
+      <span>11<span class="language" data-lan="minute">分钟</span></span>
     </span>
     <span class="meta-item">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-file-word-o"></i>
-      <span>586<span class="pc-show language" data-lan="words">字数</span></span>
+      <span>2445<span class="pc-show language" data-lan="words">字数</span></span>
     </span>
     
     
     
-    <span id="/post/spring-data-rest-learn/" data-flag-title="Spring Data Rest---Paging and Sorting " class="meta-item pc-show leancloud_visitors">
+    <span id="/post/mybatis-sql/" data-flag-title="Mybatis动态SQL" class="meta-item pc-show leancloud_visitors">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-eye"></i>
       <span><span class="language" data-lan="view">浏览量</span>：<span class="leancloud-visitors-count"></span></span>
@@ -574,47 +579,210 @@
   </div>
 </section>
             <div class="post-body next-md-body" id="post_body">
-              <h3 id="1-paging">1. Paging</h3>
-<p>Spring Data REST能识别含有分页和排序请求的URL，从而返回用户想要的数据，而不是直接返回一大堆数据集合。如果你继承PagingAndSortingRepository&lt;T, ID&gt;并获取实体类的列表集合，例如：</p>
-<pre><code>interface PersonRepository extends PagingAndSortingRepository&lt;Person, Long&gt; {}
+              <p>动态 SQL 是 MyBatis 的强大特性之一。如果你使用过 JDBC 或其它类似的框架，你应该能理解根据不同条件拼接 SQL 语句有多痛苦，例如拼接时要确保不能忘记添加必要的空格，还要注意去掉列表最后一个列名的逗号。利用动态 SQL，可以彻底摆脱这种痛苦。</p>
+<p>使用动态 SQL 并非一件易事，但借助可用于任何 SQL 映射语句中的强大的动态 SQL 语言，MyBatis 显著地提升了这一特性的易用性。</p>
+<p>如果你之前用过 JSTL 或任何基于类 XML 语言的文本处理器，你对动态 SQL 元素可能会感觉似曾相识。在 MyBatis 之前的版本中，需要花时间了解大量的元素。借助功能强大的基于 OGNL 的表达式，MyBatis 3 替换了之前的大部分元素，大大精简了元素种类，现在要学习的元素种类比原来的一半还要少。</p>
+<ul>
+<li>if</li>
+<li>choose (when, otherwise)</li>
+<li>trim (where, set)</li>
+<li>foreach</li>
+</ul>
+<h3 id="if">if</h3>
+<p>使用动态 SQL 最常见情景是根据条件包含 where 子句的一部分。比如：</p>
+<pre><code>&lt;select id=&quot;findActiveBlogWithTitleLike&quot;
+     resultType=&quot;Blog&quot;&gt;
+  SELECT * FROM BLOG
+  WHERE state = ‘ACTIVE’
+  &lt;if test=&quot;title != null&quot;&gt;
+    AND title like #{title}
+  &lt;/if&gt;
+&lt;/select&gt;
 </code></pre>
-<p>那么请求数据分页默认数为20个，也就是说第一次请求为20个数据，并带有分页的参数，如果想要自定义分页的参数，可以采用更改请求的URL参数的办法进行更改：</p>
-<p><mark>http://localhost:8080/persons/?size=5</mark></p>
-<p>如果要在你自己的查询方法中使用分页，需要在方法的参数中添加一个Pageable参数，这样获得的数据是一页数据(Page)而不是一个列表(List):</p>
-<pre><code>@RestResource(path = &quot;nameStartsWith&quot;, rel = &quot;nameStartsWith&quot;)
-
-public PagefindByNameStartsWith(@Param(&quot;name&quot;) String name, Pageable p);
+<p>这条语句提供了可选的查找文本功能。如果不传入 “title”，那么所有处于 “ACTIVE” 状态的 BLOG 都会返回；如果传入了 “title” 参数，那么就会对 “title” 一列进行模糊查找并返回对应的 BLOG 结果（“title” 的参数值需要包含查找掩码或通配符字符）。</p>
+<p>如果希望通过 “title” 和 “author” 两个参数进行可选搜索该怎么办呢？首先，我想先将语句名称修改成更名副其实的名称；接下来，只需要加入另一个条件即可。</p>
+<pre><code>&lt;select id=&quot;findActiveBlogLike&quot;
+     resultType=&quot;Blog&quot;&gt;
+  SELECT * FROM BLOG WHERE state = ‘ACTIVE’
+  &lt;if test=&quot;title != null&quot;&gt;
+    AND title like #{title}
+  &lt;/if&gt;
+  &lt;if test=&quot;author != null and author.name != null&quot;&gt;
+    AND author_name like #{author.name}
+  &lt;/if&gt;
+&lt;/select&gt;
 </code></pre>
-<p>这样的一个查询方法，会输出到链接：/people/search/nameStartsWith 并且会支持分页，这个原理和Spring Data Jpa的类似。</p>
-<h3 id="2-previous-and-next-links">2. Previous and Next Links</h3>
-<p>每个分页的response数据返回到前端页面，都有一个prev和next链接，比如在浏览器中请求 localhost:8080/people?size=5 后得到的数据如下：</p>
-<pre><code>{
-&quot;_links&quot; : {
-	&quot;self&quot; : {
-		&quot;href&quot; : &quot;http://localhost:8080/persons{&amp;sort,page,size}&quot;, 
-	&quot;templated&quot; : true
-	},
-	&quot;next&quot; : {
-		&quot;href&quot; : &quot;http://localhost:8080/persons?page=1&amp;size=5{&amp;sort}&quot;, 
-		&quot;templated&quot; : true
-	}
-},
-	&quot;_embedded&quot; : {
-		... data ...
-	},
-	&quot;page&quot; : { ③
-	&quot;size&quot; : 5,
-	&lt;!-- &quot;totalElements&quot; : 50 --&gt;
-	&quot;totalPages&quot; : 10,
-	&quot;number&quot; : 0
+<h3 id="choose-when-otherwise">choose、when、otherwise</h3>
+<p>有时候，我们不想使用所有的条件，而只是想从多个条件中选择一个使用。针对这种情况，MyBatis 提供了 choose 元素，它有点像 Java 中的 switch 语句。</p>
+<p>还是上面的例子，但是策略变为：传入了 “title” 就按 “title” 查找，传入了 “author” 就按 “author” 查找的情形。若两者都没有传入，就返回标记为 featured 的 BLOG（这可能是管理员认为，与其返回大量的无意义随机 Blog，还不如返回一些由管理员精选的 Blog）</p>
+<pre><code>&lt;select id=&quot;findActiveBlogLike&quot;
+     resultType=&quot;Blog&quot;&gt;
+  SELECT * FROM BLOG WHERE state = ‘ACTIVE’
+  &lt;choose&gt;
+    &lt;when test=&quot;title != null&quot;&gt;
+      AND title like #{title}
+    &lt;/when&gt;
+    &lt;when test=&quot;author != null and author.name != null&quot;&gt;
+      AND author_name like #{author.name}
+    &lt;/when&gt;
+    &lt;otherwise&gt;
+      AND featured = 1
+    &lt;/otherwise&gt;
+  &lt;/choose&gt;
+&lt;/select&gt;
+</code></pre>
+<h3 id="trim-where-set">trim、where、set</h3>
+<p>前面几个例子已经方便地解决了一个臭名昭著的动态 SQL 问题。现在回到之前的 “if” 示例，这次我们将 “state = ‘ACTIVE’” 设置成动态条件，看看会发生什么。</p>
+<pre><code>&lt;select id=&quot;findActiveBlogLike&quot;
+     resultType=&quot;Blog&quot;&gt;
+  SELECT * FROM BLOG
+  WHERE
+  &lt;if test=&quot;state != null&quot;&gt;
+    state = #{state}
+  &lt;/if&gt;
+  &lt;if test=&quot;title != null&quot;&gt;
+    AND title like #{title}
+  &lt;/if&gt;
+  &lt;if test=&quot;author != null and author.name != null&quot;&gt;
+    AND author_name like #{author.name}
+  &lt;/if&gt;
+&lt;/select&gt;
+</code></pre>
+<p>如果没有匹配的条件会怎么样？最终这条 SQL 会变成这样：</p>
+<pre><code>SELECT * FROM BLOG
+WHERE
+</code></pre>
+<p>这会导致查询失败。如果匹配的只是第二个条件又会怎样？这条 SQL 会是这样:</p>
+<pre><code>SELECT * FROM BLOG
+WHERE
+AND title like ‘someTitle’
+</code></pre>
+<p>这个查询也会失败。这个问题不能简单地用条件元素来解决。这个问题是如此的难以解决，以至于解决过的人不会再想碰到这种问题。</p>
+<p>MyBatis 有一个简单且适合大多数场景的解决办法。而在其他场景中，可以对其进行自定义以符合需求。而这，只需要一处简单的改动：</p>
+<pre><code>&lt;select id=&quot;findActiveBlogLike&quot;
+     resultType=&quot;Blog&quot;&gt;
+  SELECT * FROM BLOG
+  &lt;where&gt;
+    &lt;if test=&quot;state != null&quot;&gt;
+         state = #{state}
+    &lt;/if&gt;
+    &lt;if test=&quot;title != null&quot;&gt;
+        AND title like #{title}
+    &lt;/if&gt;
+    &lt;if test=&quot;author != null and author.name != null&quot;&gt;
+        AND author_name like #{author.name}
+    &lt;/if&gt;
+  &lt;/where&gt;
+&lt;/select&gt;
+</code></pre>
+<p><em>where</em> 元素只会在子元素返回任何内容的情况下才插入 “WHERE” 子句。而且，若子句的开头为 “AND” 或 “OR”，<em>where</em> 元素也会将它们去除。</p>
+<p>如果 <em>where</em> 元素与你期望的不太一样，你也可以通过自定义 trim 元素来定制 <em>where</em> 元素的功能。比如，和 <em>where</em> 元素等价的自定义 trim 元素为：</p>
+<pre><code>&lt;trim prefix=&quot;WHERE&quot; prefixOverrides=&quot;AND |OR &quot;&gt;
+  ...
+&lt;/trim&gt;
+</code></pre>
+<p><em>prefixOverrides</em> 属性会忽略通过管道符分隔的文本序列（注意此例中的空格是必要的）。上述例子会移除所有 <em>prefixOverrides</em> 属性中指定的内容，并且插入 <em>prefix</em> 属性中指定的内容。</p>
+<p>用于动态更新语句的类似解决方案叫做 <em>set</em>。<em>set</em> 元素可以用于动态包含需要更新的列，忽略其它不更新的列。比如：</p>
+<pre><code>&lt;update id=&quot;updateAuthorIfNecessary&quot;&gt;
+  update Author
+    &lt;set&gt;
+      &lt;if test=&quot;username != null&quot;&gt;username=#{username},&lt;/if&gt;
+      &lt;if test=&quot;password != null&quot;&gt;password=#{password},&lt;/if&gt;
+      &lt;if test=&quot;email != null&quot;&gt;email=#{email},&lt;/if&gt;
+      &lt;if test=&quot;bio != null&quot;&gt;bio=#{bio}&lt;/if&gt;
+    &lt;/set&gt;
+  where id=#{id}
+&lt;/update&gt;
+</code></pre>
+<p>这个例子中，<em>set</em> 元素会动态地在行首插入 SET 关键字，并会删掉额外的逗号（这些逗号是在使用条件语句给列赋值时引入的）。</p>
+<p>来看看与 <em>set</em> 元素等价的自定义 <em>trim</em> 元素吧：</p>
+<pre><code>&lt;trim prefix=&quot;SET&quot; suffixOverrides=&quot;,&quot;&gt;
+  ...
+&lt;/trim&gt;
+</code></pre>
+<p>注意，我们覆盖了后缀值设置，并且自定义了前缀值。</p>
+<h3 id="foreach">foreach</h3>
+<p>动态 SQL 的另一个常见使用场景是对集合进行遍历（尤其是在构建 IN 条件语句的时候）。比如：</p>
+<pre><code>&lt;select id=&quot;selectPostIn&quot; resultType=&quot;domain.blog.Post&quot;&gt;
+  SELECT *
+  FROM POST P
+  WHERE ID in
+  &lt;foreach item=&quot;item&quot; index=&quot;index&quot; collection=&quot;list&quot;
+      open=&quot;(&quot; separator=&quot;,&quot; close=&quot;)&quot;&gt;
+        #{item}
+  &lt;/foreach&gt;
+&lt;/select&gt;
+</code></pre>
+<p><em>foreach</em> 元素的功能非常强大，它允许你指定一个集合，声明可以在元素体内使用的集合项（item）和索引（index）变量。它也允许你指定开头与结尾的字符串以及集合项迭代之间的分隔符。这个元素也不会错误地添加多余的分隔符，看它多智能！</p>
+<p><strong>提示</strong> 你可以将任何可迭代对象（如 List、Set 等）、Map 对象或者数组对象作为集合参数传递给 <em>foreach</em>。当使用可迭代对象或者数组时，index 是当前迭代的序号，item 的值是本次迭代获取到的元素。当使用 Map 对象（或者 Map.Entry 对象的集合）时，index 是键，item 是值。</p>
+<p>至此，我们已经完成了与 XML 配置及映射文件相关的讨论。下一章将详细探讨 Java API，以便你能充分利用已经创建的映射配置。</p>
+<h3 id="script">script</h3>
+<p>要在带注解的映射器接口类中使用动态 SQL，可以使用 <em>script</em> 元素。比如:</p>
+<pre><code>    @Update({&quot;&lt;script&gt;&quot;,
+      &quot;update Author&quot;,
+      &quot;  &lt;set&gt;&quot;,
+      &quot;    &lt;if test='username != null'&gt;username=#{username},&lt;/if&gt;&quot;,
+      &quot;    &lt;if test='password != null'&gt;password=#{password},&lt;/if&gt;&quot;,
+      &quot;    &lt;if test='email != null'&gt;email=#{email},&lt;/if&gt;&quot;,
+      &quot;    &lt;if test='bio != null'&gt;bio=#{bio}&lt;/if&gt;&quot;,
+      &quot;  &lt;/set&gt;&quot;,
+      &quot;where id=#{id}&quot;,
+      &quot;&lt;/script&gt;&quot;})
+    void updateAuthorValues(Author author);
+</code></pre>
+<h3 id="bind">bind</h3>
+<p><code>bind</code> 元素允许你在 OGNL 表达式以外创建一个变量，并将其绑定到当前的上下文。比如：</p>
+<pre><code>&lt;select id=&quot;selectBlogsLike&quot; resultType=&quot;Blog&quot;&gt;
+  &lt;bind name=&quot;pattern&quot; value=&quot;'%' + _parameter.getTitle() + '%'&quot; /&gt;
+  SELECT * FROM BLOG
+  WHERE title LIKE #{pattern}
+&lt;/select&gt;
+</code></pre>
+<h3 id="多数据库支持">多数据库支持</h3>
+<p>如果配置了 databaseIdProvider，你就可以在动态代码中使用名为 “_databaseId” 的变量来为不同的数据库构建特定的语句。比如下面的例子：</p>
+<pre><code>&lt;insert id=&quot;insert&quot;&gt;
+  &lt;selectKey keyProperty=&quot;id&quot; resultType=&quot;int&quot; order=&quot;BEFORE&quot;&gt;
+    &lt;if test=&quot;_databaseId == 'oracle'&quot;&gt;
+      select seq_users.nextval from dual
+    &lt;/if&gt;
+    &lt;if test=&quot;_databaseId == 'db2'&quot;&gt;
+      select nextval for seq_users from sysibm.sysdummy1&quot;
+    &lt;/if&gt;
+  &lt;/selectKey&gt;
+  insert into users values (#{id}, #{name})
+&lt;/insert&gt;
+</code></pre>
+<h3 id="动态-sql-中的插入脚本语言">动态 SQL 中的插入脚本语言</h3>
+<p>MyBatis 从 3.2 版本开始支持插入脚本语言，这允许你插入一种语言驱动，并基于这种语言来编写动态 SQL 查询语句。</p>
+<p>可以通过实现以下接口来插入一种语言：</p>
+<pre><code>public interface LanguageDriver {
+  ParameterHandler createParameterHandler(MappedStatement mappedStatement, Object parameterObject, BoundSql boundSql);
+  SqlSource createSqlSource(Configuration configuration, XNode script, Class&lt;?&gt; parameterType);
+  SqlSource createSqlSource(Configuration configuration, String script, Class&lt;?&gt; parameterType);
 }
 </code></pre>
-<p>这两个链接是指向下一级链接(next)和上一级(prev)的链接的地址</p>
-<h3 id="3sorting">3.Sorting</h3>
-<p>和Paging一样，Spring Data Rest识别含有排序的URL请求参数，实体类对应的同样有一个实体仓库。为了让数据按照自己想要的参数进行排序，可以在URL请求中添加一个name属性，并指定属性的排序方式，指定排序的方向(正向asc,逆向desc),比如：</p>
-<pre><code class="language-html">http://localhost:8080/people/search/nameStartsWith?name=K&amp;sort=name,desc
+<p>实现自定义语言驱动后，你就可以在 mybatis-config.xml 文件中将它设置为默认语言：</p>
+<pre><code>&lt;typeAliases&gt;
+  &lt;typeAlias type=&quot;org.sample.MyLanguageDriver&quot; alias=&quot;myLanguage&quot;/&gt;
+&lt;/typeAliases&gt;
+&lt;settings&gt;
+  &lt;setting name=&quot;defaultScriptingLanguage&quot; value=&quot;myLanguage&quot;/&gt;
+&lt;/settings&gt;
 </code></pre>
-<p>这样一个语句是使用了定义在PersonRepository中的findByNameStartsWith查询方法进行查询所有Person的姓名中以字母K开头的并以name进行逆向排序的用户。通常为使用多个属性进行排序，往往可以添加sort=PROPERTY自己想要排序的参数进行排序。</p>
+<p>或者，你也可以使用 <code>lang</code> 属性为特定的语句指定语言：</p>
+<pre><code>&lt;select id=&quot;selectBlog&quot; lang=&quot;myLanguage&quot;&gt;
+  SELECT * FROM BLOG
+&lt;/select&gt;
+</code></pre>
+<p>或者，在你的 mapper 接口上添加 <code>@Lang</code> 注解：</p>
+<pre><code>public interface Mapper {
+  @Lang(MyLanguageDriver.class)
+  @Select(&quot;SELECT * FROM BLOG&quot;)
+  List&lt;Blog&gt; selectBlog();
+}
+</code></pre>
+<p><strong>提示</strong> 可以使用 Apache Velocity 作为动态语言，更多细节请参考 MyBatis-Velocity 项目。</p>
+<p>你前面看到的所有 xml 标签都由默认 MyBatis 语言提供，而它由语言驱动 <code>org.apache.ibatis.scripting.xmltags.XmlLanguageDriver</code>（别名为 <code>xml</code>）所提供。</p>
 
             </div>
             
@@ -627,7 +795,7 @@ public PagefindByNameStartsWith(@Param(&quot;name&quot;) String name, Pageable p
     </li>
     <li class="post-copyright-link">
       <strong class="language" data-lan="link">本文链接：</strong>
-      <a href="https://cm940324.github.io/post/spring-data-rest-learn/" title="Spring Data Rest---Paging and Sorting ">https://cm940324.github.io/post/spring-data-rest-learn/</a>
+      <a href="https://cm940324.github.io/post/mybatis-sql/" title="Mybatis动态SQL">https://cm940324.github.io/post/mybatis-sql/</a>
     </li>
     <li class="post-copyright-license">
       <strong class="language" data-lan="copyright">版权声明： </strong>
@@ -636,21 +804,17 @@ public PagefindByNameStartsWith(@Param(&quot;name&quot;) String name, Pageable p
   </ul>
   <div class="tags">
     
-      <a href="https://cm940324.github.io/tag/hB0nBywri/"># SpringDataRest</a>
+      <a href="https://cm940324.github.io/tag/7c45kaxXH/"># Mybatis</a>
     
   </div>
   <div class="nav">
     <div class="nav-prev">
       
-        <i class="fa fa-chevron-left"></i>
-        <a class="nav-pc-next" title="两数之和" href="https://cm940324.github.io/post/twonum/">两数之和</a class="nav-pc-next">
-        <a class="nav-mobile-prev" title="两数之和" href="https://cm940324.github.io/post/twonum/">上一篇</a>
-      
     </div>
     <div class="nav-next">
       
-        <a class="nav-pc-next" title="微服务：服务注册发现+ API 网关+配置中心+配置中心+服务跟踪" href="https://cm940324.github.io/post/weifuwu-ques/">微服务：服务注册发现+ API 网关+配置中心+配置中心+服务跟踪</a>
-        <a class="nav-mobile-next" title="微服务：服务注册发现+ API 网关+配置中心+配置中心+服务跟踪" href="https://cm940324.github.io/post/weifuwu-ques/">下一篇</a>
+        <a class="nav-pc-next" title="Leetcode sql题个人题解方案" href="https://cm940324.github.io/post/leetcode-sql/">Leetcode sql题个人题解方案</a>
+        <a class="nav-mobile-next" title="Leetcode sql题个人题解方案" href="https://cm940324.github.io/post/leetcode-sql/">下一篇</a>
         <i class="fa fa-chevron-right"></i>
       
     </div>

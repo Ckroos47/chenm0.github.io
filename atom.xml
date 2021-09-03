@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://cm940324.github.io</id>
     <title>Oasis</title>
-    <updated>2021-09-03T01:25:21.345Z</updated>
+    <updated>2021-09-03T01:25:57.516Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://cm940324.github.io"/>
     <link rel="self" href="https://cm940324.github.io/atom.xml"/>
@@ -12,8 +12,8 @@
     <rights>All rights reserved 2021, Oasis</rights>
     <entry>
         <title type="html"><![CDATA[Mybatis动态SQL]]></title>
-        <id>https://cm940324.github.io/post/mybatis-dong-tai-sql/</id>
-        <link href="https://cm940324.github.io/post/mybatis-dong-tai-sql/">
+        <id>https://cm940324.github.io/post/mybatis-sql/</id>
+        <link href="https://cm940324.github.io/post/mybatis-sql/">
         </link>
         <updated>2021-09-03T01:24:52.000Z</updated>
         <content type="html"><![CDATA[<p>动态 SQL 是 MyBatis 的强大特性之一。如果你使用过 JDBC 或其它类似的框架，你应该能理解根据不同条件拼接 SQL 语句有多痛苦，例如拼接时要确保不能忘记添加必要的空格，还要注意去掉列表最后一个列名的逗号。利用动态 SQL，可以彻底摆脱这种痛苦。</p>
