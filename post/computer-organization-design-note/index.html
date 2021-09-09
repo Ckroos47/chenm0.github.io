@@ -8,7 +8,7 @@
 <meta name="keywords" content="个人博客">
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
-<title>理解、学习与使用 JAVA 中的 OPTIONAL | Oasis</title>
+<title>计算机组成与设计学习笔记——第1章 | Oasis</title>
 <link rel="shortcut icon" href="/favicon.ico?v=1631172288656">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
@@ -38,8 +38,8 @@
 
 
 
-  <meta name="description" content="理解、学习与使用 JAVA 中的 OPTIONAL" />
-  <meta name="keywords" content="JAVA" />
+  <meta name="description" content="计算机组成与设计学习笔记——第1章" />
+  <meta name="keywords" content="" />
 </head>
 
 <body>
@@ -255,15 +255,15 @@
 <ul>
 <li>
 <ul>
-<li><a href="#%E5%88%9B%E5%BB%BA-optional-%E5%AE%9E%E4%BE%8B">创建 <em>Optional</em> 实例</a></li>
-<li><a href="#%E8%AE%BF%E9%97%AE-optional-%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%80%BC">访问 <em>Optional</em> 对象的值</a></li>
-<li><a href="#%E8%BF%94%E5%9B%9E%E9%BB%98%E8%AE%A4%E5%80%BC">返回默认值</a></li>
-<li><a href="#%E8%BF%94%E5%9B%9E%E5%BC%82%E5%B8%B8">返回异常</a></li>
-<li><a href="#%E8%BD%AC%E6%8D%A2%E5%80%BC">转换值</a></li>
-<li><a href="#optional-%E7%B1%BB%E7%9A%84%E9%93%BE%E5%BC%8F%E6%96%B9%E6%B3%95"><em>Optional</em> 类的链式方法</a></li>
-<li><a href="#java-9-%E5%A2%9E%E5%BC%BA">Java 9 增强</a></li>
-<li><a href="#optional-%E5%BA%94%E8%AF%A5%E6%80%8E%E6%A0%B7%E7%94%A8"><em>Optional</em> 应该怎样用？</a></li>
-<li><a href="#%E6%80%BB%E7%BB%93">总结</a></li>
+<li><a href="#%E7%AC%AC1%E7%AB%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%A6%82%E8%A6%81%E4%B8%8E%E6%8A%80%E6%9C%AF">第1章 计算机概要与技术</a><br>
+*
+<ul>
+<li><a href="#%E8%8B%B1%E8%AF%91">英译：</a></li>
+<li><a href="#11-%E5%BC%95%E8%A8%80">1.1  引言</a></li>
+<li><a href="#12-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E7%BB%93%E6%9E%84%E4%B8%AD%E7%9A%848%E4%B8%AA%E4%BC%9F%E5%A4%A7%E6%80%9D%E6%83%B3">1.2  计算机系统结构中的8个伟大思想</a></li>
+<li><a href="#13-%E7%A8%8B%E5%BA%8F%E6%A6%82%E5%BF%B5%E5%85%A5%E9%97%A8">1.3 程序概念入门</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -533,8 +533,8 @@
           <div class="section bg-color post post-page">
             <section class="post-header">
   <h1 class="post-title">
-    <a class="post-title-link" href="https://cm940324.github.io/post/java8-optional/">
-      理解、学习与使用 JAVA 中的 OPTIONAL
+    <a class="post-title-link" href="https://cm940324.github.io/post/computer-organization-design-note/">
+      计算机组成与设计学习笔记——第1章
     </a>
   </h1>
   <div class="post-meta">
@@ -542,36 +542,23 @@
     <span class="meta-item pc-show">
       <i class="fa fa-calendar-o"></i>
       <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-04-26 14:14:05">2021-04-26</span>
+      <span class="publish-time" data-t="2021-09-09 14:01:26">2021-09-09</span>
       <span class="post-meta-divider pc-show">|</span>
     </span>
     
     <span class="meta-item">
-      <i class="fa fa-folder-o"></i>
-      <span class="pc-show language" data-lan="category-in">分类于</span>
-      
-      
-      <a href="https://cm940324.github.io/tag/BuwDjq1zh0/">
-        <span>JAVA</span>
-      </a>
-      
-      
-    </span>
-    <span class="post-meta-divider">|</span>
-    
-    <span class="meta-item">
       <i class="fa fa-clock-o"></i>
-      <span>13<span class="language" data-lan="minute">分钟</span></span>
+      <span>6<span class="language" data-lan="minute">分钟</span></span>
     </span>
     <span class="meta-item">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-file-word-o"></i>
-      <span>2939<span class="pc-show language" data-lan="words">字数</span></span>
+      <span>1599<span class="pc-show language" data-lan="words">字数</span></span>
     </span>
     
     
     
-    <span id="/post/java8-optional/" data-flag-title="理解、学习与使用 JAVA 中的 OPTIONAL" class="meta-item pc-show leancloud_visitors">
+    <span id="/post/computer-organization-design-note/" data-flag-title="计算机组成与设计学习笔记——第1章" class="meta-item pc-show leancloud_visitors">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-eye"></i>
       <span><span class="language" data-lan="view">浏览量</span>：<span class="leancloud-visitors-count"></span></span>
@@ -580,297 +567,133 @@
   </div>
 </section>
             <div class="post-body next-md-body" id="post_body">
-              <p>​		从 Java 8 引入的一个很有趣的特性是 <em>Optional</em>  类。Optional 类主要解决的问题是臭名昭著的空指针异常（NullPointerException） —— 每个 Java 程序员都非常了解的异常。</p>
-<p>​		本质上，这是一个包含有可选值的包装类，这意味着 Optional 类既可以含有对象也可以为空。Optional 是 Java 实现函数式编程的强劲一步，并且帮助在范式中实现。但是 Optional 的意义显然不止于此。</p>
-<pre><code>if (user != null) {
-    Address address = user.getAddress();
-    if (address != null) {
-        Country country = address.getCountry();
-        if (country != null) {
-            String isocode = country.getIsocode();
-            if (isocode != null) {
-                isocode = isocode.toUpperCase();
-            }
-        }
-    }
-}
-</code></pre>
-<p>​		你看到了，这很容易就变得冗长，难以维护。</p>
-<p>​		为了简化这个过程，我们来看看用 <em>Optional</em> 类是怎么做的。从创建和验证实例，到使用其不同的方法，并与其它返回相同类型的方法相结合，下面是见证 <em>Optional</em>  奇迹的时刻。</p>
-<h3 id="创建-optional-实例">创建 <em>Optional</em> 实例</h3>
-<p>​		重申一下，这个类型的对象可能包含值，也可能为空。你可以使用同名方法创建一个空的 Optional.</p>
-<pre><code>@Test(expected = NoSuchElementException.class)
-public void whenCreateEmptyOptional_thenNull() {
-    Optional&lt;User&gt; emptyOpt = Optional.empty();
-    emptyOpt.get();
-}
-</code></pre>
-<p>​		毫不奇怪，尝试访问 <em>emptyOpt</em> 变量的值会导致 <em>NoSuchElementException</em>。</p>
-<p>​		你可以使用 <em>of()</em> 和 ofNullable() 方法创建包含值的 <em>Optional</em>。两个方法的不同之处在于如果你把 <em>null</em> 值作为参数传递进去，<em>of()</em> 方法会抛出 <em>NullPointerException</em>：</p>
-<pre><code>@Test(expected = NullPointerException.class)
-public void whenCreateOfEmptyOptional_thenNullPointerException() {
-    Optional&lt;User&gt; opt = Optional.of(user);
-}
-</code></pre>
-<p>​		你看，我们并没有完全摆脱 <em>NullPointerException</em>。因此，你应该明确对象不为 <em>null</em> 的时候使用 <em>of()</em>。</p>
-<p>如果对象即可能是 <em>null</em> 也可能是非 null，你就应该使用 <em>ofNullable()</em> 方法：</p>
-<pre><code>Optional&lt;User&gt; opt = Optional.ofNullable(user);
-</code></pre>
-<h3 id="访问-optional-对象的值">访问 <em>Optional</em> 对象的值</h3>
-<p>​		从 <em>Optional</em> 实例中取回实际值对象的方法之一是使用 <em>get()</em> 方法：</p>
-<pre><code>@Test
-public void whenCreateOfNullableOptional_thenOk() {
-    String name = &quot;John&quot;;
-    Optional&lt;String&gt; opt = Optional.ofNullable(name);
-    assertEquals(&quot;John&quot;, opt.get());
-}
-</code></pre>
-<p>​		不过，你看到了，这个方法会在值为 <em>null</em> 的时候抛出异常。要避免异常，你可以选择首先验证是否有值：</p>
-<pre><code>@Test
-public void whenCheckIfPresent_thenOk() {
-    User user = new User(&quot;john@gmail.com&quot;, &quot;1234&quot;);
-    Optional&lt;User&gt; opt = Optional.ofNullable(user);
-    assertTrue(opt.isPresent());
-    assertEquals(user.getEmail(), opt.get().getEmail());
-}
-</code></pre>
-<p>​		检查是否有值的另一个选择是 <em>ifPresent()</em> 方法。该方法除了执行检查，还接受一个<em>Consumer(消费者</em>) 参数，如果对象不是空的，就对执行传入的 Lambda 表达式：</p>
-<pre><code>opt.ifPresent( u -&gt; assertEquals(user.getEmail(), u.getEmail()));
-</code></pre>
-<p>​		这个例子中，只有 user 用户不为 null 的时候才会执行断言。</p>
-<p>​		接下来，我们来看看提供空值的方法。</p>
-<h3 id="返回默认值">返回默认值</h3>
-<p>​		<em>Optional</em> 类提供了 API 用以返回对象值，或者在对象为空的时候返回默认值。</p>
-<p>​		这里你可以使用的第一个方法是 <em>orElse()</em>，它的工作方式非常直接，如果有值则返回该值，否则返回传递给它的参数值：</p>
-<pre><code>@Test
-public void whenEmptyValue_thenReturnDefault() {
-    User user = null;
-    User user2 = new User(&quot;anna@gmail.com&quot;, &quot;1234&quot;);
-    User result = Optional.ofNullable(user).orElse(user2);
+              <h3 id="第1章-计算机概要与技术">第1章 计算机概要与技术</h3>
+<h5 id="英译">英译：</h5>
+<pre><code>World Wide Web (www)--- 万维网
 
-    assertEquals(user2.getEmail(), result.getEmail());
-}
-</code></pre>
-<p>​		这里 <em>user</em> 对象是空的，所以返回了作为默认值的 <em>user2</em>。</p>
-<p>​		如果对象的初始值不是 null，那么默认值会被忽略：</p>
-<pre><code>@Test
-public void whenValueNotNull_thenIgnoreDefault() {
-    User user = new User(&quot;john@gmail.com&quot;,&quot;1234&quot;);
-    User user2 = new User(&quot;anna@gmail.com&quot;, &quot;1234&quot;);
-    User result = Optional.ofNullable(user).orElse(user2);
+Personal Computer (PC) --- 个人计算机
 
-    assertEquals(&quot;john@gmail.com&quot;, result.getEmail());
-}
-</code></pre>
-<p>​		第二个同类型的 API 是 <em>orElseGet()</em> —— 其行为略有不同。这个方法会在有值的时候返回值，如果没有值，它会执行作为参数传入的 <em>Supplier(供应者)</em> 函数式接口，并将返回其执行结果：</p>
-<pre><code>User result = Optional.ofNullable(user).orElseGet( () -&gt; user2);
-</code></pre>
-<p>​		<em>orElse()</em> 和 <em>orElseGet()</em> 的不同之处</p>
-<p>​		乍一看，这两种方法似乎起着同样的作用。然而事实并非如此。我们创建一些示例来突出二者行为上的异同。</p>
-<p>我们先来看看对象为空时他们的行为：</p>
-<pre><code>@Test
-public void givenEmptyValue_whenCompare_thenOk() {
-    User user = null
-    logger.debug(&quot;Using orElse&quot;);
-    User result = Optional.ofNullable(user).orElse(createNewUser());
-    logger.debug(&quot;Using orElseGet&quot;);
-    User result2 = Optional.ofNullable(user).orElseGet(() -&gt; createNewUser());
-}
+Embedded computer --- 嵌入式计算机
 
-private User createNewUser() {
-    logger.debug(&quot;Creating New User&quot;);
-    return new User(&quot;extra@gmail.com&quot;, &quot;1234&quot;);
-}
-</code></pre>
-<p>​		上面的代码中，两种方法都调用了 <em>createNewUser()</em> 方法，这个方法会记录一个消息并返回 <em>User</em> 对象。</p>
-<p>代码输出如下：</p>
-<pre><code>Using orElse
-Creating New User
-Using orElseGet
-Creating New User
-</code></pre>
-<p>​		由此可见，当对象为空而返回默认对象时，行为并无差异。</p>
-<p>​</p>
-<p>​		我们接下来看一个类似的示例，但这里 <em>Optional</em>  不为空：</p>
-<pre><code>@Test
-public void givenPresentValue_whenCompare_thenOk() {
-    User user = new User(&quot;john@gmail.com&quot;, &quot;1234&quot;);
-    logger.info(&quot;Using orElse&quot;);
-    User result = Optional.ofNullable(user).orElse(createNewUser());
-    logger.info(&quot;Using orElseGet&quot;);
-    User result2 = Optional.ofNullable(user).orElseGet(() -&gt; createNewUser());
-}
-</code></pre>
-<p>​		这次的输出：</p>
-<pre><code>Using orElse
-Creating New User
-Using orElseGet
-</code></pre>
-<p>​		这个示例中，两个 <em>Optional</em>  对象都包含非空值，两个方法都会返回对应的非空值。不过，<em>orElse()</em> 方法仍然创建了 <em>User</em> 对象。与之相反，<em>orElseGet()</em> 方法不创建 <em>User</em> 对象。</p>
-<p>​		在执行较密集的调用时，比如调用 Web 服务或数据查询，这个差异会对性能产生重大影响。</p>
-<h3 id="返回异常">返回异常</h3>
-<p>​		除了 <em>orElse()</em> 和 <em>orElseGet()</em> 方法，Optional 还定义了 <em>orElseThrow()</em> API —— 它会在对象为空的时候抛出异常，而不是返回备选的值：</p>
-<pre><code>@Test(expected = IllegalArgumentException.class)
-public void whenThrowException_thenOk() {
-    User result = Optional.ofNullable(user)
-      .orElseThrow( () -&gt; new IllegalArgumentException());
-}
-</code></pre>
-<p>​		这里，如果 <em>user</em> 值为 null，会抛出 <em>IllegalArgumentException</em>。</p>
-<p>​		这个方法让我们有更丰富的语义，可以决定抛出什么样的异常，而不总是抛出 <em>NullPointerException</em>。</p>
-<p>​		现在我们已经很好地理解了如何使用 Optional，我们来看看其它可以对 <em>Optional</em> 值进行转换和过滤的方法。</p>
-<h3 id="转换值">转换值</h3>
-<p>​		有很多种方法可以转换 <em>Optional</em> 的值。我们从 <em>map()</em> 和 <em>flatMap()</em> 方法开始。</p>
-<p>先来看一个使用 <em>map()</em> API 的例子：</p>
-<pre><code>@Test
-public void whenMap_thenOk() {
-    User user = new User(&quot;anna@gmail.com&quot;, &quot;1234&quot;);
-    String email = Optional.ofNullable(user)
-      .map(u -&gt; u.getEmail()).orElse(&quot;default@gmail.com&quot;);
+Personal Mobile Device(PMD) --- 个人移动设备
 
-    assertEquals(email, user.getEmail());
-}
+Cloud computing --- 云计算
+
+Warehouse Scale Computer (WSC) --- 仓储规模计算机
+
+Software as a Service (SAAS) --- 软件即服务
+
+Multicore microprocessor --- 多核微处理器
+
+acronym --- 首字母缩略词
+
+Random Access Memory (RAM) --- 随机访问存储器
+
+Central Process Unit (CPU)--- 中央处理单元
+
+Moore's Law --- 摩尔定律
+
+abstraction --- 抽象
+
+common case fast --- 加速大概率事件
+
+parallel performance --- 并行性能
+
+pipeline --- 流水线
+
+prediction --- 预测
+
+hierarchy of memory --- 存储器层次
+
+dependable --- 可靠性
+
+system software --- 系统软件
+
+compiler --- 编译程序
+
+binary digit --- 二进制位
+
+bit --- 位
+
+Instruction --- 指令
+
+assembler --- 汇编程序
+
+assembly language --- 汇编语言
+
+machine language --- 机器语言
+
+high-level programming language --- 高级编程语言
+
 </code></pre>
-<p>​		<em>map()</em> 对值应用(调用)作为参数的<em>函数</em>，然后将返回的值包装在 <em>Optional</em> 中。这就使对返回值进行链试调用的操作成为可能 —— 这里的下一环就是 <em>orElse()</em>。</p>
-<p>​		相比这下，<em>flatMap()</em> 也需要<em>函数</em>作为参数，并对值调用这个函数，然后直接返回结果。</p>
-<p>​		下面的操作中，我们给 <em>User</em> 类添加了一个方法，用来返回 <em>Optional</em>：</p>
-<pre><code>public class User {    
-    private String position;
-
-    public Optional&lt;String&gt; getPosition() {
-        return Optional.ofNullable(position);
-    }
-
-    //...
-}
-</code></pre>
-<p>​		既然 getter 方法返回 String 值的 <em>Optional</em>，你可以在对 <em>User</em> <em>的 Optional</em> 对象调用 <em>flatMap()</em> 时，用它作为参数。其返回的值是解除包装的 String 值</p>
-<pre><code>@Test
-public void whenFlatMap_thenOk() {
-    User user = new User(&quot;anna@gmail.com&quot;, &quot;1234&quot;);
-    user.setPosition(&quot;Developer&quot;);
-    String position = Optional.ofNullable(user)
-      .flatMap(u -&gt; u.getPosition()).orElse(&quot;default&quot;);
-
-    assertEquals(position, user.getPosition().get());
-}
-</code></pre>
-<p>​		过滤值</p>
-<p>​		除了转换值之外，<em>Optional</em> 类也提供了按条件“过滤”值的方法。<em>filter()</em> 接受一个 <em>Predicate</em> 参数，返回测试结果为 true 的值。如果测试结果为 false，会返回一个空的 <em>Optional</em>。</p>
-<p>来看一个根据基本的电子邮箱验证来决定接受或拒绝 <em>User</em>*(用户)* 的示例：</p>
-<pre><code>@Test
-public void whenFilter_thenOk() {
-    User user = new User(&quot;anna@gmail.com&quot;, &quot;1234&quot;);
-    Optional&lt;User&gt; result = Optional.ofNullable(user)
-      .filter(u -&gt; u.getEmail() != null &amp;&amp; u.getEmail().contains(&quot;@&quot;));
-
-    assertTrue(result.isPresent());
-}
-</code></pre>
-<p>​		如果通过过滤器测试，<em>result</em> 对象会包含非空值。</p>
-<h3 id="optional-类的链式方法"><em>Optional</em> 类的链式方法</h3>
-<p>​		为了更充分的使用 <em>Optional</em>，你可以链接组合其大部分方法，因为它们都返回相同类似的对象。</p>
-<p>​		我们使用 <em>Optional</em> 重写最早介绍的示例。</p>
-<p>​		首先，重构类，使其 getter 方法返回 <em>Optional</em> 引用</p>
-<pre><code>public class User {
-    private Address address;
-
-    public Optional&lt;Address&gt; getAddress() {
-        return Optional.ofNullable(address);
-    }
-
-    // ...
-}
-public class Address {
-    private Country country;
-
-    public Optional&lt;Country&gt; getCountry() {
-        return Optional.ofNullable(country);
-    }
-
-    // ...
-}
-</code></pre>
-<p>​		现在可以删除 <em>null</em> 检查，替换为 <em>Optional</em> 的方法</p>
-<pre><code>@Test
-public void whenChaining_thenOk() {
-    User user = new User(&quot;anna@gmail.com&quot;, &quot;1234&quot;);
-
-    String result = Optional.ofNullable(user)
-      .flatMap(u -&gt; u.getAddress())
-      .flatMap(a -&gt; a.getCountry())
-      .map(c -&gt; c.getIsocode())
-      .orElse(&quot;default&quot;);
-
-    assertEquals(result, &quot;default&quot;);
-}
-</code></pre>
-<p>​		上面的代码可以通过方法引用进一步缩减：</p>
-<pre><code>String result = Optional.ofNullable(user)
-  .flatMap(User::getAddress)
-  .flatMap(Address::getCountry)
-  .map(Country::getIsocode)
-  .orElse(&quot;default&quot;);
-</code></pre>
-<p>结果现在的代码看起来比之前采用条件分支的冗长代码简洁多了。</p>
-<h3 id="java-9-增强">Java 9 增强</h3>
-<p>​		我们介绍了 Java 8 的特性，Java 9 为 Optional 类添加了三个方法：<em>or()</em>、<em>ifPresentOrElse()</em> 和 <em>stream()</em>。</p>
-<p>​		<em>or()</em> 方法与 <em>orElse()</em> 和 <em>orElseGet()</em> 类似，它们都在对象为空的时候提供了替代情况。<em>or()</em> 的返回值是由 <em>Supplier</em> 参数产生的另一个 <em>Optional</em> 对象。</p>
-<p>​		如果对象包含值，则 Lambda 表达式不会执行：</p>
-<pre><code>@Test
-public void whenEmptyOptional_thenGetValueFromOr() {
-    User result = Optional.ofNullable(user)
-      .or( () -&gt; Optional.of(new User(&quot;default&quot;,&quot;1234&quot;))).get();
-
-    assertEquals(result.getEmail(), &quot;default&quot;);
-}
-</code></pre>
-<p>​		上面的示例中，如果 <em>user</em> 变量是 null，它会返回一个 <em>Optional</em>，它所包含的 <em>User</em> 对象，其电子邮件为 “default”。</p>
-<p><em>ifPresentOrElse()</em> 方法需要两个参数：一个 <em>Consumer</em> 和一个 <em>Runnable</em>。如果对象包含值，会执行 <em>Consumer</em> 的动作，否则运行 <em>Runnable</em>。</p>
-<p>​		如果你想在有值的时候执行某个动作，或者只是跟踪是否定义了某个值，那么这个方法非常有用：</p>
-<pre><code>Optional.ofNullable(user).ifPresentOrElse( u -&gt; logger.info(&quot;User is:&quot; + u.getEmail()),
-  () -&gt; logger.info(&quot;User not found&quot;));
-</code></pre>
-<p>​		最后介绍的是新的 <em>stream()</em> 方法，它通过把实例转换为 <em>Stream</em> 对象，让你从广大的 <em>Stream</em> API 中受益。如果没有值，它会得到空的 <em>Stream</em>；有值的情况下，<em>Stream</em> 则会包含单一值。</p>
-<p>​		我们来看一个把 <em>Optional</em> 处理成 <em>Stream</em> 的例子：</p>
-<pre><code>@Test
-public void whenGetStream_thenOk() {
-    User user = new User(&quot;john@gmail.com&quot;, &quot;1234&quot;);
-    List&lt;String&gt; emails = Optional.ofNullable(user)
-      .stream()
-      .filter(u -&gt; u.getEmail() != null &amp;&amp; u.getEmail().contains(&quot;@&quot;))
-      .map( u -&gt; u.getEmail())
-      .collect(Collectors.toList());
-
-    assertTrue(emails.size() == 1);
-    assertEquals(emails.get(0), user.getEmail());
-}
-</code></pre>
-<p>​		这里对 <em>Stream</em> 的使用带来了其 <em>filter()、map()</em> 和 <em>collect()</em> 接口，以获取 <em>List</em>。</p>
-<h3 id="optional-应该怎样用"><em>Optional</em> 应该怎样用？</h3>
-<p>​		在使用 <em>Optional</em> 的时候需要考虑一些事情，以决定什么时候怎样使用它。</p>
-<p>​		重要的一点是 <em>Optional</em> 不是 <em>Serializable</em>。因此，它不应该用作类的字段。</p>
-<p>​		如果你需要序列化的对象包含 <em>Optional</em> 值，<a href="https://stackify.com/java-xml-jackson/"><em>Jackson</em> 库</a>支持把 <em>Optional</em> 当作普通对象。也就是说，<em>Jackson</em> 会把空对象看作 <em>null</em>，而有值的对象则把其值看作对应域的值。这个功能在 <a href="https://github.com/FasterXML/jackson-modules-java8">jackson-modules-java8</a> 项目中。</p>
-<p>​		它在另一种情况下也并不怎么有用，就是在将其类型用作方法或构建方法的参数时。这样做会让代码变得复杂，完全没有必要：</p>
-<pre><code>User user = new User(&quot;john@gmail.com&quot;, &quot;1234&quot;, Optional.empty());
-</code></pre>
-<p>​		使用重载方法来处理非要的参数要容易得多。</p>
-<p>​		<em>Optional</em> 主要用作返回类型。在获取到这个类型的实例后，如果它有值，你可以取得这个值，否则可以进行一些替代行为。</p>
-<p>​		<em>Optional</em> 类有一个非常有用的用例，就是将其与流或其它返回 <em>Optional</em> 的方法结合，以构建流畅的API。</p>
-<p>​		我们来看一个示例，使用 <em>Stream</em> 返回 <em>Optional</em> 对象的 <em>findFirst()</em> 方法：</p>
-<pre><code>@Test
-public void whenEmptyStream_thenReturnDefaultOptional() {
-    List&lt;User&gt; users = new ArrayList&lt;&gt;();
-    User user = users.stream().findFirst().orElse(new User(&quot;default&quot;, &quot;1234&quot;));
-
-    assertEquals(user.getEmail(), &quot;default&quot;);
-}
-</code></pre>
-<h3 id="总结">总结</h3>
-<p><em>Optional</em> 是 Java 语言的有益补充 —— 它旨在减少代码中的 <em>NullPointerExceptions</em>，虽然还不能完全消除这些异常。</p>
-<p>它也是精心设计，自然融入 Java 8 函数式支持的功能。</p>
-<p>总的来说，这个简单而强大的类有助于创建简单、可读性更强、比对应程序错误更少的程序。</p>
-<p>转自 https://www.cnblogs.com/zhangboyu/p/7580262.html</p>
+<h5 id="11-引言">1.1  引言</h5>
+<p>计算机主要分为以下三类应用及各自的特性：</p>
+<ul>
+<li><strong>个人计算机：</strong> 用于个人使用的计算机，通常包含图形显示器、键盘和鼠标等。个人计算机强调对单用户提供良好的性能，价格低廉，通常运行第三方软件</li>
+<li><strong>服务器：</strong> 用于位多用户运行大型程序的计算机，通常由多个用户并行使用，并且一般通过网络访问。通常情况下，当发生故障时，服务器比个人计算机恢复的代价高的多，因此服务器更加强调可靠性。</li>
+<li><strong>嵌入式计算机：</strong> 嵌入到其他设备中的计算机，一般运行预定义的一个或者一组应用程序。嵌入式计算系统的设计目标是运行单一应用程序或者一组相关的应用程序，并且通常和硬件集成在一起以单一系统的方式一并交付用户。在面向消费者的嵌入式应用中（如数字家电）一般通过简单设计来获得可靠性——其重点在于尽可能地保证一项功能的正常运转。</li>
+</ul>
+<p>后PC时代，在硬件上，由个人移动设备和云计算分别替代了PC和传统的服务器；而通过云计算实现的软件即服务（SAAS) 是软件工业的革命：</p>
+<ul>
+<li><strong>个人移动设备：</strong> 连接到网络上的小型无线设备。PMD由电池供电，通过下载App的方式安装软件。智能手机和平板电脑是典型的PMD</li>
+<li><strong>云计算：</strong> 依赖于称为仓储规模计算机（WSC）的巨型数据中心，在网络上提供服务的大服务器集群，一些运营商根据应用需求出租不同数量的服务器。</li>
+<li><strong>软件即服务：</strong> 在网络上以服务的方式提供软件和数据。其运行方式通常不是在本地设备上运行所有的二进制代码，而是通过诸如运行在本地客户端的浏览器等小程序登录到远程服务器上执行。典型的例子是Web搜索和社交网络。</li>
+</ul>
+<p>硬件和软件如何对程序性能造成影响：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">软件和硬件组成元素</th>
+<th style="text-align:center">该元素如何影响性能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">算法</td>
+<td style="text-align:center">决定了源码级语句的数量和I/O操作的数量</td>
+</tr>
+<tr>
+<td style="text-align:center">编程语言、编译器和体系结构</td>
+<td style="text-align:center">决定了每条源码级语句对应的计算机指令数量</td>
+</tr>
+<tr>
+<td style="text-align:center">处理器和存储系统</td>
+<td style="text-align:center">决定了指令的执行速度</td>
+</tr>
+<tr>
+<td style="text-align:center">I/O系统（硬件和操作系统）</td>
+<td style="text-align:center">决定了I/O操作可能的执行速度</td>
+</tr>
+</tbody>
+</table>
+<h5 id="12-计算机系统结构中的8个伟大思想">1.2  计算机系统结构中的8个伟大思想</h5>
+<ul>
+<li><strong>面向摩尔定律的设计：</strong> 计算机设计者必须预测其设计完成时的工艺水平，而不是设计开始时的</li>
+<li><strong>使用抽象简化设计：</strong> 用抽象来表示不同的设计层次提高硬件和软件生产率，在高层次中看不到的低层次的细节，只能看到一个简化的模型</li>
+<li><strong>加速大概率事件：</strong> 加速大概率事件远比小概率事件更能提高性能</li>
+<li><strong>通过并行提高性能：</strong> 通过并行执行操作来提高性能</li>
+<li><strong>通过流水线提高性能：</strong> 流水线是特别的并行性场景，可以想象成一系列水管，其中每一块代表一个流水级</li>
+<li><strong>通过预测提高性能：</strong> 在某些情况下，如果假定从误删除恢复执行代价不高并且预测的准确率相对较高，则通过猜测的方式提前开始某些操作。（预测先行）</li>
+<li><strong>存储器层次：</strong> 可以把存储器层次想象成一个堆叠的三角形，该形状表示速度、价格和容量；越靠近顶端，存储器速度越快、每位价格越高；底层宽度越大，存储器容量越大</li>
+<li><strong>通过冗余提高可靠性：</strong> 冗余部件可以替代失效部件并可以帮助检测错误（容灾策略）</li>
+</ul>
+<h5 id="13-程序概念入门">1.3 程序概念入门</h5>
+<p>硬件和软件层次图简化：</p>
+<figure data-type="image" tabindex="1"><img src="https://cm940324.github.io/post-images/1631171219535.jpg" alt="" loading="lazy"></figure>
+<ul>
+<li><strong>系统软件：</strong> 提供常用服务的软件，包括操作系统、编译程序、加载程序和汇编程序等</li>
+</ul>
+<p>系统软件中，有两种是现代计算机系统中必须的：</p>
+<ul>
+<li><strong>操作系统：</strong> 是用户程序与硬件之间的接口，为了使程序更好地在计算机上运行而管理计算机上运行而管理计算机资源的监控程序</li>
+<li><strong>编译程序：</strong> 将高级语言翻译为计算机所能识别的机器语言的程序</li>
+</ul>
+<p>对于计算机来说，最简单的信号就是“通” 和 “断” ，所以计算机只用0和1两个来表示，每个0或1就是一个二进制位，使用数字既表述指令又表示数据是计算机的基础。为符合人类的思维方式，发明了助记符，随后开发了一种称为汇编程序的软件自动将助记符翻译为二进制，但仍需要写出计算机执行的每条命令，要求要像计算机一样思考，于是便出现了高级编程语言。使用高级编程语言有三点好处：</p>
+<ol>
+<li>可以用更自然的语言来思考</li>
+<li>简明性</li>
+<li>独立性</li>
+</ol>
 
             </div>
             
@@ -883,7 +706,7 @@ public void whenEmptyStream_thenReturnDefaultOptional() {
     </li>
     <li class="post-copyright-link">
       <strong class="language" data-lan="link">本文链接：</strong>
-      <a href="https://cm940324.github.io/post/java8-optional/" title="理解、学习与使用 JAVA 中的 OPTIONAL">https://cm940324.github.io/post/java8-optional/</a>
+      <a href="https://cm940324.github.io/post/computer-organization-design-note/" title="计算机组成与设计学习笔记——第1章">https://cm940324.github.io/post/computer-organization-design-note/</a>
     </li>
     <li class="post-copyright-license">
       <strong class="language" data-lan="copyright">版权声明： </strong>
@@ -892,21 +715,15 @@ public void whenEmptyStream_thenReturnDefaultOptional() {
   </ul>
   <div class="tags">
     
-      <a href="https://cm940324.github.io/tag/BuwDjq1zh0/"># JAVA</a>
-    
   </div>
   <div class="nav">
     <div class="nav-prev">
       
-        <i class="fa fa-chevron-left"></i>
-        <a class="nav-pc-next" title="全面复盘：狗狗币是如何上涨400倍的？ " href="https://cm940324.github.io/post/doge/">全面复盘：狗狗币是如何上涨400倍的？ </a class="nav-pc-next">
-        <a class="nav-mobile-prev" title="全面复盘：狗狗币是如何上涨400倍的？ " href="https://cm940324.github.io/post/doge/">上一篇</a>
-      
     </div>
     <div class="nav-next">
       
-        <a class="nav-pc-next" title="Spring Data REST 快速构建 restful api 应用" href="https://cm940324.github.io/post/spring-data-rest/">Spring Data REST 快速构建 restful api 应用</a>
-        <a class="nav-mobile-next" title="Spring Data REST 快速构建 restful api 应用" href="https://cm940324.github.io/post/spring-data-rest/">下一篇</a>
+        <a class="nav-pc-next" title="Mybatis动态SQL" href="https://cm940324.github.io/post/mybatis-sql/">Mybatis动态SQL</a>
+        <a class="nav-mobile-next" title="Mybatis动态SQL" href="https://cm940324.github.io/post/mybatis-sql/">下一篇</a>
         <i class="fa fa-chevron-right"></i>
       
     </div>
