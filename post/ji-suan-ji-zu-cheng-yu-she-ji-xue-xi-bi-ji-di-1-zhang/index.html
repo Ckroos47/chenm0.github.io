@@ -8,7 +8,7 @@
 <meta name="keywords" content="个人博客">
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
-<title>Oasis</title>
+<title>计算机组成与设计学习笔记——第1章 | Oasis</title>
 <link rel="shortcut icon" href="/favicon.ico?v=1631172111336">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
@@ -38,6 +38,8 @@
 
 
 
+  <meta name="description" content="计算机组成与设计学习笔记——第1章" />
+  <meta name="keywords" content="" />
 </head>
 
 <body>
@@ -73,7 +75,7 @@
             
               
             
-            <li class="nav-item nav-item-active">
+            <li class="nav-item ">
               
               
                 <a href="/" target="_self">
@@ -172,8 +174,24 @@
     <div
       class="section-layout pisces ">
       <div class="section-layout-wrapper">
-        <div id="sidebarMeta" class="sidebar">
-    
+        
+
+<div class="sidebar">
+  
+    <div class="sidebar-box box-shadow-wrapper bg-color right-motion" id="sidebar">
+      
+        <div class="post-list-sidebar">
+          <div class="sidebar-title">
+            <span id="tocSideBar" class="sidebar-title-item sidebar-title-active language" data-lan="index">文章目录</span>
+            <span id="metaSideBar" class="sidebar-title-item language" data-lan="preview">站点概览</span>
+          </div>
+        </div>
+      
+      <div class="sidebar-body pisces" id="sidebar_body">
+        
+          
+            <div class="post-side-meta" id="post_side_meta">
+              
 <div class="sidebar-wrapper box-shadow-wrapper bg-color">
   <div class="sidebar-item">
     <img class="site-author-image right-motion" src="/images/avatar.png"/>
@@ -227,120 +245,296 @@
   </div>
 
 </div>
+            </div>
+            <div class="post-toc sidebar-body-active" id="post_toc" style="opacity: 1;">
+              <div class="toc-box right-motion">
+  <div class="toc-wrapper auto-number auto"
+    id="toc_wrapper">
+    <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#%E7%AC%AC1%E7%AB%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%A6%82%E8%A6%81%E4%B8%8E%E6%8A%80%E6%9C%AF">第1章 计算机概要与技术</a><br>
+*
+<ul>
+<li><a href="#%E8%8B%B1%E8%AF%91">英译：</a></li>
+<li><a href="#11-%E5%BC%95%E8%A8%80">1.1  引言</a></li>
+<li><a href="#12-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E7%BB%93%E6%9E%84%E4%B8%AD%E7%9A%848%E4%B8%AA%E4%BC%9F%E5%A4%A7%E6%80%9D%E6%83%B3">1.2  计算机系统结构中的8个伟大思想</a></li>
+<li><a href="#13-%E7%A8%8B%E5%BA%8F%E6%A6%82%E5%BF%B5%E5%85%A5%E9%97%A8">1.3 程序概念入门</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
 </div>
+
 <script>
-  let sidebarMeta = document.querySelector('#sidebarMeta');
-  let scheme = 'pisces';
-  let sidebarWrapper = document.querySelector('.sidebar-wrapper');
-  if (sidebarMeta && (scheme === 'pisces' || scheme === 'gemini')) {
-    document.addEventListener('scroll', function(e) {
-      if (document.scrollingElement.scrollTop > parseInt(sidebarMeta.style.marginTop) + 10) {
-        sidebarWrapper.classList.add('home-sidebar-fixed')
-      } else {
-        sidebarWrapper.classList.remove('home-sidebar-fixed')
+
+  let lastTop = 0, lList = [], hList = [], postBody, lastIndex = -1;
+  let active = 'active-show', activeClass = 'active-current';
+  let tocWrapper = document.querySelector('#toc_wrapper');
+  let tocContent = tocWrapper.children[0];
+  let autoNumber = tocWrapper && tocWrapper.classList.contains('auto-number');
+
+  function addTocNumber(elem, deep) {
+    if (!elem) {
+      return;
+    }
+    let prop = elem.__proto__;
+
+    if (prop === HTMLUListElement.prototype) {
+      for (let i = 0; i < elem.children.length; i++) {
+        addTocNumber(elem.children[i], deep + (i + 1) + '.');
       }
+    } else if (prop === HTMLLIElement.prototype) {
+      // 保存li元素
+      if (elem.children[0] && elem.children[0].__proto__ === HTMLAnchorElement.prototype) {
+        lList.push(elem);
+      }
+      for (let i = 0; i < elem.children.length; i++) {
+        let cur = elem.children[i];
+        if (cur.__proto__ === HTMLAnchorElement.prototype) {
+          if (autoNumber) {
+            cur.text = deep + ' ' + cur.text;
+          }
+        } else if (cur.__proto__ === HTMLUListElement.prototype) {
+          addTocNumber(cur, deep);
+        }
+      }
+    }
+  }
+
+  function removeParentActiveClass() {
+    let parents = tocContent.querySelectorAll('.' + active)
+    parents.forEach(function (elem) {
+      elem.classList.remove(active);
     });
   }
-  </script>
-        <div class="section-box pisces">
-          <section class="section bg-color posts-expand slide-down-in">
-            
-  <article class="post-list-box  post box-shadow-wrapper">
-    <div class="article-wrapper bg-color">
-      <section class="post-header">
-  <h1 class="post-title">
-    <a class="post-title-link" href="https://cm940324.github.io/post/spring-data-rest-learn/">
-      Spring Data Rest---Paging and Sorting 
-    </a>
-  </h1>
-  <div class="post-meta">
-    
-    <span class="meta-item pc-show">
-      <i class="fa fa-calendar-o"></i>
-      <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-06-10 15:11:22">2021-06-10</span>
-      <span class="post-meta-divider pc-show">|</span>
-    </span>
-    
-    <span class="meta-item">
-      <i class="fa fa-folder-o"></i>
-      <span class="pc-show language" data-lan="category-in">分类于</span>
-      
-      
-      <a href="https://cm940324.github.io/tag/hB0nBywri/">
-        <span>SpringDataRest</span>
-      </a>
-      
-      
-    </span>
-    <span class="post-meta-divider">|</span>
-    
-    <span class="meta-item">
-      <i class="fa fa-clock-o"></i>
-      <span>3<span class="language" data-lan="minute">分钟</span></span>
-    </span>
-    <span class="meta-item">
-      <span class="post-meta-divider">|</span>
-      <i class="fa fa-file-word-o"></i>
-      <span>586<span class="pc-show language" data-lan="words">字数</span></span>
-    </span>
-    
-  </div>
-</section>
-      <div class="post-body">
-        
-        
-          
-            <!-- 没有手动摘要切开启了自动摘要,则根据配置筛除摘要内容 -->
-            
-            
-              
-              
-              
-            
-              
-              
-              
-            
-              
-              
-              
-            
-            
-              <p><h3 id="1-paging">1. Paging</h3>
-<p>Spring Data REST能识别含有分页和排序请求的URL，从而返回用户想要的数据，而不是直接返回一大堆数据集合。如果你继承PagingAndSortingRepository&lt;T, ID&gt;并获取实体类的列表集合，例如：</p>
-<pre><code>interface PersonRepository extends PagingAndSortingRepository&lt;Person, Long&gt; {}
 
-                
-                  <!-- 自动摘要出来的内容有<code则补上结尾,防止格式错误 -->
-                  </code></pre>
-                
-              <p>
-            
+  function addActiveClass(index) {
+    if (index >= 0 && index < hList.length) {
+      lList[index].classList.add(activeClass);
+    }
+  }
+
+  function removeActiveClass(index) {
+    if (index >= 0 && index < hList.length) {
+      lList[index].classList.remove(activeClass);
+    }
+  }
+
+  function addActiveLiElemment(elem, parent) {
+    if (!elem || elem === parent) {
+      return;
+    } else {
+      if (elem.__proto__ === HTMLLIElement.prototype) {
+        elem.classList.add(active);
+      }
+      addActiveLiElemment(elem.parentElement, parent);
+    }
+  }
+
+  function showToc() {
+    if (tocWrapper) {
+      postBody = document.querySelector('#post_body');
+      for (let i = 0; i < postBody.children.length; i++) {
+        if (postBody.children[i].__proto__ === HTMLHeadingElement.prototype) {
+          hList.push(postBody.children[i]);
+        }
+      }
+      if (tocWrapper.classList.contains('compress')) {
+        tocContent.classList.add('closed');
+      } else if (tocWrapper.classList.contains('no_compress')) {
+        tocContent.classList.add('expanded');
+      } else {
+        if (hList.length > 10) {
+          active = 'active-hidden'
+          tocContent.classList.add('closed');
+        } else {
+          tocContent.classList.add('expanded');
+        }
+      }
+    }
+  }
+
+  (function () {
+    // 处理不是从#一级标题开始目录
+    if (tocContent.children.length === 1 && tocContent.children[0].__proto__ === HTMLLIElement.prototype) {
+      let con = tocContent.children[0].children[0];
+      tocContent.innerHTML = con.innerHTML;
+    }
+    let markdownItTOC = document.querySelector('.markdownIt-TOC');
+    let innerHeight = window.innerHeight;
+    markdownItTOC.style = `max-height: ${innerHeight - 80 > 0 ? innerHeight - 80 : innerHeight}px`
+    addTocNumber(tocContent, '');
+  })();
+
+  document.addEventListener('scroll', function (e) {
+    if (lList.length <= 0) {
+      return;
+    }
+    let scrollTop = document.scrollingElement.scrollTop + 10;
+    let dir;
+
+    if (lastTop - scrollTop > 0) {
+      dir = 'up';
+    } else {
+      dir = 'down';
+    }
+
+    lastTop = scrollTop;
+    if (scrollTop <= 0) {
+      if (lastIndex >= 0 && lastIndex < hList.length) {
+        lList[lastIndex].classList.remove(activeClass);
+      }
+      return;
+    }
+
+    let current = 0, hasFind = false;
+    for (let i = 0; i < hList.length; i++) {
+      if (hList[i].offsetTop > scrollTop) {
+        current = i;
+        hasFind = true;
+        break;
+      }
+    }
+    if (!hasFind && scrollTop > lList[lList.length - 1].offsetTop) {
+      current = hList.length - 1;
+    } else {
+      current--;
+    }
+    if (dir === 'down') {
+      if (current > lastIndex) {
+        addActiveClass(current);
+        removeActiveClass(lastIndex)
+        lastIndex = current;
+        removeParentActiveClass();
+        lList[current] && addActiveLiElemment(lList[current].parentElement, tocContent);
+      }
+    } else {
+      if (current < lastIndex) {
+        addActiveClass(current);
+        removeActiveClass(lastIndex);
+        lastIndex = current;
+        removeParentActiveClass();
+        lList[current] && addActiveLiElemment(lList[current].parentElement, tocContent);
+      }
+    }
+  });
+
+
+  window.addEventListener('load', function () {
+    showToc();
+    document.querySelector('#sidebar').style = 'display: block;';
+    tocWrapper.classList.add('toc-active');
+    setTimeout(function () {
+      if ("createEvent" in document) {
+        let evt = document.createEvent("HTMLEvents");
+        evt.initEvent("scroll", false, true);
+        document.dispatchEvent(evt);
+      }
+      else {
+        document.fireEvent("scroll");
+      }
+    }, 500)
+  })
+
+</script>
+            </div>
           
-        
-        
-        <div class="post-button text-center">
-          <a class="btn language" data-lan="read-more" href="https://cm940324.github.io/post/spring-data-rest-learn/" rel="contents">
-            阅读全文 »
-          </a>
-        </div>
         
       </div>
-      
-        <footer class="post-footer">
-          <div class="post-eof"></div>
-        </footer>
-      
     </div>
-  </article>
+  
+</div>
+<script>
+  const SIDEBAR_TITLE_ACTIVE = 'sidebar-title-active';
+  const SIDEBAR_BODY_ACTIVE = 'sidebar-body-active';
+  const SLIDE_UP_IN = 'slide-up-in';
 
-  <article class="post-list-box  post box-shadow-wrapper">
-    <div class="article-wrapper bg-color">
-      <section class="post-header">
+  let sidebar = document.querySelector('#sidebar'),
+  tocSideBar = document.querySelector('#tocSideBar'),
+  metaSideBar = document.querySelector('#metaSideBar'),
+  postToc = document.querySelector('#post_toc'),
+  postSiteMeta = document.querySelector('#post_side_meta'),
+  sidebarTitle = document.querySelector('.sidebar-title'),
+  sidebarBody = document.querySelector('#sidebar_body');
+
+  tocSideBar && tocSideBar.addEventListener('click', (e) => {
+    toggleSidebar(e);
+  });
+
+  metaSideBar && metaSideBar.addEventListener('click', (e) => {
+    toggleSidebar(e);
+  });
+
+  function toggleSidebar(e) {
+    let currentTitle = document.querySelector("."+SIDEBAR_TITLE_ACTIVE);
+    if (currentTitle == e.srcElement) {
+      return ;
+    }
+    let current, showElement, hideElement;
+    if (e.srcElement == metaSideBar) {
+      showElement = postSiteMeta;
+      hideElement = postToc;
+    } else if (e.srcElement == tocSideBar){
+      showElement = postToc;
+      hideElement = postSiteMeta;
+    }
+    currentTitle.classList.remove(SIDEBAR_TITLE_ACTIVE);
+    e.srcElement.classList.add(SIDEBAR_TITLE_ACTIVE);
+
+    window.Velocity(hideElement, 'stop');
+    window.Velocity(hideElement, 'transition.slideUpOut', {
+      display: 'none',
+      duration: 200,
+      complete: function () {
+        window.Velocity(showElement, 'transition.slideDownIn', {
+          duration: 200
+        });
+      }
+    })
+    hideElement.classList.remove(SIDEBAR_BODY_ACTIVE);
+    showElement.classList.add(SIDEBAR_BODY_ACTIVE);
+  }
+
+  postToc && postToc.addEventListener('transitionend', function() {
+    this.classList.remove(SLIDE_UP_IN);
+  });
+
+  if (sidebarBody) {
+    if (sidebarBody.classList.contains('pisces') || sidebarBody.classList.contains('gemini')) {
+      let hasFix = false;
+      let scrollEl = document.querySelector('.main-continer');
+      let limitTop = document.querySelector('#nav_ul').children.length * 42 + 162;
+      window.addEventListener('scroll', function(e) {
+        if (document.scrollingElement.scrollTop >= limitTop) {
+          if (!hasFix) {
+            sidebar.classList.add('sidebar-fixed');
+            hasFix = true;
+          }
+        } else {
+          if (hasFix) {
+            sidebar.classList.remove('sidebar-fixed');
+            hasFix = false;
+          }
+        }
+      });
+    }
+  }
+  
+</script>
+        <div class="section-box box-shadow-wrapper">
+          <div class="section bg-color post post-page">
+            <section class="post-header">
   <h1 class="post-title">
-    <a class="post-title-link" href="https://cm940324.github.io/post/weifuwu-ques/">
-      微服务：服务注册发现+ API 网关+配置中心+配置中心+服务跟踪
+    <a class="post-title-link" href="https://cm940324.github.io/post/ji-suan-ji-zu-cheng-yu-she-ji-xue-xi-bi-ji-di-1-zhang/">
+      计算机组成与设计学习笔记——第1章
     </a>
   </h1>
   <div class="post-meta">
@@ -348,637 +542,9 @@
     <span class="meta-item pc-show">
       <i class="fa fa-calendar-o"></i>
       <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-06-07 15:00:17">2021-06-07</span>
+      <span class="publish-time" data-t="2021-09-09 14:01:26">2021-09-09</span>
       <span class="post-meta-divider pc-show">|</span>
     </span>
-    
-    <span class="meta-item">
-      <i class="fa fa-folder-o"></i>
-      <span class="pc-show language" data-lan="category-in">分类于</span>
-      
-      
-      <a href="https://cm940324.github.io/tag/pismF1VXY/">
-        <span>微服务</span>
-      </a>
-      
-      
-    </span>
-    <span class="post-meta-divider">|</span>
-    
-    <span class="meta-item">
-      <i class="fa fa-clock-o"></i>
-      <span>8<span class="language" data-lan="minute">分钟</span></span>
-    </span>
-    <span class="meta-item">
-      <span class="post-meta-divider">|</span>
-      <i class="fa fa-file-word-o"></i>
-      <span>2109<span class="pc-show language" data-lan="words">字数</span></span>
-    </span>
-    
-  </div>
-</section>
-      <div class="post-body">
-        
-        
-          
-            <!-- 没有手动摘要切开启了自动摘要,则根据配置筛除摘要内容 -->
-            
-            
-              
-              
-              
-            
-              
-              
-              
-            
-              
-              
-              
-            
-            
-              <p><p><strong>服务注册发现</strong></p>
-<p>服务注册就是维护一个登记簿，它管理系统内所有的服务地址。当新的服务启动后，它会向登记簿交待自己的地址信息。服务的依赖方直接向登记簿要 Service Provider 地址就行了。当下用于服务注册的工具非常多 ZooKeeper，Consul，Etcd, 还有 Netflix 家的 eureka 等。服务注册有两种:</p>
-<p><strong>形式：客户端注册和第三方注册。</strong></p>
-
-                
-              <p>
-            
-          
-        
-        
-        <div class="post-button text-center">
-          <a class="btn language" data-lan="read-more" href="https://cm940324.github.io/post/weifuwu-ques/" rel="contents">
-            阅读全文 »
-          </a>
-        </div>
-        
-      </div>
-      
-        <footer class="post-footer">
-          <div class="post-eof"></div>
-        </footer>
-      
-    </div>
-  </article>
-
-  <article class="post-list-box  post box-shadow-wrapper">
-    <div class="article-wrapper bg-color">
-      <section class="post-header">
-  <h1 class="post-title">
-    <a class="post-title-link" href="https://cm940324.github.io/post/hibernate-cascadetype/">
-      hibernate CascadeType属性说明
-    </a>
-  </h1>
-  <div class="post-meta">
-    
-    <span class="meta-item pc-show">
-      <i class="fa fa-calendar-o"></i>
-      <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-06-07 14:31:17">2021-06-07</span>
-      <span class="post-meta-divider pc-show">|</span>
-    </span>
-    
-    <span class="meta-item">
-      <i class="fa fa-folder-o"></i>
-      <span class="pc-show language" data-lan="category-in">分类于</span>
-      
-      
-      <a href="https://cm940324.github.io/tag/_LiUY5oMZ/">
-        <span>Hibernate</span>
-      </a>
-      
-      
-    </span>
-    <span class="post-meta-divider">|</span>
-    
-    <span class="meta-item">
-      <i class="fa fa-clock-o"></i>
-      <span>2<span class="language" data-lan="minute">分钟</span></span>
-    </span>
-    <span class="meta-item">
-      <span class="post-meta-divider">|</span>
-      <i class="fa fa-file-word-o"></i>
-      <span>334<span class="pc-show language" data-lan="words">字数</span></span>
-    </span>
-    
-  </div>
-</section>
-      <div class="post-body">
-        
-        
-          
-            <!-- 没有手动摘要切开启了自动摘要,则根据配置筛除摘要内容 -->
-            
-            
-              
-              
-              
-            
-              
-              
-              
-            
-              
-              
-              
-            
-            
-              <p><h3 id="cascade属性-指定级联操作的行为可多选">cascade属性： 指定级联操作的行为(可多选)</h3>
-<ul>
-<li><strong>CascadeType.PERSIST 级联新增（又称级联保存）：</strong><br>
-
-                
-              <p>
-            
-          
-        
-        
-        <div class="post-button text-center">
-          <a class="btn language" data-lan="read-more" href="https://cm940324.github.io/post/hibernate-cascadetype/" rel="contents">
-            阅读全文 »
-          </a>
-        </div>
-        
-      </div>
-      
-        <footer class="post-footer">
-          <div class="post-eof"></div>
-        </footer>
-      
-    </div>
-  </article>
-
-  <article class="post-list-box  post box-shadow-wrapper">
-    <div class="article-wrapper bg-color">
-      <section class="post-header">
-  <h1 class="post-title">
-    <a class="post-title-link" href="https://cm940324.github.io/post/postgresql-ques/">
-      PostgreSQL踩坑记录
-    </a>
-  </h1>
-  <div class="post-meta">
-    
-    <span class="meta-item pc-show">
-      <i class="fa fa-calendar-o"></i>
-      <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-06-03 14:26:03">2021-06-03</span>
-      <span class="post-meta-divider pc-show">|</span>
-    </span>
-    
-    <span class="meta-item">
-      <i class="fa fa-folder-o"></i>
-      <span class="pc-show language" data-lan="category-in">分类于</span>
-      
-      
-      <a href="https://cm940324.github.io/tag/kzUuE88e_/">
-        <span>PostgreSQL</span>
-      </a>
-      
-      
-    </span>
-    <span class="post-meta-divider">|</span>
-    
-    <span class="meta-item">
-      <i class="fa fa-clock-o"></i>
-      <span>1<span class="language" data-lan="minute">分钟</span></span>
-    </span>
-    <span class="meta-item">
-      <span class="post-meta-divider">|</span>
-      <i class="fa fa-file-word-o"></i>
-      <span>40<span class="pc-show language" data-lan="words">字数</span></span>
-    </span>
-    
-  </div>
-</section>
-      <div class="post-body">
-        
-        
-          
-            <!-- 没有手动摘要切开启了自动摘要,则根据配置筛除摘要内容 -->
-            
-            
-              
-              
-              
-            
-              
-              
-              
-            
-              
-              
-              
-            
-            
-              <p><ol>
-<li>在进行数据库记录的迁移和复制数据后容易出现错误</li>
-</ol>
-
-                
-              <p>
-            
-          
-        
-        
-        <div class="post-button text-center">
-          <a class="btn language" data-lan="read-more" href="https://cm940324.github.io/post/postgresql-ques/" rel="contents">
-            阅读全文 »
-          </a>
-        </div>
-        
-      </div>
-      
-        <footer class="post-footer">
-          <div class="post-eof"></div>
-        </footer>
-      
-    </div>
-  </article>
-
-  <article class="post-list-box  post box-shadow-wrapper">
-    <div class="article-wrapper bg-color">
-      <section class="post-header">
-  <h1 class="post-title">
-    <a class="post-title-link" href="https://cm940324.github.io/post/shejimoshi-tongsu/">
-      设计模式的通俗理解
-    </a>
-  </h1>
-  <div class="post-meta">
-    
-    <span class="meta-item pc-show">
-      <i class="fa fa-calendar-o"></i>
-      <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-05-27 08:56:09">2021-05-27</span>
-      <span class="post-meta-divider pc-show">|</span>
-    </span>
-    
-    <span class="meta-item">
-      <i class="fa fa-folder-o"></i>
-      <span class="pc-show language" data-lan="category-in">分类于</span>
-      
-      
-      <a href="https://cm940324.github.io/tag/BuwDjq1zh0/">
-        <span>JAVA</span>
-      </a>
-      
-      
-    </span>
-    <span class="post-meta-divider">|</span>
-    
-    <span class="meta-item">
-      <i class="fa fa-clock-o"></i>
-      <span>19<span class="language" data-lan="minute">分钟</span></span>
-    </span>
-    <span class="meta-item">
-      <span class="post-meta-divider">|</span>
-      <i class="fa fa-file-word-o"></i>
-      <span>5335<span class="pc-show language" data-lan="words">字数</span></span>
-    </span>
-    
-  </div>
-</section>
-      <div class="post-body">
-        
-        
-          
-            <!-- 没有手动摘要切开启了自动摘要,则根据配置筛除摘要内容 -->
-            
-            
-              
-              
-              
-            
-              
-              
-              
-            
-              
-              
-              
-            
-            
-              <p><h3 id="工厂方法">工厂方法</h3>
-<p>追 MM 少不了请吃饭了，麦当劳的鸡翅和肯德基的鸡翅都是 MM 爱吃的东西，虽然口味有所不同，但不管你带 MM 去麦当劳或肯德基，只管向服务员说「来四个鸡翅」就行了。麦当劳和肯德基就是生产鸡翅的 Factory 工厂模式：客户类和工厂类分开。</p>
-<p>消费者任何时候需要某种产品，只需向工厂请求即可。消费者无须修改就可以接纳新产品。缺点是当产品修改时，工厂类也要做相应的修改。如：如何创建及如何向客户端提供。</p>
-
-                
-              <p>
-            
-          
-        
-        
-        <div class="post-button text-center">
-          <a class="btn language" data-lan="read-more" href="https://cm940324.github.io/post/shejimoshi-tongsu/" rel="contents">
-            阅读全文 »
-          </a>
-        </div>
-        
-      </div>
-      
-        <footer class="post-footer">
-          <div class="post-eof"></div>
-        </footer>
-      
-    </div>
-  </article>
-
-  <article class="post-list-box  post box-shadow-wrapper">
-    <div class="article-wrapper bg-color">
-      <section class="post-header">
-  <h1 class="post-title">
-    <a class="post-title-link" href="https://cm940324.github.io/post/thymeleaf/">
-      Thymeleaf常用属性
-    </a>
-  </h1>
-  <div class="post-meta">
-    
-    <span class="meta-item pc-show">
-      <i class="fa fa-calendar-o"></i>
-      <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-05-21 17:12:09">2021-05-21</span>
-      <span class="post-meta-divider pc-show">|</span>
-    </span>
-    
-    <span class="meta-item">
-      <i class="fa fa-folder-o"></i>
-      <span class="pc-show language" data-lan="category-in">分类于</span>
-      
-      
-      <a href="https://cm940324.github.io/tag/IviFwFxex/">
-        <span>Thymeleaf</span>
-      </a>
-      
-      
-    </span>
-    <span class="post-meta-divider">|</span>
-    
-    <span class="meta-item">
-      <i class="fa fa-clock-o"></i>
-      <span>5<span class="language" data-lan="minute">分钟</span></span>
-    </span>
-    <span class="meta-item">
-      <span class="post-meta-divider">|</span>
-      <i class="fa fa-file-word-o"></i>
-      <span>836<span class="pc-show language" data-lan="words">字数</span></span>
-    </span>
-    
-  </div>
-</section>
-      <div class="post-body">
-        
-        
-          
-            <!-- 没有手动摘要切开启了自动摘要,则根据配置筛除摘要内容 -->
-            
-            
-              
-              
-              
-            
-              
-              
-              
-            
-              
-              
-              
-            
-            
-              <p><p>如需了解Thymeleaf 基本表达式，请参考《<a href="http://www.cnblogs.com/hjwublog/p/5051632.html">Thymeleaf </a><a href="http://www.cnblogs.com/hjwublog/p/5051632.html">基本表达式</a>》一文</p>
-<h1 id="thaction"><strong>th:action</strong></h1>
-<p>定义后台控制器路径，类似<form>标签的action属性。</p>
-
-                
-              <p>
-            
-          
-        
-        
-        <div class="post-button text-center">
-          <a class="btn language" data-lan="read-more" href="https://cm940324.github.io/post/thymeleaf/" rel="contents">
-            阅读全文 »
-          </a>
-        </div>
-        
-      </div>
-      
-        <footer class="post-footer">
-          <div class="post-eof"></div>
-        </footer>
-      
-    </div>
-  </article>
-
-  <article class="post-list-box  post box-shadow-wrapper">
-    <div class="article-wrapper bg-color">
-      <section class="post-header">
-  <h1 class="post-title">
-    <a class="post-title-link" href="https://cm940324.github.io/post/cms1/">
-      搭建内容管理系统CMS（1）：如何支持内容生产？
-    </a>
-  </h1>
-  <div class="post-meta">
-    
-    <span class="meta-item pc-show">
-      <i class="fa fa-calendar-o"></i>
-      <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-05-21 14:52:55">2021-05-21</span>
-      <span class="post-meta-divider pc-show">|</span>
-    </span>
-    
-    <span class="meta-item">
-      <i class="fa fa-folder-o"></i>
-      <span class="pc-show language" data-lan="category-in">分类于</span>
-      
-      
-      <a href="https://cm940324.github.io/tag/-ySK4Nuuw/">
-        <span>产品</span>
-      </a>
-      
-      
-    </span>
-    <span class="post-meta-divider">|</span>
-    
-    <span class="meta-item">
-      <i class="fa fa-clock-o"></i>
-      <span>8<span class="language" data-lan="minute">分钟</span></span>
-    </span>
-    <span class="meta-item">
-      <span class="post-meta-divider">|</span>
-      <i class="fa fa-file-word-o"></i>
-      <span>2210<span class="pc-show language" data-lan="words">字数</span></span>
-    </span>
-    
-  </div>
-</section>
-      <div class="post-body">
-        
-        
-          
-            <!-- 没有手动摘要切开启了自动摘要,则根据配置筛除摘要内容 -->
-            
-            
-              
-              
-              
-            
-              
-              
-              
-            
-              
-              
-              
-            
-            
-              <p><pre><code>内容管理系统是一种位于WEB 前端（Web 服务器）和后端办公系统或流程（内容创作、编辑）之间的软件系统，本文是对于内容管理系统CMS在内容生产环节的总结与分享。
-</code></pre>
-<p><em><strong>*关于CMS内容管理系统：*</strong></em></p>
-
-                
-                  <!-- 自动摘要出来的内容有<code则补上结尾,防止格式错误 -->
-                  </code></pre>
-                
-              <p>
-            
-          
-        
-        
-        <div class="post-button text-center">
-          <a class="btn language" data-lan="read-more" href="https://cm940324.github.io/post/cms1/" rel="contents">
-            阅读全文 »
-          </a>
-        </div>
-        
-      </div>
-      
-        <footer class="post-footer">
-          <div class="post-eof"></div>
-        </footer>
-      
-    </div>
-  </article>
-
-  <article class="post-list-box  post box-shadow-wrapper">
-    <div class="article-wrapper bg-color">
-      <section class="post-header">
-  <h1 class="post-title">
-    <a class="post-title-link" href="https://cm940324.github.io/post/amazons3-util/">
-      AmazonS3工具类
-    </a>
-  </h1>
-  <div class="post-meta">
-    
-    <span class="meta-item pc-show">
-      <i class="fa fa-calendar-o"></i>
-      <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-05-13 15:00:29">2021-05-13</span>
-      <span class="post-meta-divider pc-show">|</span>
-    </span>
-    
-    <span class="meta-item">
-      <i class="fa fa-folder-o"></i>
-      <span class="pc-show language" data-lan="category-in">分类于</span>
-      
-      
-      <a href="https://cm940324.github.io/tag/BuwDjq1zh0/">
-        <span>JAVA</span>
-      </a>
-      
-      
-    </span>
-    <span class="post-meta-divider">|</span>
-    
-    <span class="meta-item">
-      <i class="fa fa-clock-o"></i>
-      <span>2<span class="language" data-lan="minute">分钟</span></span>
-    </span>
-    <span class="meta-item">
-      <span class="post-meta-divider">|</span>
-      <i class="fa fa-file-word-o"></i>
-      <span>265<span class="pc-show language" data-lan="words">字数</span></span>
-    </span>
-    
-  </div>
-</section>
-      <div class="post-body">
-        
-        
-          
-            <!-- 没有手动摘要切开启了自动摘要,则根据配置筛除摘要内容 -->
-            
-            
-              
-              
-              
-            
-              
-              
-              
-            
-              
-              
-              
-            
-            
-              <p><pre><code>/**
- * @author chenmo
- * @Date: Created in 2021/5/12 5:05 下午
-
-                
-                  <!-- 自动摘要出来的内容有<code则补上结尾,防止格式错误 -->
-                  </code></pre>
-                
-              <p>
-            
-          
-        
-        
-        <div class="post-button text-center">
-          <a class="btn language" data-lan="read-more" href="https://cm940324.github.io/post/amazons3-util/" rel="contents">
-            阅读全文 »
-          </a>
-        </div>
-        
-      </div>
-      
-        <footer class="post-footer">
-          <div class="post-eof"></div>
-        </footer>
-      
-    </div>
-  </article>
-
-  <article class="post-list-box  post box-shadow-wrapper">
-    <div class="article-wrapper bg-color">
-      <section class="post-header">
-  <h1 class="post-title">
-    <a class="post-title-link" href="https://cm940324.github.io/post/design-study/">
-      设计模式的学习
-    </a>
-  </h1>
-  <div class="post-meta">
-    
-    <span class="meta-item pc-show">
-      <i class="fa fa-calendar-o"></i>
-      <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-05-09 17:21:27">2021-05-09</span>
-      <span class="post-meta-divider pc-show">|</span>
-    </span>
-    
-    <span class="meta-item">
-      <i class="fa fa-folder-o"></i>
-      <span class="pc-show language" data-lan="category-in">分类于</span>
-      
-      
-      <a href="https://cm940324.github.io/tag/BuwDjq1zh0/">
-        <span>JAVA</span>
-      </a>
-      
-      
-    </span>
-    <span class="post-meta-divider">|</span>
     
     <span class="meta-item">
       <i class="fa fa-clock-o"></i>
@@ -987,188 +553,187 @@
     <span class="meta-item">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-file-word-o"></i>
-      <span>1326<span class="pc-show language" data-lan="words">字数</span></span>
+      <span>1599<span class="pc-show language" data-lan="words">字数</span></span>
     </span>
     
-  </div>
-</section>
-      <div class="post-body">
-        
-        
-          
-            <!-- 没有手动摘要切开启了自动摘要,则根据配置筛除摘要内容 -->
-            
-            
-              
-              
-              
-            
-              
-              
-              
-            
-              
-              
-              
-            
-            
-              <p><h3 id="设计模式的目的">设计模式的目的</h3>
-<p>编写软件过程中，程序员面临着来自 耦合性，内聚性以及可维护性，可扩展性，重用性，灵活性 等多方面的挑战，设计模式是为了让程序(软件)具有更好的:</p>
-<ol>
-
-                
-              <p>
-            
-          
-        
-        
-        <div class="post-button text-center">
-          <a class="btn language" data-lan="read-more" href="https://cm940324.github.io/post/design-study/" rel="contents">
-            阅读全文 »
-          </a>
-        </div>
-        
-      </div>
-      
-        <footer class="post-footer">
-          <div class="post-eof"></div>
-        </footer>
-      
-    </div>
-  </article>
-
-  <article class="post-list-box  post box-shadow-wrapper">
-    <div class="article-wrapper bg-color">
-      <section class="post-header">
-  <h1 class="post-title">
-    <a class="post-title-link" href="https://cm940324.github.io/post/postgresql-jiansuo/">
-      PostgreSQL自带全文检索
-    </a>
-  </h1>
-  <div class="post-meta">
     
-    <span class="meta-item pc-show">
-      <i class="fa fa-calendar-o"></i>
-      <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-05-06 16:38:50">2021-05-06</span>
-      <span class="post-meta-divider pc-show">|</span>
-    </span>
     
-    <span class="meta-item">
-      <i class="fa fa-folder-o"></i>
-      <span class="pc-show language" data-lan="category-in">分类于</span>
-      
-      
-      <a href="https://cm940324.github.io/tag/kzUuE88e_/">
-        <span>PostgreSQL</span>
-      </a>
-      
-      
-    </span>
-    <span class="post-meta-divider">|</span>
-    
-    <span class="meta-item">
-      <i class="fa fa-clock-o"></i>
-      <span>2<span class="language" data-lan="minute">分钟</span></span>
-    </span>
-    <span class="meta-item">
+    <span id="/post/ji-suan-ji-zu-cheng-yu-she-ji-xue-xi-bi-ji-di-1-zhang/" data-flag-title="计算机组成与设计学习笔记——第1章" class="meta-item pc-show leancloud_visitors">
       <span class="post-meta-divider">|</span>
-      <i class="fa fa-file-word-o"></i>
-      <span>380<span class="pc-show language" data-lan="words">字数</span></span>
+      <i class="fa fa-eye"></i>
+      <span><span class="language" data-lan="view">浏览量</span>：<span class="leancloud-visitors-count"></span></span>
     </span>
     
   </div>
 </section>
-      <div class="post-body">
-        
-        
-          
-            <!-- 没有手动摘要切开启了自动摘要,则根据配置筛除摘要内容 -->
-            
-            
-              
-              
-              
-            
-              
-              
-              
-            
-              
-              
-              
-            
-            
-              <p><h3 id="相关文档">相关文档</h3>
-<pre><code>文本搜索的函数与操作符中文说明: 
-http://www.postgres.cn/docs/9.3.4/functions-textsearch.html
+            <div class="post-body next-md-body" id="post_body">
+              <h3 id="第1章-计算机概要与技术">第1章 计算机概要与技术</h3>
+<h5 id="英译">英译：</h5>
+<pre><code>World Wide Web (www)--- 万维网
 
-                
-                  <!-- 自动摘要出来的内容有<code则补上结尾,防止格式错误 -->
-                  </code></pre>
-                
-              <p>
+Personal Computer (PC) --- 个人计算机
+
+Embedded computer --- 嵌入式计算机
+
+Personal Mobile Device(PMD) --- 个人移动设备
+
+Cloud computing --- 云计算
+
+Warehouse Scale Computer (WSC) --- 仓储规模计算机
+
+Software as a Service (SAAS) --- 软件即服务
+
+Multicore microprocessor --- 多核微处理器
+
+acronym --- 首字母缩略词
+
+Random Access Memory (RAM) --- 随机访问存储器
+
+Central Process Unit (CPU)--- 中央处理单元
+
+Moore's Law --- 摩尔定律
+
+abstraction --- 抽象
+
+common case fast --- 加速大概率事件
+
+parallel performance --- 并行性能
+
+pipeline --- 流水线
+
+prediction --- 预测
+
+hierarchy of memory --- 存储器层次
+
+dependable --- 可靠性
+
+system software --- 系统软件
+
+compiler --- 编译程序
+
+binary digit --- 二进制位
+
+bit --- 位
+
+Instruction --- 指令
+
+assembler --- 汇编程序
+
+assembly language --- 汇编语言
+
+machine language --- 机器语言
+
+high-level programming language --- 高级编程语言
+
+</code></pre>
+<h5 id="11-引言">1.1  引言</h5>
+<p>计算机主要分为以下三类应用及各自的特性：</p>
+<ul>
+<li><strong>个人计算机：</strong> 用于个人使用的计算机，通常包含图形显示器、键盘和鼠标等。个人计算机强调对单用户提供良好的性能，价格低廉，通常运行第三方软件</li>
+<li><strong>服务器：</strong> 用于位多用户运行大型程序的计算机，通常由多个用户并行使用，并且一般通过网络访问。通常情况下，当发生故障时，服务器比个人计算机恢复的代价高的多，因此服务器更加强调可靠性。</li>
+<li><strong>嵌入式计算机：</strong> 嵌入到其他设备中的计算机，一般运行预定义的一个或者一组应用程序。嵌入式计算系统的设计目标是运行单一应用程序或者一组相关的应用程序，并且通常和硬件集成在一起以单一系统的方式一并交付用户。在面向消费者的嵌入式应用中（如数字家电）一般通过简单设计来获得可靠性——其重点在于尽可能地保证一项功能的正常运转。</li>
+</ul>
+<p>后PC时代，在硬件上，由个人移动设备和云计算分别替代了PC和传统的服务器；而通过云计算实现的软件即服务（SAAS) 是软件工业的革命：</p>
+<ul>
+<li><strong>个人移动设备：</strong> 连接到网络上的小型无线设备。PMD由电池供电，通过下载App的方式安装软件。智能手机和平板电脑是典型的PMD</li>
+<li><strong>云计算：</strong> 依赖于称为仓储规模计算机（WSC）的巨型数据中心，在网络上提供服务的大服务器集群，一些运营商根据应用需求出租不同数量的服务器。</li>
+<li><strong>软件即服务：</strong> 在网络上以服务的方式提供软件和数据。其运行方式通常不是在本地设备上运行所有的二进制代码，而是通过诸如运行在本地客户端的浏览器等小程序登录到远程服务器上执行。典型的例子是Web搜索和社交网络。</li>
+</ul>
+<p>硬件和软件如何对程序性能造成影响：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">软件和硬件组成元素</th>
+<th style="text-align:center">该元素如何影响性能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">算法</td>
+<td style="text-align:center">决定了源码级语句的数量和I/O操作的数量</td>
+</tr>
+<tr>
+<td style="text-align:center">编程语言、编译器和体系结构</td>
+<td style="text-align:center">决定了每条源码级语句对应的计算机指令数量</td>
+</tr>
+<tr>
+<td style="text-align:center">处理器和存储系统</td>
+<td style="text-align:center">决定了指令的执行速度</td>
+</tr>
+<tr>
+<td style="text-align:center">I/O系统（硬件和操作系统）</td>
+<td style="text-align:center">决定了I/O操作可能的执行速度</td>
+</tr>
+</tbody>
+</table>
+<h5 id="12-计算机系统结构中的8个伟大思想">1.2  计算机系统结构中的8个伟大思想</h5>
+<ul>
+<li><strong>面向摩尔定律的设计：</strong> 计算机设计者必须预测其设计完成时的工艺水平，而不是设计开始时的</li>
+<li><strong>使用抽象简化设计：</strong> 用抽象来表示不同的设计层次提高硬件和软件生产率，在高层次中看不到的低层次的细节，只能看到一个简化的模型</li>
+<li><strong>加速大概率事件：</strong> 加速大概率事件远比小概率事件更能提高性能</li>
+<li><strong>通过并行提高性能：</strong> 通过并行执行操作来提高性能</li>
+<li><strong>通过流水线提高性能：</strong> 流水线是特别的并行性场景，可以想象成一系列水管，其中每一块代表一个流水级</li>
+<li><strong>通过预测提高性能：</strong> 在某些情况下，如果假定从误删除恢复执行代价不高并且预测的准确率相对较高，则通过猜测的方式提前开始某些操作。（预测先行）</li>
+<li><strong>存储器层次：</strong> 可以把存储器层次想象成一个堆叠的三角形，该形状表示速度、价格和容量；越靠近顶端，存储器速度越快、每位价格越高；底层宽度越大，存储器容量越大</li>
+<li><strong>通过冗余提高可靠性：</strong> 冗余部件可以替代失效部件并可以帮助检测错误（容灾策略）</li>
+</ul>
+<h5 id="13-程序概念入门">1.3 程序概念入门</h5>
+<p>硬件和软件层次图简化：</p>
+<figure data-type="image" tabindex="1"><img src="https://cm940324.github.io/post-images/1631171219535.jpg" alt="" loading="lazy"></figure>
+<ul>
+<li><strong>系统软件：</strong> 提供常用服务的软件，包括操作系统、编译程序、加载程序和汇编程序等</li>
+</ul>
+<p>系统软件中，有两种是现代计算机系统中必须的：</p>
+<ul>
+<li><strong>操作系统：</strong> 是用户程序与硬件之间的接口，为了使程序更好地在计算机上运行而管理计算机上运行而管理计算机资源的监控程序</li>
+<li><strong>编译程序：</strong> 将高级语言翻译为计算机所能识别的机器语言的程序</li>
+</ul>
+<p>对于计算机来说，最简单的信号就是“通” 和 “断” ，所以计算机只用0和1两个来表示，每个0或1就是一个二进制位，使用数字既表述指令又表示数据是计算机的基础。为符合人类的思维方式，发明了助记符，随后开发了一种称为汇编程序的软件自动将助记符翻译为二进制，但仍需要写出计算机执行的每条命令，要求要像计算机一样思考，于是便出现了高级编程语言。使用高级编程语言有三点好处：</p>
+<ol>
+<li>可以用更自然的语言来思考</li>
+<li>简明性</li>
+<li>独立性</li>
+</ol>
+
+            </div>
             
-          
-        
-        
-        <div class="post-button text-center">
-          <a class="btn language" data-lan="read-more" href="https://cm940324.github.io/post/postgresql-jiansuo/" rel="contents">
-            阅读全文 »
-          </a>
-        </div>
-        
-      </div>
-      
-        <footer class="post-footer">
-          <div class="post-eof"></div>
-        </footer>
+            
+              <div class="post-footer">
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong class="language" data-lan="author">本文作者：</strong>
+      陈陌
+    </li>
+    <li class="post-copyright-link">
+      <strong class="language" data-lan="link">本文链接：</strong>
+      <a href="https://cm940324.github.io/post/ji-suan-ji-zu-cheng-yu-she-ji-xue-xi-bi-ji-di-1-zhang/" title="计算机组成与设计学习笔记——第1章">https://cm940324.github.io/post/ji-suan-ji-zu-cheng-yu-she-ji-xue-xi-bi-ji-di-1-zhang/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong class="language" data-lan="copyright">版权声明： </strong>
+      本博客所有文章除特别声明外，均采用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i> BY-NC-SA</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+  <div class="tags">
+    
+  </div>
+  <div class="nav">
+    <div class="nav-prev">
       
     </div>
-  </article>
-  
-            
-            
-<div class="page bg-color">
-  <ul class="pagination-ul">
-    
-      <li class="pagination-dir">
-        <a href="https://cm940324.github.io/">
-          <i class="fa fa-angle-left"></i>
-        </a>
-      </li>
-    
-    
+    <div class="nav-next">
       
-        <li class="pagination-li ">
-            <a href="/page/../">
-              1
-            </a>
-        </li>
+        <a class="nav-pc-next" title="Mybatis动态SQL" href="https://cm940324.github.io/post/mybatis-sql/">Mybatis动态SQL</a>
+        <a class="nav-mobile-next" title="Mybatis动态SQL" href="https://cm940324.github.io/post/mybatis-sql/">下一篇</a>
+        <i class="fa fa-chevron-right"></i>
       
-        <li class="pagination-li pagination-active">
-            <a href="/page/2">
-              2
-            </a>
-        </li>
-      
-        <li class="pagination-li ">
-            <a href="/page/3">
-              3
-            </a>
-        </li>
-      
-    
-    
-      <li class="pagination-dir">
-        <a href="/page/3">
-          <i class="fa fa-angle-right"></i>
-        </a>
-      </li>
-    
-  </ul>
+    </div>
+  </div>
 </div>
-          </section>
+            
+            
+  
+
+          </div>
         </div>
       </div>
     </div>
@@ -1910,6 +1475,223 @@ http://www.postgres.cn/docs/9.3.4/functions-textsearch.html
     aelem.appendChild(image);
     parent.insertBefore(aelem, next);
   })
+</script>
+
+    <div class="reward-mask" style="display: none;">
+  <div class="reward-relative">
+    <span class="close" aria-hidden="true">x</span>
+    <div class="reward-body">
+      <h2>感谢您的支持，我会继续努力的!</h2>
+      <div class="reward-img-box">
+        <div style="position: relative; width: 140px; height: 140px;">
+          
+          
+          
+        </div>
+      </div>
+      <p class="reward-word">扫码打赏，你说多少就多少</p>
+      <p class="reward-tip">打开微信扫一扫，即可进行扫码打赏哦</p>
+    </div>
+    <div class="bottom">
+      
+      
+    </div>
+  </div>
+</div>
+<style>
+  .reward-mask {
+    position: fixed;
+    z-index: 99999;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #00000054;
+  }
+
+  .reward-relative {
+    position: relative;
+    width: 480px;
+    text-align: center;
+    margin: 0 auto;
+    border-radius: 5px;
+    background-color: #fff;
+    top: 50%;
+    margin-top: -205px;
+  }
+
+  .reward-relative .close {
+    position: absolute;
+    right: 10px;
+    font-weight: normal;
+    font-size: 16px;
+    color: #929292;
+  }
+
+  .reward-body {
+    padding: 40px 20px 20px;
+  }
+
+  .bottom {
+    display: flex;
+  }
+
+  .reward-btn {
+    text-align: center;
+  }
+
+  .reward-btn-text {
+    display: inline-block;
+    cursor: pointer;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    border-radius: 50%;
+    background-color: #ff9734;
+    color: #FFF;
+    margin-top: 20px;
+  }
+
+  .pay-text {
+    margin-top: 10px;
+    padding: 10px;
+    flex: 1;
+    transition: all .2s linear;
+  }
+
+  .pay-text:hover {
+    background-color: #a5a5a536;
+  }
+
+  .reward-body h2 {
+    padding-top: 10px;
+    text-align: center;
+    color: #a3a3a3;
+    font-size: 16px;
+    font-weight: normal;
+    margin: 0 0 20px;
+  }
+
+  .reward-body h2:after,
+  .reward-body h2:before {
+    font-family: Arial, Helvetica, sans-serif;
+    background: 0 0;
+    width: 0;
+    height: 0;
+    font-style: normal;
+    color: #eee;
+    font-size: 80px;
+    position: absolute;
+    top: 20px;
+  }
+
+  .reward-body h2:before {
+    content: '\201c';
+    left: 50px;
+  }
+
+  .reward-body h2:after {
+    content: '\201d';
+    right: 80px;
+  }
+
+  .reward-img-box {
+    display: inline-block;
+    padding: 10px;
+    border: 6px solid #ea5f00;
+    margin: 0 auto;
+    border-radius: 3px;
+    position: relative;
+  }
+
+  .reward-img {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+  }
+
+  @media (max-width: 767px) {
+    .reward-relative {
+      height: 100%;
+      top: 0px;
+      margin-top: 0;
+      width: auto;
+    }
+
+    .reward-relative .bottom {
+      flex-direction: column;
+    }
+
+    .reward-relative .pay-text {
+      width: 80%;
+      margin: 5px auto;
+      border: 1px solid silver;
+      padding: 6px;
+      border-radius: 4px;
+    }
+
+    .reward-body h2:after {
+      right: 40px;
+    }
+
+    .reward-body h2:after,
+    .reward-body h2:before {
+      font-size: 60px;
+    }
+
+    .reward-body h2:before {
+      left: 20px;
+    }
+  }
+</style>
+<script>
+  !function () {
+    var mask = document.querySelector('.reward-mask');
+    let close = document.querySelector('.reward-relative .close');
+    let rewardBtn = document.querySelector('.reward-btn');
+
+    let zfb = document.querySelector('#zfb'),
+      wx = document.querySelector('#wx'),
+      zfbBtn = document.querySelector('#zfbBtn'),
+      wxBtn = document.querySelector('#wxBtn');
+
+    if (zfbBtn && wxBtn) {
+      zfbBtn.addEventListener('click', () => {
+        window.Velocity(zfb, 'transition.slideLeftIn', {
+          duration: 400
+        });
+        window.Velocity(wx, 'transition.slideRightOut', {
+          display: 'none',
+          duration: 400
+        });
+      });
+
+      wxBtn.addEventListener('click', () => {
+        window.Velocity(wx, 'transition.slideRightIn', {
+          duration: 400
+        });
+        window.Velocity(zfb, 'transition.slideLeftOut', {
+          display: 'none',
+          duration: 400
+        });
+      });
+    }
+
+    rewardBtn.addEventListener('click', (e) => {
+      window.Velocity(mask, 'transition.slideDownIn', {
+        duration: 400
+      })
+    });
+
+    close.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.Velocity(mask, 'transition.slideUpOut', {
+        duration: 400
+      })
+    })
+  }()
 </script>
 
   </div>
@@ -6833,6 +6615,5 @@ JAVA PROGRAMMER👨‍💻&lt;/p&gt;
   // Using config rendering effect at 'element'.
   const cn = new CanvasNest(document.querySelector('.snow-container'), config);
   </script>
-
 
 </html>
