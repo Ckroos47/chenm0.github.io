@@ -9,7 +9,7 @@
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
 <title>Spring Data Rest---Paging and Sorting  | Oasis</title>
-<link rel="shortcut icon" href="/favicon.ico?v=1631172288656">
+<link rel="shortcut icon" href="/favicon.ico?v=1631249826430">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
 <link
@@ -1699,6 +1699,62 @@ machine language --- 机器语言
 
 high-level programming language --- 高级编程语言
 
+input device --- 输入设备
+
+output device --- 输出设备
+
+Liquid Crystal Display (LCD) --- 液晶显示
+
+active matrix display --- 动态矩阵显示
+
+pixel --- 像素
+
+bit map --- 位图
+
+intergrated circuit --- 集成电路
+
+chip --- 芯片
+
+datapath --- 数据通路
+
+control --- 控制器
+
+Graphic Processor Unit (GPU) --- 图形处理器单元
+
+memory --- 内存
+
+Dynamic Random Access Memory (DRAM) --- 动态随机访问存储器
+
+cache memory --- 缓存
+
+Static Random Access Memory (SRAM) --- 静态随机访问存储器
+
+instruction set architecture --- 指令集体系结构
+
+architecture --- 体系结构
+
+Application Binary Inteface (ABI) --- 应用二进制接口
+
+implementation --- 实现
+
+volatile memory --- 易失性存储器
+
+nonvolatile memory --- 非易失性存储器
+
+main memory 或 primary memory --- 主存储器
+
+secondary memory --- 二级存储器
+
+magnetic disk --- 磁盘
+
+flash memory --- 闪存
+
+hard disk --- 硬盘
+
+Local Area Network (LAN) --- 局域网
+
+Wide Area Network (WAN) --- 广域网
+
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h5 id=&#34;11-引言&#34;&gt;1.1  引言&lt;/h5&gt;
 &lt;p&gt;计算机主要分为以下三类应用及各自的特性：&lt;/p&gt;
@@ -1768,7 +1824,54 @@ high-level programming language --- 高级编程语言
 &lt;li&gt;简明性&lt;/li&gt;
 &lt;li&gt;独立性&lt;/li&gt;
 &lt;/ol&gt;
-">计算机组成与设计学习笔记——第1章</a>
+&lt;h5 id=&#34;14-硬件概念入门&#34;&gt;1.4 硬件概念入门&lt;/h5&gt;
+&lt;p&gt;组成计算机的5个经典组件是 &lt;mark&gt;输入、输出、存储器、数据通路（也称运算器）和控制器&lt;/mark&gt;，数据通路和控制器通常合成为处理器。其中两个关键部件是&lt;strong&gt;输入设备&lt;/strong&gt;和&lt;strong&gt;输出设备&lt;/strong&gt;，输入设备是为计算机提供信息的装置，如键盘；输出设备是将计算结果输出给用户（如显示器）或其他计算机装置。&lt;br&gt;
+处理器从存储器中得到指令和数据，输入部件将数据写入存储器，输出部件从内存中读出数据，控制器向数据通路、存储器、输入和输出部件发出信号。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;液晶显示（LCD）的原理：&lt;/strong&gt;&lt;br&gt;
+LCD并非光源，而是控制光的传输。通过电流控制位于两层垂直的偏光板之间的棒状液态分子团形成的转动螺旋线，来弯曲来自显示器后方的光线和少量反射光线（在不施加任何电压的情况下，液晶处于初始状态，并将入射光扭转90度，施加电压时，则不再弯曲，光线不能通过）。&lt;br&gt;
+现在的大多数LCD显示器采用&lt;mark&gt;动态矩阵&lt;/mark&gt;显示技术，使用晶体管控制单个像素上光线的传输。每个像素都由晶体管精确地控制电流，使图像更清晰。还有一个红 - 绿 - 蓝屏决定三种颜色分量的强度，每个点需要3个晶体管开关。&lt;/p&gt;
+&lt;p&gt;图像由像素矩阵组成，可以表示成二进制位的矩阵，称为“位图”。计算机硬件采用光栅刷新缓冲区（帧缓冲区）来保存位图以支持图像，每个像素的二进制值以刷新频率读出到显示设备。&lt;br&gt;
+而后PC时代使用接触敏感的显示设备替代了键盘和鼠标，拥有良好的用户界面，用户可以直接指向感兴趣的内容。&lt;br&gt;
+触摸屏的原理是电容感应。绝缘玻璃上覆盖一层透明的导体，人的手指接触到屏幕范围时，由于人是导体，将会使屏幕的电场发生变化，进而导致电容的变化。这种技术允许同时接触多个点，可提供非常好的用户界面。&lt;/p&gt;
+&lt;p&gt;根据Apple iPad2平板电脑的例子，可以看出I/O是该设备的主要部分，包括一个电容性多触电的LCD、前置摄像头、后置摄像头、麦克风、耳机插孔、扬声器、加速计、陀螺仪、Wi-Fi网络和蓝牙网络。而数据通路、控制器、存储器只占一小部分。&lt;br&gt;
+在Apple iPad2的逻辑主板上由下列设备构成：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;集成电路&lt;/strong&gt; ：也叫芯片，一种将几十个至几百万个晶体管连接起来的设备&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;中央处理器单元（CPU）&lt;/strong&gt;：也成为处理器 ，包括数据通路和控制器
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;数据通路&lt;/em&gt;：是处理器中执行算术操作的部分&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;控制器&lt;/em&gt;：处理器中根据程序的指令指挥数据通路、存储器和I/O设备的部分&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;关于存储器&lt;/strong&gt;&lt;br&gt;
+计算机中的存储器设计体现了八大思想中的存储器层次，分为两种类型：&lt;mark&gt;易失性存储器和非易失性存储器&lt;/mark&gt;，易失性存储器被称为主存储器，非易失性存储器被称为二级存储器。&lt;br&gt;
+易失性存储器在计算机中有两种存储器&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;内存&lt;/strong&gt;：程序运行时的存储空间，同时也用于保存程序运行时所需的数据。
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;DRAM&lt;/em&gt;： 动态随机访问存储器，访问时间大约为50ns，每Gib的价格大约为5～10美元&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;缓存&lt;/strong&gt;：小而快的存储器，一般作为DRAM的缓冲
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;SRAM&lt;/em&gt;:  静态随机访问存储器，速度更快且不那么密集，但价格比DRAM高&lt;br&gt;
+非易失性存储器在PC和个人移动设备中的使用不同，PC中磁盘占据主导地位，而闪存在个人移动设备中替代了磁盘。但闪存具有写100000～1000000次后老化或损坏的弱点，所以文件系统必须记录写操作的数目，而且具备避免存储器损坏的策略。例如：避免移动经常使用的数据。磁盘和闪存的区别如下：&lt;br&gt;
+|              |     磁盘      |    闪存     |&lt;br&gt;
+| :----------: | :-----------: | :---------: |&lt;br&gt;
+|  &lt;strong&gt;易失性&lt;/strong&gt;  |   非易失性    |  非易失性   |&lt;br&gt;
+| &lt;strong&gt;访问时间&lt;/strong&gt; |    5～20ms    |   5～50ms   |&lt;br&gt;
+|   &lt;strong&gt;价格&lt;/strong&gt;   | 0.05～0.1美元 | 0.75～1美元 |&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;计算机硬件的设计也体现了八大思想中的抽象思想，硬件和底层软件之间的接口是最重要的抽象之一，被称为&lt;mark&gt;指令集体系结构&lt;/mark&gt;，这一抽象接口使得同一软件可以由成本不同、性能也不同的实现方法完成。&lt;br&gt;
+提供给应用程序员的基本指令集和操作系统接口合称为&lt;mark&gt;应用二进制接口&lt;/mark&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;指令集体系结构&lt;/strong&gt;：也叫体系结构，是低层次软件和硬件之间的抽象接口，包含需要编写正确运行的机器语言程序所需要的全部信息&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;应用二进制接口&lt;/strong&gt;：用户部分的指令加上应用程序员调用的操作系统接口，定义了二进制层次可移植的计算机的标准&lt;/li&gt;
+&lt;/ul&gt;
+">《计算机组成与设计》学习笔记——第1章</a>
       </div>
       
       <div class="item">
