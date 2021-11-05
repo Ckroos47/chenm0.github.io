@@ -8,7 +8,7 @@
 <meta name="keywords" content="个人博客">
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
-<title>关于 | Oasis</title>
+<title>maven-assembly-plugin插件 | Oasis</title>
 <link rel="shortcut icon" href="/favicon.ico?v=1636077746619">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
@@ -38,7 +38,7 @@
 
 
 
-  <meta name="description" content="关于" />
+  <meta name="description" content="maven-assembly-plugin插件" />
   <meta name="keywords" content="" />
 </head>
 
@@ -190,7 +190,8 @@
       <div class="sidebar-body pisces" id="sidebar_body">
         
           
-            
+            <div class="post-side-meta" id="post_side_meta">
+              
 <div class="sidebar-wrapper box-shadow-wrapper bg-color">
   <div class="sidebar-item">
     <img class="site-author-image right-motion" src="/images/avatar.png"/>
@@ -244,6 +245,204 @@
   </div>
 
 </div>
+            </div>
+            <div class="post-toc sidebar-body-active" id="post_toc" style="opacity: 1;">
+              <div class="toc-box right-motion">
+  <div class="toc-wrapper auto-number auto"
+    id="toc_wrapper">
+    <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#%E4%B8%80-assembly-%E6%98%AF%E4%BB%80%E4%B9%88%E6%84%8F%E6%80%9D">一. Assembly 是什么意思？</a></li>
+<li><a href="#%E4%BA%8C-maven-assembly-plugin%E6%98%AF%E4%BB%80%E4%B9%88">二. maven-assembly-plugin是什么？</a></li>
+<li><a href="#%E4%B8%89-maven-assembly-plugin%E6%8F%92%E4%BB%B6%E7%9A%84%E4%BD%9C%E7%94%A8">三. maven-assembly-plugin插件的作用？</a></li>
+<li><a href="#%E5%9B%9Bmaven-assembly-plugin%E6%8F%92%E4%BB%B6%E5%9C%A8maven%E9%A1%B9%E7%9B%AE%E4%B8%AD%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E5%8D%B3%E4%BD%BF%E7%94%A8%E6%AD%A5%E9%AA%A4">四.maven-assembly-plugin插件在maven项目中如何使用（即使用步骤）？</a></li>
+<li><a href="#%E4%BA%94-maven%E9%A1%B9%E7%9B%AE%E4%B8%ADassembly%E6%8F%8F%E8%BF%B0%E7%AC%A6%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3">五. maven项目中Assembly描述符文件详解</a></li>
+<li><a href="#%E5%85%AD-maven%E4%B8%AD%E7%9A%84pomxml%E9%85%8D%E7%BD%AE%E5%BC%95%E5%85%A5assembly%E6%8F%8F%E8%BF%B0%E7%AC%A6%E6%96%87%E4%BB%B6">六. maven中的pom.xml配置(引入assembly描述符文件)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+</div>
+
+<script>
+
+  let lastTop = 0, lList = [], hList = [], postBody, lastIndex = -1;
+  let active = 'active-show', activeClass = 'active-current';
+  let tocWrapper = document.querySelector('#toc_wrapper');
+  let tocContent = tocWrapper.children[0];
+  let autoNumber = tocWrapper && tocWrapper.classList.contains('auto-number');
+
+  function addTocNumber(elem, deep) {
+    if (!elem) {
+      return;
+    }
+    let prop = elem.__proto__;
+
+    if (prop === HTMLUListElement.prototype) {
+      for (let i = 0; i < elem.children.length; i++) {
+        addTocNumber(elem.children[i], deep + (i + 1) + '.');
+      }
+    } else if (prop === HTMLLIElement.prototype) {
+      // 保存li元素
+      if (elem.children[0] && elem.children[0].__proto__ === HTMLAnchorElement.prototype) {
+        lList.push(elem);
+      }
+      for (let i = 0; i < elem.children.length; i++) {
+        let cur = elem.children[i];
+        if (cur.__proto__ === HTMLAnchorElement.prototype) {
+          if (autoNumber) {
+            cur.text = deep + ' ' + cur.text;
+          }
+        } else if (cur.__proto__ === HTMLUListElement.prototype) {
+          addTocNumber(cur, deep);
+        }
+      }
+    }
+  }
+
+  function removeParentActiveClass() {
+    let parents = tocContent.querySelectorAll('.' + active)
+    parents.forEach(function (elem) {
+      elem.classList.remove(active);
+    });
+  }
+
+  function addActiveClass(index) {
+    if (index >= 0 && index < hList.length) {
+      lList[index].classList.add(activeClass);
+    }
+  }
+
+  function removeActiveClass(index) {
+    if (index >= 0 && index < hList.length) {
+      lList[index].classList.remove(activeClass);
+    }
+  }
+
+  function addActiveLiElemment(elem, parent) {
+    if (!elem || elem === parent) {
+      return;
+    } else {
+      if (elem.__proto__ === HTMLLIElement.prototype) {
+        elem.classList.add(active);
+      }
+      addActiveLiElemment(elem.parentElement, parent);
+    }
+  }
+
+  function showToc() {
+    if (tocWrapper) {
+      postBody = document.querySelector('#post_body');
+      for (let i = 0; i < postBody.children.length; i++) {
+        if (postBody.children[i].__proto__ === HTMLHeadingElement.prototype) {
+          hList.push(postBody.children[i]);
+        }
+      }
+      if (tocWrapper.classList.contains('compress')) {
+        tocContent.classList.add('closed');
+      } else if (tocWrapper.classList.contains('no_compress')) {
+        tocContent.classList.add('expanded');
+      } else {
+        if (hList.length > 10) {
+          active = 'active-hidden'
+          tocContent.classList.add('closed');
+        } else {
+          tocContent.classList.add('expanded');
+        }
+      }
+    }
+  }
+
+  (function () {
+    // 处理不是从#一级标题开始目录
+    if (tocContent.children.length === 1 && tocContent.children[0].__proto__ === HTMLLIElement.prototype) {
+      let con = tocContent.children[0].children[0];
+      tocContent.innerHTML = con.innerHTML;
+    }
+    let markdownItTOC = document.querySelector('.markdownIt-TOC');
+    let innerHeight = window.innerHeight;
+    markdownItTOC.style = `max-height: ${innerHeight - 80 > 0 ? innerHeight - 80 : innerHeight}px`
+    addTocNumber(tocContent, '');
+  })();
+
+  document.addEventListener('scroll', function (e) {
+    if (lList.length <= 0) {
+      return;
+    }
+    let scrollTop = document.scrollingElement.scrollTop + 10;
+    let dir;
+
+    if (lastTop - scrollTop > 0) {
+      dir = 'up';
+    } else {
+      dir = 'down';
+    }
+
+    lastTop = scrollTop;
+    if (scrollTop <= 0) {
+      if (lastIndex >= 0 && lastIndex < hList.length) {
+        lList[lastIndex].classList.remove(activeClass);
+      }
+      return;
+    }
+
+    let current = 0, hasFind = false;
+    for (let i = 0; i < hList.length; i++) {
+      if (hList[i].offsetTop > scrollTop) {
+        current = i;
+        hasFind = true;
+        break;
+      }
+    }
+    if (!hasFind && scrollTop > lList[lList.length - 1].offsetTop) {
+      current = hList.length - 1;
+    } else {
+      current--;
+    }
+    if (dir === 'down') {
+      if (current > lastIndex) {
+        addActiveClass(current);
+        removeActiveClass(lastIndex)
+        lastIndex = current;
+        removeParentActiveClass();
+        lList[current] && addActiveLiElemment(lList[current].parentElement, tocContent);
+      }
+    } else {
+      if (current < lastIndex) {
+        addActiveClass(current);
+        removeActiveClass(lastIndex);
+        lastIndex = current;
+        removeParentActiveClass();
+        lList[current] && addActiveLiElemment(lList[current].parentElement, tocContent);
+      }
+    }
+  });
+
+
+  window.addEventListener('load', function () {
+    showToc();
+    document.querySelector('#sidebar').style = 'display: block;';
+    tocWrapper.classList.add('toc-active');
+    setTimeout(function () {
+      if ("createEvent" in document) {
+        let evt = document.createEvent("HTMLEvents");
+        evt.initEvent("scroll", false, true);
+        document.dispatchEvent(evt);
+      }
+      else {
+        document.fireEvent("scroll");
+      }
+    }, 500)
+  })
+
+</script>
+            </div>
           
         
       </div>
@@ -331,38 +530,32 @@
           <div class="section bg-color post post-page">
             <section class="post-header">
   <h1 class="post-title">
-    <a class="post-title-link" href="https://cm940324.github.io/post/about/">
-      关于
+    <a class="post-title-link" href="https://cm940324.github.io/post/maven-assembly-plugin-cha-jian/">
+      maven-assembly-plugin插件
     </a>
   </h1>
   <div class="post-meta">
     
-    <span class="meta-item">
-      <i class="fa fa-thumb-tack"></i>
-      <span class="language" data-lan="top">置顶</span>
-      <span class="post-meta-divider">|</span>
-    </span>
-    
     <span class="meta-item pc-show">
       <i class="fa fa-calendar-o"></i>
       <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2019-01-25 19:09:48">2019-01-25</span>
+      <span class="publish-time" data-t="2021-11-05 09:41:22">2021-11-05</span>
       <span class="post-meta-divider pc-show">|</span>
     </span>
     
     <span class="meta-item">
       <i class="fa fa-clock-o"></i>
-      <span>1<span class="language" data-lan="minute">分钟</span></span>
+      <span>7<span class="language" data-lan="minute">分钟</span></span>
     </span>
     <span class="meta-item">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-file-word-o"></i>
-      <span>2<span class="pc-show language" data-lan="words">字数</span></span>
+      <span>1324<span class="pc-show language" data-lan="words">字数</span></span>
     </span>
     
     
     
-    <span id="/post/about/" data-flag-title="关于" class="meta-item pc-show leancloud_visitors">
+    <span id="/post/maven-assembly-plugin-cha-jian/" data-flag-title="maven-assembly-plugin插件" class="meta-item pc-show leancloud_visitors">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-eye"></i>
       <span><span class="language" data-lan="view">浏览量</span>：<span class="leancloud-visitors-count"></span></span>
@@ -371,11 +564,168 @@
   </div>
 </section>
             <div class="post-body next-md-body" id="post_body">
-              <p><img src="https://cm940324.github.io/post-images/1618881224746.jpeg" alt="" loading="lazy"><br>
-JAVA PROGRAMMER👨‍💻</p>
+              <h3 id="一-assembly-是什么意思">一. Assembly 是什么意思？</h3>
+<figure data-type="image" tabindex="1"><img src="https://cm940324.github.io/post-images/1636076532479.png" alt="" loading="lazy"></figure>
+<h3 id="二-maven-assembly-plugin是什么">二. maven-assembly-plugin是什么？</h3>
+<p><code>它是maven中针对打包任务而提供的标准插件。</code></p>
+<h3 id="三-maven-assembly-plugin插件的作用">三. maven-assembly-plugin插件的作用？</h3>
+<p><strong>摘自官网：</strong> http://maven.apache.org/plugins/maven-assembly-plugin/<br>
+<strong>英文原文：</strong> The Assembly Plugin for Maven is primarily intended to allow users to aggregate the project output along with its dependencies, modules, site documentation, and other files into a single distributable archive.<br>
+<strong>中文翻译：</strong> Assembly 插件的主要作用是，允许用户将项目输出与它的依赖项、模块、站点文档、和其他文件一起组装成一个可分发的归档文件。</p>
+<h3 id="四maven-assembly-plugin插件在maven项目中如何使用即使用步骤">四.maven-assembly-plugin插件在maven项目中如何使用（即使用步骤）？</h3>
+<ol>
+<li>需要指定一个Assembly描述符文件。该文件指定了打包格式，包含的文件/过滤的文件等信息，可以同时指定多个描述符文件，打包成不同的格式。</li>
+<li>在Maven工程的pom.xml文件里配置maven-assembly-plugin插件，引入Assembly描述符文件。</li>
+</ol>
+<h3 id="五-maven项目中assembly描述符文件详解">五. maven项目中Assembly描述符文件详解</h3>
+<p>示例：</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;assembly
+​    xmlns=&quot;http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2&quot;
+​    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+​    xsi:schemaLocation=&quot;http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd&quot;&gt;
+
+​    &lt;!-- id 标识符，添加到生成文件名称的后缀符。如果指定 id 的话（这里指定的是项目的版本），目标文件则是 ${artifactId}-${id}.jar。【如terminal-dispatch-5.0.0.0.jar】 --&gt;
+​    &lt;id&gt;${project.version}&lt;/id&gt;
+
+​    &lt;!-- 指定打包格式。maven-assembly-plugin插件支持的打包格式有zip、tar、tar.gz (or tgz)、tar.bz2 (or tbz2)、jar、dir、war，可以同时指定多个打包格式 --&gt;
+​    &lt;formats&gt;
+​        &lt;format&gt;jar&lt;/format&gt;
+​    &lt;/formats&gt;
+​    
+​    &lt;!-- 指定打的包是否包含打包层目录（比如finalName是terminal-dispatch，当值为true，所有文件被放在包内的terminal-dispatch目录下，否则直接放在包的根目录下）--&gt;
+​    &lt;includeBaseDirectory&gt;true&lt;/includeBaseDirectory&gt;
+
+​    &lt;!-- 指定将工程依赖的包打到包里的指定目录下 --&gt;
+​    &lt;dependencySets&gt;
+​        &lt;dependencySet&gt;
+​            &lt;useProjectArtifact&gt;true&lt;/useProjectArtifact&gt; &lt;!-- 指定打包时是否包含工程自身生成的jar包 --&gt;
+​            &lt;outputDirectory&gt;lib&lt;/outputDirectory&gt; &lt;!-- 指定将这些依赖包打到包里lib目录下 --&gt;
+​            &lt;scope&gt;runtime&lt;/scope&gt; &lt;!-- 用于管理依赖的部署，runtime表示只在运行时使用 --&gt;
+​        &lt;/dependencySet&gt;
+​    &lt;/dependencySets&gt;
+
+​    &lt;!-- 指定要包含的文件集，可以定义多个fileSet --&gt;
+​    &lt;fileSets&gt;
+​        &lt;fileSet&gt;
+​            &lt;directory&gt;src/main/script/linux/bin&lt;/directory&gt; &lt;!-- 指定归档文件（要打的jar包）要包含的目录（下的文件及文件夹） --&gt;
+​            &lt;outputDirectory&gt;bin&lt;/outputDirectory&gt; &lt;!-- 指定要将当前目录（&lt;directory&gt;标签中的目录放在归档文件（要打的jar包）bin目录下） --&gt;
+​            &lt;includes&gt;
+​                &lt;include&gt;terminal-dispatch&lt;/include&gt; &lt;!-- 精确控制要包含的文件，&lt;exclude&gt;用于精确控制要排除的文件  --&gt;
+​                &lt;include&gt;server&lt;/include&gt;
+​            &lt;/includes&gt;
+​            &lt;fileMode&gt;0755&lt;/fileMode&gt; &lt;!-- 设置文件 UNIX 属性，是一种读写权限 --&gt;
+​       &lt;/fileSet&gt;        
+​        &lt;fileSet&gt;
+​            &lt;directory&gt;src/main/resources&lt;/directory&gt;
+​            &lt;outputDirectory&gt;conf&lt;/outputDirectory&gt;
+​            &lt;includes&gt;
+​                &lt;include&gt;config.properties&lt;/include&gt;
+​                &lt;include&gt;logback.xml&lt;/include&gt;
+​            &lt;/includes&gt;
+​            &lt;fileMode&gt;0644&lt;/fileMode&gt;
+​        &lt;/fileSet&gt;
+​        &lt;fileSet&gt;
+​            &lt;directory&gt;src/main/script/conf&lt;/directory&gt;
+​            &lt;outputDirectory&gt;conf&lt;/outputDirectory&gt;
+​            &lt;includes&gt;
+​                &lt;include&gt;wrapper.conf&lt;/include&gt;
+​            &lt;/includes&gt;
+​            &lt;fileMode&gt;0644&lt;/fileMode&gt;
+​        &lt;/fileSet&gt;
+​        &lt;fileSet&gt;
+​            &lt;directory&gt;src/main/script/linux/lib&lt;/directory&gt;
+​            &lt;outputDirectory&gt;lib&lt;/outputDirectory&gt;
+​            &lt;includes&gt;
+​                &lt;include&gt;libwrapper.so&lt;/include&gt;
+​                &lt;include&gt;wrapper.jar&lt;/include&gt;
+​            &lt;/includes&gt;
+​            &lt;fileMode&gt;0755&lt;/fileMode&gt;
+​        &lt;/fileSet&gt;
+​    &lt;/fileSets&gt;
+&lt;/assembly&gt;
+</code></pre>
+<ol>
+<li><includeBaseDirectory>true</includeBaseDirectory>标签作用？<br>
+指定打的包是否包含打包层目录，比如finalName是terminal-dispatch，当值为true，所有文件被放在包内的terminal-dispatch目录下，否则直接放在包的根目录下</li>
+<li><fileMode>0755</fileMode>标签作用？<br>
+设置文件的unix属性，好像是一种读写权限的设定，linux的内容，我没有深究，不是特别懂，暂时不多说。</li>
+</ol>
+<p>1<br>
+compile<br>
+缺省值，适用于所有阶段，会随着项目一起发布</p>
+<p>2<br>
+provided<br>
+类似compile，期望JDK、容器或使用者会提供这个依赖。如servlet.jar</p>
+<p>3<br>
+runtime<br>
+只在运行时使用，如JDBC驱动，适用运行和测试阶段</p>
+<p>4<br>
+test<br>
+只在测试时使用，用于编译和运行测试代码。不会随项目发布</p>
+<p>5<br>
+system<br>
+类似provided，需要显式提供包含依赖的jar，Maven不会在Repository中查找它</p>
+<h3 id="六-maven中的pomxml配置引入assembly描述符文件">六. maven中的pom.xml配置(引入assembly描述符文件)</h3>
+<pre><code class="language-javascript">&lt;build&gt;
+    &lt;plugins&gt;
+       &lt;plugin&gt;
+       　　&lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+　　　　　　&lt;artifactId&gt;maven-assembly-plugin&lt;/artifactId&gt;
+　　　　　　&lt;version&gt;2.4&lt;/version&gt;
+　　　　　　　　&lt;executions&gt;
+　　　　　　　　　　&lt;execution&gt; &lt;!--执行器 mvn assembly:assembly--&gt;
+　　　　　　　　　　　　&lt;id&gt;make-zip&lt;/id&gt; &lt;!--名字任意 --&gt;
+　　　　　　　　　　　　&lt;phase&gt;package&lt;/phase&gt; &lt;!-- 绑定到package生命周期阶段上 --&gt;
+　　　　　　　　　　　　&lt;goals&gt;
+　　　　　　　　　　　　　　&lt;goal&gt;single&lt;/goal&gt; &lt;!-- 该打包任务只运行一次 --&gt;
+　　　　　　　　　　　　&lt;/goals&gt;
+　　　　　　　　　　　　&lt;configuration&gt;
+　　　　　　　　　　　　　　&lt;descriptors
+　　　　　　　　　　　　　　　　&lt;descriptor&gt;src/main/script/assembly.xml&lt;/descriptor&gt; 
+　　　　　　　　　　　　　　&lt;/descriptors&gt;
+　　　　　　　　　　&lt;/configuration&gt;
+　　　　　　　　&lt;/execution&gt;
+　　　　　　&lt;/executions&gt;
+　　　　&lt;/plugin&gt;
+    &lt;plugins&gt;
+&lt;/build&gt;
+</code></pre>
 
             </div>
             
+            
+              <div class="post-footer">
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong class="language" data-lan="author">本文作者：</strong>
+      陈陌
+    </li>
+    <li class="post-copyright-link">
+      <strong class="language" data-lan="link">本文链接：</strong>
+      <a href="https://cm940324.github.io/post/maven-assembly-plugin-cha-jian/" title="maven-assembly-plugin插件">https://cm940324.github.io/post/maven-assembly-plugin-cha-jian/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong class="language" data-lan="copyright">版权声明： </strong>
+      本博客所有文章除特别声明外，均采用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i> BY-NC-SA</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+  <div class="tags">
+    
+  </div>
+  <div class="nav">
+    <div class="nav-prev">
+      
+    </div>
+    <div class="nav-next">
+      
+        <a class="nav-pc-next" title="《计算机组成与设计》学习笔记——第1章" href="https://cm940324.github.io/post/computer-organization-design-note/">《计算机组成与设计》学习笔记——第1章</a>
+        <a class="nav-mobile-next" title="《计算机组成与设计》学习笔记——第1章" href="https://cm940324.github.io/post/computer-organization-design-note/">下一篇</a>
+        <i class="fa fa-chevron-right"></i>
+      
+    </div>
+  </div>
+</div>
             
             
   

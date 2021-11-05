@@ -9,7 +9,7 @@
 <meta name="description" content="&lt;a href=&#34;https://cm940324.github.io/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
 <title>设计模式的学习 | Oasis</title>
-<link rel="shortcut icon" href="/favicon.ico?v=1631249826430">
+<link rel="shortcut icon" href="/favicon.ico?v=1636077746619">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
 <link
@@ -208,7 +208,7 @@
     <div class="sidebar-item-box">
       <a href="/archives/">
         
-        <span class="site-item-stat-count">25</span>
+        <span class="site-item-stat-count">26</span>
         <span class="site-item-stat-name language" data-lan="article">文章</span>
       </a>
     </div>
@@ -1815,6 +1815,138 @@ public void depend5(Interface1 i) { i.operation5();
       <hr>
     </div>
     <div class="result" id="result">
+      
+      <div class="item">
+        <a class="result-title" style="opacity: 0;" href="https://cm940324.github.io/post/maven-assembly-plugin-cha-jian/"" data-c="
+          &lt;h3 id=&#34;一-assembly-是什么意思&#34;&gt;一. Assembly 是什么意思？&lt;/h3&gt;
+&lt;figure data-type=&#34;image&#34; tabindex=&#34;1&#34;&gt;&lt;img src=&#34;https://cm940324.github.io/post-images/1636076532479.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34;&gt;&lt;/figure&gt;
+&lt;h3 id=&#34;二-maven-assembly-plugin是什么&#34;&gt;二. maven-assembly-plugin是什么？&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;它是maven中针对打包任务而提供的标准插件。&lt;/code&gt;&lt;/p&gt;
+&lt;h3 id=&#34;三-maven-assembly-plugin插件的作用&#34;&gt;三. maven-assembly-plugin插件的作用？&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;摘自官网：&lt;/strong&gt; http://maven.apache.org/plugins/maven-assembly-plugin/&lt;br&gt;
+&lt;strong&gt;英文原文：&lt;/strong&gt; The Assembly Plugin for Maven is primarily intended to allow users to aggregate the project output along with its dependencies, modules, site documentation, and other files into a single distributable archive.&lt;br&gt;
+&lt;strong&gt;中文翻译：&lt;/strong&gt; Assembly 插件的主要作用是，允许用户将项目输出与它的依赖项、模块、站点文档、和其他文件一起组装成一个可分发的归档文件。&lt;/p&gt;
+&lt;h3 id=&#34;四maven-assembly-plugin插件在maven项目中如何使用即使用步骤&#34;&gt;四.maven-assembly-plugin插件在maven项目中如何使用（即使用步骤）？&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;需要指定一个Assembly描述符文件。该文件指定了打包格式，包含的文件/过滤的文件等信息，可以同时指定多个描述符文件，打包成不同的格式。&lt;/li&gt;
+&lt;li&gt;在Maven工程的pom.xml文件里配置maven-assembly-plugin插件，引入Assembly描述符文件。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;五-maven项目中assembly描述符文件详解&#34;&gt;五. maven项目中Assembly描述符文件详解&lt;/h3&gt;
+&lt;p&gt;示例：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;utf-8&amp;quot;?&amp;gt;
+&amp;lt;assembly
+​    xmlns=&amp;quot;http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2&amp;quot;
+​    xmlns:xsi=&amp;quot;http://www.w3.org/2001/XMLSchema-instance&amp;quot;
+​    xsi:schemaLocation=&amp;quot;http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd&amp;quot;&amp;gt;
+
+​    &amp;lt;!-- id 标识符，添加到生成文件名称的后缀符。如果指定 id 的话（这里指定的是项目的版本），目标文件则是 ${artifactId}-${id}.jar。【如terminal-dispatch-5.0.0.0.jar】 --&amp;gt;
+​    &amp;lt;id&amp;gt;${project.version}&amp;lt;/id&amp;gt;
+
+​    &amp;lt;!-- 指定打包格式。maven-assembly-plugin插件支持的打包格式有zip、tar、tar.gz (or tgz)、tar.bz2 (or tbz2)、jar、dir、war，可以同时指定多个打包格式 --&amp;gt;
+​    &amp;lt;formats&amp;gt;
+​        &amp;lt;format&amp;gt;jar&amp;lt;/format&amp;gt;
+​    &amp;lt;/formats&amp;gt;
+​    
+​    &amp;lt;!-- 指定打的包是否包含打包层目录（比如finalName是terminal-dispatch，当值为true，所有文件被放在包内的terminal-dispatch目录下，否则直接放在包的根目录下）--&amp;gt;
+​    &amp;lt;includeBaseDirectory&amp;gt;true&amp;lt;/includeBaseDirectory&amp;gt;
+
+​    &amp;lt;!-- 指定将工程依赖的包打到包里的指定目录下 --&amp;gt;
+​    &amp;lt;dependencySets&amp;gt;
+​        &amp;lt;dependencySet&amp;gt;
+​            &amp;lt;useProjectArtifact&amp;gt;true&amp;lt;/useProjectArtifact&amp;gt; &amp;lt;!-- 指定打包时是否包含工程自身生成的jar包 --&amp;gt;
+​            &amp;lt;outputDirectory&amp;gt;lib&amp;lt;/outputDirectory&amp;gt; &amp;lt;!-- 指定将这些依赖包打到包里lib目录下 --&amp;gt;
+​            &amp;lt;scope&amp;gt;runtime&amp;lt;/scope&amp;gt; &amp;lt;!-- 用于管理依赖的部署，runtime表示只在运行时使用 --&amp;gt;
+​        &amp;lt;/dependencySet&amp;gt;
+​    &amp;lt;/dependencySets&amp;gt;
+
+​    &amp;lt;!-- 指定要包含的文件集，可以定义多个fileSet --&amp;gt;
+​    &amp;lt;fileSets&amp;gt;
+​        &amp;lt;fileSet&amp;gt;
+​            &amp;lt;directory&amp;gt;src/main/script/linux/bin&amp;lt;/directory&amp;gt; &amp;lt;!-- 指定归档文件（要打的jar包）要包含的目录（下的文件及文件夹） --&amp;gt;
+​            &amp;lt;outputDirectory&amp;gt;bin&amp;lt;/outputDirectory&amp;gt; &amp;lt;!-- 指定要将当前目录（&amp;lt;directory&amp;gt;标签中的目录放在归档文件（要打的jar包）bin目录下） --&amp;gt;
+​            &amp;lt;includes&amp;gt;
+​                &amp;lt;include&amp;gt;terminal-dispatch&amp;lt;/include&amp;gt; &amp;lt;!-- 精确控制要包含的文件，&amp;lt;exclude&amp;gt;用于精确控制要排除的文件  --&amp;gt;
+​                &amp;lt;include&amp;gt;server&amp;lt;/include&amp;gt;
+​            &amp;lt;/includes&amp;gt;
+​            &amp;lt;fileMode&amp;gt;0755&amp;lt;/fileMode&amp;gt; &amp;lt;!-- 设置文件 UNIX 属性，是一种读写权限 --&amp;gt;
+​       &amp;lt;/fileSet&amp;gt;        
+​        &amp;lt;fileSet&amp;gt;
+​            &amp;lt;directory&amp;gt;src/main/resources&amp;lt;/directory&amp;gt;
+​            &amp;lt;outputDirectory&amp;gt;conf&amp;lt;/outputDirectory&amp;gt;
+​            &amp;lt;includes&amp;gt;
+​                &amp;lt;include&amp;gt;config.properties&amp;lt;/include&amp;gt;
+​                &amp;lt;include&amp;gt;logback.xml&amp;lt;/include&amp;gt;
+​            &amp;lt;/includes&amp;gt;
+​            &amp;lt;fileMode&amp;gt;0644&amp;lt;/fileMode&amp;gt;
+​        &amp;lt;/fileSet&amp;gt;
+​        &amp;lt;fileSet&amp;gt;
+​            &amp;lt;directory&amp;gt;src/main/script/conf&amp;lt;/directory&amp;gt;
+​            &amp;lt;outputDirectory&amp;gt;conf&amp;lt;/outputDirectory&amp;gt;
+​            &amp;lt;includes&amp;gt;
+​                &amp;lt;include&amp;gt;wrapper.conf&amp;lt;/include&amp;gt;
+​            &amp;lt;/includes&amp;gt;
+​            &amp;lt;fileMode&amp;gt;0644&amp;lt;/fileMode&amp;gt;
+​        &amp;lt;/fileSet&amp;gt;
+​        &amp;lt;fileSet&amp;gt;
+​            &amp;lt;directory&amp;gt;src/main/script/linux/lib&amp;lt;/directory&amp;gt;
+​            &amp;lt;outputDirectory&amp;gt;lib&amp;lt;/outputDirectory&amp;gt;
+​            &amp;lt;includes&amp;gt;
+​                &amp;lt;include&amp;gt;libwrapper.so&amp;lt;/include&amp;gt;
+​                &amp;lt;include&amp;gt;wrapper.jar&amp;lt;/include&amp;gt;
+​            &amp;lt;/includes&amp;gt;
+​            &amp;lt;fileMode&amp;gt;0755&amp;lt;/fileMode&amp;gt;
+​        &amp;lt;/fileSet&amp;gt;
+​    &amp;lt;/fileSets&amp;gt;
+&amp;lt;/assembly&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;includeBaseDirectory&gt;true&lt;/includeBaseDirectory&gt;标签作用？&lt;br&gt;
+指定打的包是否包含打包层目录，比如finalName是terminal-dispatch，当值为true，所有文件被放在包内的terminal-dispatch目录下，否则直接放在包的根目录下&lt;/li&gt;
+&lt;li&gt;&lt;fileMode&gt;0755&lt;/fileMode&gt;标签作用？&lt;br&gt;
+设置文件的unix属性，好像是一种读写权限的设定，linux的内容，我没有深究，不是特别懂，暂时不多说。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;1&lt;br&gt;
+compile&lt;br&gt;
+缺省值，适用于所有阶段，会随着项目一起发布&lt;/p&gt;
+&lt;p&gt;2&lt;br&gt;
+provided&lt;br&gt;
+类似compile，期望JDK、容器或使用者会提供这个依赖。如servlet.jar&lt;/p&gt;
+&lt;p&gt;3&lt;br&gt;
+runtime&lt;br&gt;
+只在运行时使用，如JDBC驱动，适用运行和测试阶段&lt;/p&gt;
+&lt;p&gt;4&lt;br&gt;
+test&lt;br&gt;
+只在测试时使用，用于编译和运行测试代码。不会随项目发布&lt;/p&gt;
+&lt;p&gt;5&lt;br&gt;
+system&lt;br&gt;
+类似provided，需要显式提供包含依赖的jar，Maven不会在Repository中查找它&lt;/p&gt;
+&lt;h3 id=&#34;六-maven中的pomxml配置引入assembly描述符文件&#34;&gt;六. maven中的pom.xml配置(引入assembly描述符文件)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;&amp;lt;build&amp;gt;
+    &amp;lt;plugins&amp;gt;
+       &amp;lt;plugin&amp;gt;
+       　　&amp;lt;groupId&amp;gt;org.apache.maven.plugins&amp;lt;/groupId&amp;gt;
+　　　　　　&amp;lt;artifactId&amp;gt;maven-assembly-plugin&amp;lt;/artifactId&amp;gt;
+　　　　　　&amp;lt;version&amp;gt;2.4&amp;lt;/version&amp;gt;
+　　　　　　　　&amp;lt;executions&amp;gt;
+　　　　　　　　　　&amp;lt;execution&amp;gt; &amp;lt;!--执行器 mvn assembly:assembly--&amp;gt;
+　　　　　　　　　　　　&amp;lt;id&amp;gt;make-zip&amp;lt;/id&amp;gt; &amp;lt;!--名字任意 --&amp;gt;
+　　　　　　　　　　　　&amp;lt;phase&amp;gt;package&amp;lt;/phase&amp;gt; &amp;lt;!-- 绑定到package生命周期阶段上 --&amp;gt;
+　　　　　　　　　　　　&amp;lt;goals&amp;gt;
+　　　　　　　　　　　　　　&amp;lt;goal&amp;gt;single&amp;lt;/goal&amp;gt; &amp;lt;!-- 该打包任务只运行一次 --&amp;gt;
+　　　　　　　　　　　　&amp;lt;/goals&amp;gt;
+　　　　　　　　　　　　&amp;lt;configuration&amp;gt;
+　　　　　　　　　　　　　　&amp;lt;descriptors
+　　　　　　　　　　　　　　　　&amp;lt;descriptor&amp;gt;src/main/script/assembly.xml&amp;lt;/descriptor&amp;gt; 
+　　　　　　　　　　　　　　&amp;lt;/descriptors&amp;gt;
+　　　　　　　　　　&amp;lt;/configuration&amp;gt;
+　　　　　　　　&amp;lt;/execution&amp;gt;
+　　　　　　&amp;lt;/executions&amp;gt;
+　　　　&amp;lt;/plugin&amp;gt;
+    &amp;lt;plugins&amp;gt;
+&amp;lt;/build&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+">maven-assembly-plugin插件</a>
+      </div>
       
       <div class="item">
         <a class="result-title" style="opacity: 0;" href="https://cm940324.github.io/post/computer-organization-design-note/"" data-c="
