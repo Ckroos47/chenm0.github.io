@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    <id>https://chenm0.blog.cn</id>
+    <id>https://chenm0.github.io/chenm0.blog.cn</id>
     <title>Oasis</title>
-    <updated>2021-11-29T01:51:14.072Z</updated>
+    <updated>2021-11-29T01:56:07.450Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
-    <link rel="alternate" href="https://chenm0.blog.cn"/>
-    <link rel="self" href="https://chenm0.blog.cn/atom.xml"/>
+    <link rel="alternate" href="https://chenm0.github.io/chenm0.blog.cn"/>
+    <link rel="self" href="https://chenm0.github.io/chenm0.blog.cn/atom.xml"/>
     <subtitle>&lt;a href=&quot;https://https://github.com/chenm0/&quot; target=&quot;_blank&quot;&gt;code blog&lt;/a&gt;</subtitle>
-    <logo>https://chenm0.blog.cn/images/avatar.png</logo>
-    <icon>https://chenm0.blog.cn/favicon.ico</icon>
+    <logo>https://chenm0.github.io/chenm0.blog.cn/images/avatar.png</logo>
+    <icon>https://chenm0.github.io/chenm0.blog.cn/favicon.ico</icon>
     <rights>All rights reserved 2021, Oasis</rights>
     <entry>
         <title type="html"><![CDATA[Volatile关键字解析]]></title>
-        <id>https://chenm0.blog.cn/post/volatile-guan-jian-zi-jie-xi/</id>
-        <link href="https://chenm0.blog.cn/post/volatile-guan-jian-zi-jie-xi/">
+        <id>https://chenm0.github.io/chenm0.blog.cn/post/volatile-guan-jian-zi-jie-xi/</id>
+        <link href="https://chenm0.github.io/chenm0.blog.cn/post/volatile-guan-jian-zi-jie-xi/">
         </link>
         <updated>2021-11-25T07:23:21.000Z</updated>
         <content type="html"><![CDATA[<pre><code>由于volatile关键字是与java的内存模型有关的，所以需要对内存模型相关的概念和知识有所了解。
@@ -39,7 +39,7 @@
 在早期的CPU当中，是通过在总线上加LOCK#锁的形式来解决缓存不一致的问题。因为CPU和其他部件进行通信都是通过总线来进行的，如果对总线加LOCK#锁的话，也就是说阻塞了其他CPU对其他部件访问（如内存），从而使得只能有一个CPU能使用这个变量的内存。比如上面例子中 如果一个线程在执行 i = i +1，如果在执行这段代码的过程中，在总线上发出了LCOK#锁的信号，那么只有等待这段代码完全执行完毕之后，其他CPU才能从变量i所在的内存读取变量，然后进行相应的操作。这样就解决了缓存不一致的问题。<br>
 但是上面的方式会有一个问题，由于在锁住总线期间，其他CPU无法访问内存，导致效率低下。<br>
 所以就出现了缓存一致性协议。最出名的就是Intel 的MESI协议，MESI协议保证了每个缓存中使用的共享变量的副本是一致的。它核心的思想是：当CPU写数据时，如果发现操作的变量是共享变量，即在其他CPU中也存在该变量的副本，会发出信号通知其他CPU将该变量的缓存行置为无效状态，因此当其他CPU需要读取这个变量时，发现自己缓存中缓存该变量的缓存行是无效的，那么它就会从内存重新读取。<br>
-<img src="https://chenm0.blog.cn/post-images/1637826258727.jpg" alt="" loading="lazy"></li>
+<img src="https://chenm0.github.io/chenm0.blog.cn/post-images/1637826258727.jpg" alt="" loading="lazy"></li>
 </ul>
 <h3 id="并发编程中的三个概念">并发编程中的三个概念</h3>
 <pre><code>在并发编程中，通常会遇到以下三个问题：原子性问题，可见性问题，有序性问题。
@@ -155,12 +155,12 @@ happens-before原则（先行发生原则)：</p>
     </entry>
     <entry>
         <title type="html"><![CDATA[maven-assembly-plugin插件]]></title>
-        <id>https://chenm0.blog.cn/post/maven-assembly-plugin-cha-jian/</id>
-        <link href="https://chenm0.blog.cn/post/maven-assembly-plugin-cha-jian/">
+        <id>https://chenm0.github.io/chenm0.blog.cn/post/maven-assembly-plugin-cha-jian/</id>
+        <link href="https://chenm0.github.io/chenm0.blog.cn/post/maven-assembly-plugin-cha-jian/">
         </link>
         <updated>2021-11-05T01:41:22.000Z</updated>
         <content type="html"><![CDATA[<h3 id="一-assembly-是什么意思">一. Assembly 是什么意思？</h3>
-<figure data-type="image" tabindex="1"><img src="https://chenm0.blog.cn/post-images/1636076532479.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="1"><img src="https://chenm0.github.io/chenm0.blog.cn/post-images/1636076532479.png" alt="" loading="lazy"></figure>
 <h3 id="二-maven-assembly-plugin是什么">二. maven-assembly-plugin是什么？</h3>
 <p><code>它是maven中针对打包任务而提供的标准插件。</code></p>
 <h3 id="三-maven-assembly-plugin插件的作用">三. maven-assembly-plugin插件的作用？</h3>
@@ -290,8 +290,8 @@ system<br>
     </entry>
     <entry>
         <title type="html"><![CDATA[《计算机组成与设计》学习笔记——第1章]]></title>
-        <id>https://chenm0.blog.cn/post/computer-organization-design-note/</id>
-        <link href="https://chenm0.blog.cn/post/computer-organization-design-note/">
+        <id>https://chenm0.github.io/chenm0.blog.cn/post/computer-organization-design-note/</id>
+        <link href="https://chenm0.github.io/chenm0.blog.cn/post/computer-organization-design-note/">
         </link>
         <updated>2021-09-09T06:01:26.000Z</updated>
         <content type="html"><![CDATA[<h3 id="第1章-计算机概要与技术">第1章 计算机概要与技术</h3>
@@ -462,7 +462,7 @@ Wide Area Network (WAN) --- 广域网
 </ul>
 <h5 id="13-程序概念入门">1.3 程序概念入门</h5>
 <p>硬件和软件层次图简化：</p>
-<figure data-type="image" tabindex="1"><img src="https://chenm0.blog.cn/post-images/1631171219535.jpg" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="1"><img src="https://chenm0.github.io/chenm0.blog.cn/post-images/1631171219535.jpg" alt="" loading="lazy"></figure>
 <ul>
 <li><strong>系统软件：</strong> 提供常用服务的软件，包括操作系统、编译程序、加载程序和汇编程序等</li>
 </ul>
@@ -528,8 +528,8 @@ LCD并非光源，而是控制光的传输。通过电流控制位于两层垂�
     </entry>
     <entry>
         <title type="html"><![CDATA[Mybatis动态SQL]]></title>
-        <id>https://chenm0.blog.cn/post/mybatis-sql/</id>
-        <link href="https://chenm0.blog.cn/post/mybatis-sql/">
+        <id>https://chenm0.github.io/chenm0.blog.cn/post/mybatis-sql/</id>
+        <link href="https://chenm0.github.io/chenm0.blog.cn/post/mybatis-sql/">
         </link>
         <updated>2021-09-03T01:24:52.000Z</updated>
         <content type="html"><![CDATA[<p>动态 SQL 是 MyBatis 的强大特性之一。如果你使用过 JDBC 或其它类似的框架，你应该能理解根据不同条件拼接 SQL 语句有多痛苦，例如拼接时要确保不能忘记添加必要的空格，还要注意去掉列表最后一个列名的逗号。利用动态 SQL，可以彻底摆脱这种痛苦。</p>
@@ -740,8 +740,8 @@ AND title like ‘someTitle’
     </entry>
     <entry>
         <title type="html"><![CDATA[Leetcode sql题个人题解方案]]></title>
-        <id>https://chenm0.blog.cn/post/leetcode-sql/</id>
-        <link href="https://chenm0.blog.cn/post/leetcode-sql/">
+        <id>https://chenm0.github.io/chenm0.blog.cn/post/leetcode-sql/</id>
+        <link href="https://chenm0.github.io/chenm0.blog.cn/post/leetcode-sql/">
         </link>
         <updated>2021-08-26T00:03:11.000Z</updated>
         <content type="html"><![CDATA[<h2 id="1-组合两个表">1. 组合两个表</h2>
@@ -1393,8 +1393,8 @@ Result table:
     </entry>
     <entry>
         <title type="html"><![CDATA[Maven setting]]></title>
-        <id>https://chenm0.blog.cn/post/maven-setting/</id>
-        <link href="https://chenm0.blog.cn/post/maven-setting/">
+        <id>https://chenm0.github.io/chenm0.blog.cn/post/maven-setting/</id>
+        <link href="https://chenm0.github.io/chenm0.blog.cn/post/maven-setting/">
         </link>
         <updated>2021-08-09T01:16:36.000Z</updated>
         <content type="html"><![CDATA[<?xml version="1.0" encoding="UTF-8"?> 
@@ -1572,8 +1572,8 @@ Result table:
     </entry>
     <entry>
         <title type="html"><![CDATA[@Excel参数大全]]></title>
-        <id>https://chenm0.blog.cn/post/excel-args/</id>
-        <link href="https://chenm0.blog.cn/post/excel-args/">
+        <id>https://chenm0.github.io/chenm0.blog.cn/post/excel-args/</id>
+        <link href="https://chenm0.github.io/chenm0.blog.cn/post/excel-args/">
         </link>
         <updated>2021-07-19T09:05:37.000Z</updated>
         <content type="html"><![CDATA[<table>
@@ -1700,8 +1700,8 @@ Result table:
     </entry>
     <entry>
         <title type="html"><![CDATA[JPA踩坑记录]]></title>
-        <id>https://chenm0.blog.cn/post/jpa-qa/</id>
-        <link href="https://chenm0.blog.cn/post/jpa-qa/">
+        <id>https://chenm0.github.io/chenm0.blog.cn/post/jpa-qa/</id>
+        <link href="https://chenm0.github.io/chenm0.blog.cn/post/jpa-qa/">
         </link>
         <updated>2021-06-24T06:08:55.000Z</updated>
         <content type="html"><![CDATA[<h3 id="spring-data-jpa查询到的对象被set值后自动更新数据库">Spring data JPA查询到的对象被set值后，自动更新数据库</h3>
@@ -1726,8 +1726,8 @@ private EntityManager entityManager;</p>
     </entry>
     <entry>
         <title type="html"><![CDATA[springboot2的配置文件properties和yml的一些常用属性]]></title>
-        <id>https://chenm0.blog.cn/post/springboot2-yml/</id>
-        <link href="https://chenm0.blog.cn/post/springboot2-yml/">
+        <id>https://chenm0.github.io/chenm0.blog.cn/post/springboot2-yml/</id>
+        <link href="https://chenm0.github.io/chenm0.blog.cn/post/springboot2-yml/">
         </link>
         <updated>2021-06-17T08:13:43.000Z</updated>
         <content type="html"><![CDATA[<p>＃================================================= ==================<br>
@@ -3159,8 +3159,8 @@ spring.test.mockmvc.print =默认#MVC 打印选项。</p>
     </entry>
     <entry>
         <title type="html"><![CDATA[微服务的数据库设计]]></title>
-        <id>https://chenm0.blog.cn/post/weifuwu-sheji/</id>
-        <link href="https://chenm0.blog.cn/post/weifuwu-sheji/">
+        <id>https://chenm0.github.io/chenm0.blog.cn/post/weifuwu-sheji/</id>
+        <link href="https://chenm0.github.io/chenm0.blog.cn/post/weifuwu-sheji/">
         </link>
         <updated>2021-06-17T05:19:26.000Z</updated>
         <content type="html"><![CDATA[<h3 id="单独的数据库">单独的数据库：</h3>
