@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://chenm0.github.io/</id>
     <title>观潮亭</title>
-    <updated>2021-11-29T03:54:20.540Z</updated>
+    <updated>2021-11-29T08:01:00.231Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://chenm0.github.io/"/>
     <link rel="self" href="https://chenm0.github.io/atom.xml"/>
@@ -381,9 +381,427 @@ doSomethingwithconfig(context);
 ]]></content>
     </entry>
     <entry>
+        <title type="html"><![CDATA[Spring Cloud Gateway]]></title>
+        <id>https://chenm0.github.io/post/spring-cloud-gateway/</id>
+        <link href="https://chenm0.github.io/post/spring-cloud-gateway/">
+        </link>
+        <updated>2021-11-05T02:48:36.000Z</updated>
+        <content type="html"><![CDATA[<h3 id="功能特征">功能特征</h3>
+<p>基于Spring Framework 5, Project Reactor 和 Spring Boot 2.0 进行构建；</p>
+<ul>
+<li>动态路由：能够匹配任何请求属性；</li>
+<li>集成 Spring Cloud 服务发现功能；</li>
+<li>可以对路由指定 Predicate（断言）和 Filter（过滤器）；</li>
+<li>易于编写的 Predicate（断言）和 Filter（过滤器）；</li>
+<li>集成Hystrix的断路器功能；</li>
+<li>请求限流功能；</li>
+<li>支持路径重写</li>
+</ul>
+<figure data-type="image" tabindex="1"><img src="https://chenm0.github.io//post-images/1636080636945.jpg" alt="" loading="lazy"></figure>
+<p>上图中是核心的流程图，最主要的就是Route、Predicates 和 Filters 作用于特定路由。</p>
+<ol>
+<li>Route：<strong>路由是网关的基本构件</strong>。它由ID、目标URI、谓词集合和过滤器集合定义。如果聚合谓词为真，则匹配路由。</li>
+<li>Predicate：<strong>参照Java8的新特性Predicate</strong>。这允许开发人员匹配HTTP请求中的任何内容，比如头或参数。</li>
+<li>Filter：可以在发送下游请求之前或之后修改请求和响应。</li>
+</ol>
+<p>** 我们为什么选择Gateway？**<br>
+一方面因为Zuul已经进入了维护阶段，而且Gateway是SpringCloud团队研发的，是亲儿子产品，值得信赖。而且很多功能Zuul都没有；用起来也非常的简单便捷。<br>
+Gateway是基于异步非阻塞(NIO)模型上进行开发的，性能方面不需要担心。虽然Netflix 早就发布了最新的 Zuul 2.x，但 Spring Cloud 貌似没有整合计划。而且Netflix相关组件都宣布进入维护期；不知前景如何？</p>
+<h3 id="工作原理">工作原理</h3>
+<p><img src="https://chenm0.github.io//post-images/1636080815399.jpg" alt="" loading="lazy"><br>
+客户端向 Spring Cloud Gateway 发出请求。然后在 Gateway Handler Mapping 中找到与请求相匹配的路由，将其发送到 Gateway Web Handler。Handler 再通过指 定的过滤器链来将请求发送到我们实际的服务执行业务逻辑，然后返回。过滤器之间用虚线分开是因为过滤器可能会在发送代理请求之前（“pre”）或之后（“post”）执行业务逻辑。<br>
+Filter在“pre”类型的过滤器可以做参数校验、权限校验、流量监控、日志输出、协议转换等，在“post”类型的过滤器中可以做响应内容、响应头的修改，日志的输出，流量监控等有着非常重要的作用。<br>
+** 核心逻辑就是路由转发，执行过滤器链。**<br>
+在上面的处理过程中，有一个重要的点就是讲请求和路由进行匹配，这时候就需要用到predicate，它是决定了一个请求走哪一个路由。</p>
+<h3 id="predicate简介">predicate简介</h3>
+<p>Predicate来自于java8的接口。Predicate接受一个输入参数，返回一个布尔值结果。该接口包含多种默认方法来将Predicate组合成其他复杂的逻辑（比如：与，或，非）。可以用于接口请求参数校验、判断新老数据是否有变化需要进行更新操作。add--与、or--或、negate--非。Spring Cloud Gateway内置了许多Predict,这些Predict的源码在org.springframework.cloud.gateway.handler.predicate包中<br>
+<img src="https://chenm0.github.io//post-images/1636081078455.jpg" alt="" loading="lazy"><br>
+在上图中，有很多类型的Predicate,比如说时间类型的Predicated（AfterRoutePredicateFactory BeforeRoutePredicateFactory BetweenRoutePredicateFactory），当只有满足特定时间要求的请求会进入到此predicate中，并交由router处理；cookie类型的CookieRoutePredicateFactory，指定的cookie满足正则匹配，才会进入此router;以及host、method、path、querparam、remoteaddr类型的predicate，每一种predicate都会对当前的客户端请求进行判断，是否满足当前的要求，如果满足则交给当前请求处理。如果有很多个Predicate，并且一个请求满足多个Predicate，则按照配置的顺序第一个生效。</p>
+<ol>
+<li>After Route Predicate Factory<br>
+After Route Predicate Factory使用的是时间作为匹配规则，只要当前时间大于设定时间，路由才会匹配请求。<br>
+** application.yml：**</li>
+</ol>
+<pre><code class="language-text">spring:  
+    cloud:    
+        gateway:      
+            routes:      
+            - id: after_route        
+              uri: http://www.google.com        
+              predicates:        
+              - After=2018-12-25T14:33:47.789+08:00
+</code></pre>
+<p><u>这个路由规则会在东8区的2018-12-25 14:33:47后，将请求都转跳到google。</u></p>
+<ol start="2">
+<li>Before Route Predicate Factory<br>
+Before Route Predicate Factory也是使用时间作为匹配规则，只要当前时间小于设定时间，路由才会匹配请求。 application.yml：<br>
+** application.yml：**</li>
+</ol>
+<pre><code class="language-text">spring:  
+    cloud:    
+        gateway:      
+            routes:      
+            - id: before_route        
+              uri: http://www.google.com        
+              predicates:        
+              - Before=2018-12-25T14:33:47.789+08:00
+</code></pre>
+<p><u>这个路由规则会在东8区的2018-12-25 14:33:47前，将请求都转跳到google。</u></p>
+<ol start="3">
+<li>Between Route Predicate Factory<br>
+Between Route Predicate Factory也是使用两个时间作为匹配规则，只要当前时间大于第一个设定时间，并小于第二个设定时间，路由才会匹配请求。<br>
+** application.yml：**</li>
+</ol>
+<pre><code class="language-text">spring:  
+    cloud:   
+        gateway:      
+            routes:      
+            - id: between_route        
+              uri: http://www.google.com        
+              predicates:        
+              - Between=2018-12-25T14:33:47.789+08:00, 2018-12-26T14:33:47.789+08:
+</code></pre>
+<p><u>这个路由规则会在东8区的2018-12-25 14:33:47到2018-12-26 14:33:47之间，将请求都转跳到google。</u></p>
+<ol start="4">
+<li>Cookie Route Predicate Factory<br>
+Cookie Route Predicate Factory使用的是cookie名字和正则表达式的value作为两个输入参数，请求的cookie需要匹配cookie名和符合其中value的正则。<br>
+** application.yml：**</li>
+</ol>
+<pre><code class="language-text">spring: 
+    cloud:    
+        gateway:  
+            routes:      
+            - id: cookie_route       
+              uri: http://www.google.com        
+              predicates:        
+              - Cookie=cookiename, cookievalue
+</code></pre>
+<p><u>路由匹配请求存在cookie名为cookiename，cookie内容匹配cookievalue的，将请求转发到google。</u></p>
+<ol start="5">
+<li>Header Route Predicate Factory<br>
+Header Route Predicate Factory，与Cookie Route Predicate Factory类似，也是两个参数，一个header的name，一个是正则匹配的value。<br>
+** application.yml：**</li>
+</ol>
+<pre><code class="language-text">spring:  
+    cloud:    
+        gateway:     
+            routes:      
+            - id: header_route        
+              uri: http://www.google.com        
+              predicates:        
+              - Header=X-Request-Id, \d+
+</code></pre>
+<p><u>路由匹配存在名为X-Request-Id，内容为数字的header的请求，将请求转发到google。</u></p>
+<ol start="6">
+<li>Host Route Predicate Factory<br>
+Host Route Predicate Factory使用的是host的列表作为参数，host使用Ant style匹配。<br>
+** application.yml：**</li>
+</ol>
+<pre><code class="language-text">spring:  
+    cloud:    
+        gateway:      
+            routes:      
+            - id: host_route        
+              uri: http://www.google.com        
+              predicates:        
+              - Host=**.somehost.org,**.anotherhost.org
+</code></pre>
+<p><u>路由会匹配Host诸如：www.somehost.org 或 beta.somehost.org或www.anotherhost.org等请求。</u></p>
+<ol start="7">
+<li>Method Route Predicate Factory<br>
+Method Route Predicate Factory是通过HTTP的method来匹配路由。<br>
+** application.yml：**</li>
+</ol>
+<pre><code class="language-text">spring:  
+    cloud:    
+        gateway:      
+            routes:      
+            - id: method_route        
+              uri: http://www.google.com        
+              predicates:        
+              - Method=GET
+</code></pre>
+<p>路由会匹配到所有GET方法的请求。</p>
+<ol start="8">
+<li>Path Route Predicate Factory<br>
+Path Route Predicate Factory使用的是path列表作为参数，使用Spring的PathMatcher匹配path，可以设置可选变量。<br>
+** application.yml：**</li>
+</ol>
+<pre><code class="language-text">spring:  
+    cloud:    
+        gateway:      
+            routes:      
+            - id: host_route        
+              uri: http://www.google.com       
+              predicates:        
+              - Path=/foo/{segment},/bar/{segment}
+</code></pre>
+<p><u>上面路由可以匹配诸如：/foo/1 或 /foo/bar 或 /bar/baz等 其中的segment变量可以通过下面方式获取：</u></p>
+<pre><code>PathMatchInfo variables = exchange.getAttribute(URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+Map&lt;String, String&gt; uriVariables = variables.getUriVariables();
+String segment = uriVariables.get(&quot;segment&quot;);
+</code></pre>
+<p>在后续的GatewayFilter Factories就可以做对应的操作了</p>
+<ol start="9">
+<li>Query Route Predicate Factory<br>
+Query Route Predicate Factory可以通过一个或两个参数来匹配路由，一个是查询的name，一个是查询的正则value。<br>
+** application.yml：**</li>
+</ol>
+<pre><code class="language-text">spring:  
+    cloud:    
+        gateway:      
+            routes:      
+            - id: host_route        
+              uri: http://www.google.com       
+              predicates:        
+              - Path=/foo/{segment},/bar/{segment}
+</code></pre>
+<p><u>路由会匹配所有包含baz查询参数的请求。</u></p>
+<pre><code class="language-text">spring:  
+	cloud:    
+		gateway:      
+			routes:      
+			- id: query_route       
+              uri: http://www.google.com        
+              predicates:       
+              - Query=foo, ba.
+</code></pre>
+<p><u>路由会匹配所有包含foo，并且foo的内容为诸如：bar或baz等符合ba.正则规则的请求。</u><br>
+10.  RemoteAddr Route Predicate Factory<br>
+RemoteAddr Route Predicate Factory通过无类别域间路由(IPv4 or IPv6)列表匹配路由。<br>
+** application.yml：**</p>
+<pre><code class="language-text">spring:  
+	cloud:    
+		gateway:    
+        	routes:      
+        	- id: remoteaddr_route        
+        	  uri: http://www.google.com        
+        	  predicates:        
+        	  - RemoteAddr=192.168.1.1/24
+</code></pre>
+<p><u>上面路由就会匹配RemoteAddr诸如192.168.1.10等请求。</u><br>
+RemoteAddr Route Predicate Factory默认情况下，使用的是请求的remote address。但是如果Spring Cloud Gateway是部署在其他的代理后面的，如Nginx，则Spring Cloud Gateway获取请求的remote address是其他代理的ip，而不是真实客户端的ip。<br>
+考虑到这种情况，你可以自定义获取remote address的处理器RemoteAddressResolver。当然Spring Cloud Gateway也提供了基于X-Forwarded-For请求头的XForwardedRemoteAddressResolver。 熟悉Http代理协议的，都知道X-Forwarded-For头信息做什么的，不熟悉的可以自己谷歌了解一下。<br>
+XForwardedRemoteAddressResolver提供了两个静态方法获取它的实例： XForwardedRemoteAddressResolver::trustAll得到的RemoteAddressResolver总是获取X-Forwarded-For的第一个ip地址作为remote address，这种方式就比较容易被伪装的请求欺骗，模拟请求很容易通过设置初始的X-Forwarded-For头信息，就可以欺骗到gateway。<br>
+XForwardedRemoteAddressResolver::maxTrustedIndex得到的RemoteAddressResolver则会在X-Forwarded-For信息里面，从右到左选择信任最多maxTrustedIndex个ip，因为X-Forwarded-For是越往右是越接近gateway的代理机器ip，所以是越往右的ip，信任度是越高的。 那么如果前面只是挡了一层Nginx的话，如果只需要Nginx前面客户端的ip，则maxTrustedIndex取1，就可以比较安全地获取真实客户端ip。</p>
+<pre><code>使用java的配置： &lt;u&gt;GatewayConfig.java：&lt;/u&gt;
+</code></pre>
+<pre><code>RemoteAddressResolver resolver = XForwardedRemoteAddressResolver.maxTrustedIndex(1);
+...
+    .route(&quot;direct-route&quot;, r -&gt; r.remoteAddr(&quot;10.1.1.1&quot;, &quot;10.10.1.1/24&quot;)        .uri(&quot;http://www.google.com&quot;)
+    .route(&quot;proxied-route&quot;,r -&gt; r.remoteAddr(resolver,  &quot;10.10.1.1&quot;, &quot;10.10.1.1/24&quot;)        .uri(&quot;http://www.google.com&quot;))
+</code></pre>
+<h3 id="gatewayfilter-工厂介绍">GatewayFilter 工厂介绍</h3>
+<p>Route filters可以通过一些方式修改HTTP请求的输入和输出，针对某些特殊的场景，Spring Cloud Gateway已经内置了很多不同功能的GatewayFilter Factories。</p>
+<ol>
+<li>AddRequestHeader GatewayFilter Factory<br>
+AddRequestHeader GatewayFilter Factory通过配置name和value可以增加请求的header。<br>
+** application.yml：**</li>
+</ol>
+<pre><code class="language-text">spring:  
+	cloud:    
+		gateway:   
+        	routes: 
+            - id: add_request_header_route  
+              uri: http://www.google.com  
+              filters:
+              - AddRequestHeader=X-Request-Foo, Bar
+</code></pre>
+<p><u>对匹配的请求，会额外添加X-Request-Foo:Bar的header。</u></p>
+<ol start="2">
+<li>AddRequestParameter GatewayFilter Factory<br>
+AddRequestParameter GatewayFilter Factory通过配置name和value可以增加请求的参数。<br>
+** application.yml：**</li>
+</ol>
+<pre><code class="language-text">spring:  
+	cloud:  
+    	gateway:   
+        	routes:      
+        	- id: add_request_parameter_route     
+              uri: http://www.google.com     
+              filters:       
+              - AddRequestParameter=foo, bar
+</code></pre>
+<p><u>对匹配的请求，会额外添加foo=bar的请求参数。</u></p>
+<ol start="3">
+<li>AddResponseHeader GatewayFilter Factory<br>
+AddResponseHeader GatewayFilter Factory通过配置name和value可以增加响应的header。<br>
+** application.yml：**</li>
+</ol>
+<pre><code class="language-text">spring:  
+	cloud:   
+    	gateway:  
+        	routes:      
+        	- id: add_request_header_route    
+              uri: http://www.google.com     
+              filters:        
+              - AddResponseHeader=X-Response-Foo, Bar
+</code></pre>
+<p><u>对匹配的请求，响应返回时会额外添加X-Response-Foo:Bar的header返回。</u></p>
+<ol start="4">
+<li>Hystrix GatewayFilter Factory<br>
+Hystrix是Netflix实现的断路器模式工具包，The Hystrix GatewayFilter就是将断路器使用在gateway的路由上，目的是保护你的服务避免级联故障，以及在下游失败时可以降级返回。<br>
+项目里面引入spring-cloud-starter-netflix-hystrix依赖，并提供HystrixCommand的名字，即可生效Hystrix GatewayFilter。<br>
+** application.yml：**</li>
+</ol>
+<pre><code class="language-text">spring:  
+	cloud:    
+		gateway:      
+			routes:     
+        	- id: hystrix_route      
+              uri: http://www.google.com     
+              filters:        
+              - Hystrix=myCommandName
+</code></pre>
+<p><u>那么剩下的过滤器，就会包装在名为myCommandName的HystrixCommand中运行。</u><br>
+Hystrix过滤器也是通过配置可以参数fallbackUri，来支持路由熔断后的降级处理，降级后，请求会跳过fallbackUri配置的路径，目前只支持forward:的URI协议。<br>
+** application.yml：**</p>
+<pre><code class="language-text">spring:
+  cloud:
+    gateway:
+      routes:
+      - id: hystrix_route
+        uri: lb://backing-service:8088
+        predicates:
+        - Path=/consumingserviceendpoint
+        filters:
+        - name: Hystrix
+          args:
+            name: fallbackcmd
+            fallbackUri: forward:/incaseoffailureusethis
+</code></pre>
+<p><u>当Hystrix降级后就会将请求转发到/incaseoffailureusethis。</u><br>
+整个流程其实是用fallbackUri将请求跳转到gateway内部的controller或者handler，然而也可以通过以下的方式将请求转发到外部的服务<br>
+** application.yml：**</p>
+<pre><code class="language-text">spring:
+  cloud:
+    gateway:
+      routes:
+      - id: ingredients
+        uri: lb://ingredients
+        predicates:
+        - Path=//ingredients/**
+        filters:
+        - name: Hystrix
+          args:
+            name: fetchIngredients
+            fallbackUri: forward:/fallback
+      - id: ingredients-fallback
+        uri: http://localhost:9994
+        predicates:
+        - Path=/fallback
+</code></pre>
+<p><u>以上的例子，gateway降级后就会将请求转发到http://localhost:9994。</u><br>
+Hystrix Gateway filter在转发降级请求时，会将造成降级的异常设置在ServerWebExchangeUtils.HYSTRIX_EXECUTION_EXCEPTION_ATTR属性中，在处理降级时也可以用到。<br>
+比如下一节讲到的FallbackHeaders GatewayFilter Factory，就会通过上面的方式拿到异常信息，设置到降级转发请求的header上，来告知降级下游异常信息。<br>
+通过下面配置可以设置Hystrix的全局超时信息：<br>
+** application.yml：**</p>
+<pre><code class="language-text">hystrix.command.fallbackcmd.execution.isolation.thread.timeoutInMilliseconds: 5000
+</code></pre>
+<ol start="5">
+<li>FallbackHeaders GatewayFilter Factory<br>
+FallbackHeaders GatewayFilter Factory可以将Hystrix执行的异常信息添加到外部请求的fallbackUriheader上。<br>
+** application.yml：**</li>
+</ol>
+<pre><code class="language-text">spring:
+  cloud:
+    gateway:
+      routes:
+      - id: ingredients
+        uri: lb://ingredients
+        predicates:
+        - Path=//ingredients/**
+        filters:
+        - name: Hystrix
+          args:
+            name: fetchIngredients
+            fallbackUri: forward:/fallback
+      - id: ingredients-fallback
+        uri: http://localhost:9994
+        predicates:
+        - Path=/fallback
+        filters:
+        - name: FallbackHeaders
+          args:
+            executionExceptionTypeHeaderName: Test-Header
+</code></pre>
+<p>你也可以使用默认的header，也可以像上面一下配置修改header的名字：</p>
+<pre><code>executionExceptionTypeHeaderName (&quot;Execution-Exception-Type&quot;)
+
+executionExceptionMessageHeaderName (&quot;Execution-Exception-Message&quot;)
+
+rootCauseExceptionTypeHeaderName (&quot;Root-Cause-Exception-Type&quot;)
+
+rootCauseExceptionMessageHeaderName (&quot;Root-Cause-Exception-Message&quot;)
+</code></pre>
+<ol start="6">
+<li>PrefixPath GatewayFilter Factory<br>
+The PrefixPath GatewayFilter Factor通过设置prefix参数来路径前缀<br>
+** application.yml：**</li>
+</ol>
+<pre><code class="language-text">spring:
+  cloud:
+    gateway:
+      routes:
+      - id: ingredients
+        uri: lb://ingredients
+        predicates:
+        - Path=//ingredients/**
+        filters:
+        - name: Hystrix
+          args:
+            name: fetchIngredients
+            fallbackUri: forward:/fallback
+      - id: ingredients-fallback
+        uri: http://localhost:9994
+        predicates:
+        - Path=/fallback
+        filters:
+        - name: FallbackHeaders
+          args:
+            executionExceptionTypeHeaderName: Test-Header
+</code></pre>
+<p><u>如果一个请求是/hello，通过上面路由，就会将请求修改为/mypath/hello。</u></p>
+<ol start="7">
+<li>PreserveHostHeader GatewayFilter Factory<br>
+PreserveHostHeader GatewayFilter Factory会保留原始请求的host头信息，并原封不动的转发出去，而不是被gateway的http客户端重置。<br>
+** application.yml：**</li>
+</ol>
+<pre><code class="language-text">spring:
+  cloud:
+    gateway:
+      routes:
+      - id: preserve_host_route
+        uri: http://www.google.com
+        filters:
+        - PreserveHostHeader
+</code></pre>
+<ol start="8">
+<li>RequestRateLimiter GatewayFilter Factory<br>
+RequestRateLimiter GatewayFilter Factory使用RateLimiter来决定当前请求是否允许通过，如果不允许，则默认返回状态码HTTP 429 - Too Many Requests。<br>
+RequestRateLimiter GatewayFilter可以使用一个可选参数keyResolver来做速率限制keyResolver是KeyResolver接口的一个实现bean，在配置里面，通过SpEL表达式#{@myKeyResolver}来管理bean的名字myKeyResolver。</li>
+</ol>
+<pre><code>KeyResolver.java.
+
+public interface KeyResolver {
+	Mono&lt;String&gt; resolve(ServerWebExchange exchange);
+}
+</code></pre>
+<p>** KeyResolver接口允许你使用不同的策略来得出限制请求的key，未来，官方也会推出一些KeyResolver的不同实现。 **<br>
+KeyResolver默认实现是PrincipalNameKeyResolver，通过ServerWebExchange中获取Principal，并以Principal.getName()作为限流的key。<br>
+如果KeyResolver拿不到key，请求默认都会被限制，你也可以自己配置spring.cloud.gateway.filter.request-rate-limiter.deny-empty-key：是否允许空key，spring.cloud.gateway.filter.request-rate-limiter.empty-key-status-code ：空key时返回的状态码。</p>
+<p>RequestRateLimiter不支持捷径配置，如下面的配置是非法的</p>
+<pre><code>application.properties.
+
+# INVALID SHORTCUT CONFIGURATION
+spring.cloud.gateway.routes[0].filters[0]=RequestRateLimiter=2, 2, #{@userkeyresolver}
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
         <title type="html"><![CDATA[maven-assembly-plugin插件]]></title>
-        <id>https://chenm0.github.io/post/maven-assembly-plugin-cha-jian/</id>
-        <link href="https://chenm0.github.io/post/maven-assembly-plugin-cha-jian/">
+        <id>https://chenm0.github.io/post/maven-assembly-plugin/</id>
+        <link href="https://chenm0.github.io/post/maven-assembly-plugin/">
         </link>
         <updated>2021-11-05T01:41:22.000Z</updated>
         <content type="html"><![CDATA[<h3 id="一-assembly-是什么意思">一. Assembly 是什么意思？</h3>
@@ -3382,63 +3800,6 @@ spring.devtools.remote.secret头名= X-AUTH-TOKEN ＃用于传输共享密钥的
 ＃----- -----------------------------------<br>
 spring.test.database.replace = any ＃要替换的现有DataSource的类型。<br>
 spring.test.mockmvc.print =默认#MVC 打印选项。</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[微服务的数据库设计]]></title>
-        <id>https://chenm0.github.io/post/weifuwu-sheji/</id>
-        <link href="https://chenm0.github.io/post/weifuwu-sheji/">
-        </link>
-        <updated>2021-06-17T05:19:26.000Z</updated>
-        <content type="html"><![CDATA[<h3 id="单独的数据库">单独的数据库：</h3>
-<p>微服务设计的一个关键是数据库设计，基本原则是每个服务都有自己单独的数据库，而且只有微服务本身可以访问这个数据库。它是基于下面三个原因。</p>
-<p><strong>优化服务接口</strong>：微服务之间的接口越小越好，最好只有服务调用接口（RPC或消息），没有其他接口。如果微服务不能独享自己的数据库，那么数据库也变成了接口的一部分，这大大拓展了接口范围。</p>
-<p><strong>错误诊断</strong>：生产环境中的错误大部分都是和数据库有关的，要么是数据出了问题，要么是数据库的使用方式出了问题。当你不能完全控制数据库的访问时，会有各种各样的错误发生。它可能是别的程序直接连到你的数据库或者是其他部门直接用客户端访问数据库的数据，而这些都是在程序中查不到的，增加了错误排查难度。如果是程序中的问题，只要修改了代码，那么这个错误就不会再有。而上面提到的错误，你永远都没法预测它们什么时候还会再次发生。</p>
-<p><strong>性能调优</strong>：性能调优也是一样，你需要对数据库有全权控制才能保证它的性能。如果其他部门一定要访问数据库，而且只是查询的话，那么可以另外创建一份只读数据库，让他们在另一个库中查询，这样才不会影响到你的库。</p>
-<p>理想的设计是你的数据库只有你的服务能访问，你也只调用自己数据库中的数据，所有对别的微服务的访问都通过服务调用来实现（请参阅<a href="https://blog.csdn.net/weixin_38748858/article/details/101062272">“微服务之间调用的最佳设计“</a>）。当然，在实际应用中，单纯的服务调用可能不能满足性能或其他要求，不同的微服务都多少需要共享一些数据。</p>
-<h3 id="共享数据">共享数据：</h3>
-<p>微服务之间的数据共享可以有下四种方式。</p>
-<h4 id="静态表">静态表：</h4>
-<p>有一些静态的数据库表，例如国家，可能会被很多程序用到，而且程序内部需要对国家这个表做连接（join）生成最终用户展示数据，这样用微服务调用的方式就效率不高，影响性能。一个办法是在每个微服务中配置一个这样的表，它是只读的，这样就可以做数据库连接了。当然你需要保证数据同步。这个方案在多数情况下都是可以接受的，因为以下两点：</p>
-<ol>
-<li>静态的数据库表结构基本不变：因为一旦表结构变了，你不但要更改所有微服务的数据库表，还要修改所有微服务的程序。</li>
-<li>数据库表中的数据变化不频繁：这样数据同步的工作量不大。另外当你同步数据库时总会有延迟，如果数据变化不频繁那么你有很多同步方式可供选择。</li>
-</ol>
-<h4 id="只读业务数据访问">只读业务数据访问：</h4>
-<p>如果你需要读取别的数据库里的动态业务数据， 理想的方式是服务调用。如果你只是调用其他微服务做一些计算，一般情况下性能都是可以接受的。如果你需要做数据的连接，那么你可以用程序代码来做，而不是用SQL语句。如果测试之后性能不能满足要求，那你可以考虑在自己的数据库里建一套只读数据表。数据同步方式大致有两种。如果是事件驱动方式，就用发消息的方式进行同步，如果是RPC方式，就用数据库本身提供的同步方式或者第三方同步软件。<br>
-通常情况下，你可能只需要其他数据库的几张表，每张表只需要几个字段。这时，其他数据库是数据的最终来源，控制所有写操作以及相应的业务验证逻辑，我们叫它主表。你的只读库可以叫从表。 当一条数据写入主表后，会发一条广播消息，所有拥有从表的微服务监听消息并更新只读表中的数据。但这时你要特别小心，因为它的危险性要比静态表大得多。第一它的表结构变更会更频繁，而且它的变更完全不受你控制。第二业务数据不像静态表，它是经常更新的，这样对数据同步的要求就比较高。要根据具体的业务需求来决定多大的延迟是可以接受的。<br>
-另外它还有两个问题：</p>
-<ol>
-<li><strong>数据的容量</strong>：数据库中的数据量是影响性能的主要因素。因为这个数据是外来的，不利于掌握它的流量规律，很难进行容量规划，也不能更好地进行性能调优。</li>
-<li><strong>接口外泄</strong>: 微服务之间的接口本来只有服务调用接口，这时你可以对内部程序和数据库做任何更改，而不影响其他服务。现在数据库表结构也变成了接口的一部分。接口一旦发布之后，基本是不能更改的，这大大限制了你的灵活性。幸运的是因为另外建了一套表，有了一个缓冲，当主表修改时，从表也许不需要同步更新。</li>
-</ol>
-<p>除非你能用服务调用（没有本地只读数据库）的方式完成所有功能，不然不管你是用RPC方式还是事件驱动方式进行微服务集成，上面提到的问题都是不可避免的。但是你可以通过合理规划数据库更改，来减少上面问题带来的影响，下面将会详细讲解。</p>
-<h4 id="读写业务数据访问">读写业务数据访问：</h4>
-<p>这是最复杂的一种情况。一般情况下，你有一个表是主表，而其他表是从表。主表包含主要信息，而且这些主要信息被复制到从表，但微服务会有额外字段需要写入从表。这样本地微服务对从表就既有读也有写的操作。而且主表和从表有一个先后次序的关系。从表的主键来源于主表，因此一定先有主表，再有从表。</p>
-<p>假设我们有两个与电影有关的微服务，一个是电影论坛，用户可以发表对电影的评论。另一个是电影商店。“movie”是共享表，左边的一个是电影论坛库，它的“movie”表是主表。右边的是电影商店库，它的“movie”表是从表。它们共享“id”字段（主键）。主表是数据的主要来源，但从表里的“quantity”和“price”字段主表里面没有。主表插入数据后，发消息，从表接到消息，插入一条数据到本地“movie”表。并且从表还会修改表里的“quantity”和“price”字段。在这种情况下，要给每一个字段分配一个唯一源头（微服务），只有源头才有权利主动更改字段，其他微服务只能被动更改（接收源头发出的更改消息之后再改）。在本例子中， “quantity”和“price”字段的源头是右边的表，其他的字段的源头都是左边的表。本例子中“quantity”和“price”只在从表中存在，因此数据写入是单向的，方向是主表到从表。如果主表也需要这些字段，那么它们还要被回写，那数据写入就变成双向的。</p>
-<h4 id="直接访问其它数据库">直接访问其它数据库：</h4>
-<p>这种方式是要绝对禁止的。生产环境中的许多程序错误和性能问题都是由这种方式产生的。上面的三种方式由于是另外新建了本地只读数据库表，产生了数据库的物理隔离，这样一个数据库的性能问题不会影响到另一个。另外，当主库中的表结构更改时，你可以暂时保持从库中的表不变，这样程序还可以运行。如果直接访问别人的库，主库一修改，别的微服务程序马上就会报错。请参阅ApplicationDatabase。</p>
-<h3 id="向后兼容的数据库更新">向后兼容的数据库更新：</h3>
-<p>从上面的论述可以看出，数据库表结构的修改是一个影响范围很广的事情。在微服务架构中，共享的表在别的服务中也会有一个只读的拷贝。现在当你要更改表结构时，还需要考虑到对别的微服务的影响。当在单体（Monolithic）架构中，为了保证程序部署能够回滚，数据库的更新是向后兼容的。需要兼容性的另一个原因是支持蓝绿发布（Blue-Green Deployment）。在这种部署方式中，你同时拥有新旧版本的代码，由负载均衡来决定每一个请求指向那个版本。它们可以共享一个数据库（这就要求数据库是向后兼容的），也可以使用不同的数据。数据库的更新简单来讲有以下几种类型：<br>
-<strong>增加表或字段</strong>：如果字段可取空值，这个操作是向后兼容的。如果是非空值就要插入一个缺省值。</p>
-<p><strong>删除表或字段</strong>：可先暂时保留被删除表或字段，经过几个版本之后再删除。</p>
-<p><strong>修改字段名</strong>：新增加一个字段，把数据从旧字段拷贝到新字段，用数据库触发器（或程序）同步旧字段和新字段（供过渡时期使用）。 然后再在几个版本之后把原来的字段删除（请参阅<a href="https://thoughts-on-java.org/update-database-schema-without-downtime/">Update your Database Schema Without Downtime</a>）。</p>
-<p><strong>修改表名</strong>：如果数据库支持可更新视图，最简单的办法是先修改表的名字，然后创建一个可更新视图指向原来的表（请参阅<a href="https://martinfowler.com/articles/evodb.html">Evolutionary Database Design</a> ）。如果数据库不支持可更新视图，使用的方法与修改字段名相似，需要创建新的表并做数据同步。</p>
-<p><strong>修改字段类型</strong>：与修改字段名几乎相同，只是在拷贝数据时，需要做数据类型转换。</p>
-<p>向后兼容的数据库更新的好处是，当程序部署出现问题时，如需进行回滚。只要回滚程序就行了，而不必回滚数据库。回滚时一般只回滚一个版本。凡是需要删除的表或字段在本次部署时都不做修改，等到一个或几个版本之后，确认没有问题了再删除。它的另一个好处就是不会对其他微服务中的共享表产生立刻的直接影响。当本微服务升级后，其他微服务可以评估这些数据库更新带来的影响再决定是否需要做相应的程序或数据库修改。</p>
-<h3 id="跨服务事物">跨服务事物：</h3>
-<p>微服务的一个难点是如何实现跨服务的事物支持。两阶段提交（Two-Phase Commit）已被证明性能上不能满足需求，现在基本上没有人用。被一致认可的方法叫Saga。它的原理是为事物中的每个操作写一个补偿操作（Compensating Transaction），然后在回滚阶段挨个执行每一个补偿操作。示例如下图，在一个事物中共有3个操作T1，T2，T3。每一个操作要定义一个补偿操作，C1，C2，C3。事物执行时是按照正向顺序先执行T1，当回滚时是按照反向顺序先执行C3。 事物中的每一个操作（正向操作和补偿操作）都被包装成一个命令（Command），Saga执行协调器（Saga Execution Coordinator (SEC)）负责执行所有命令。在执行之前，所有的命令都会按顺序被存入日志中，然后Saga执行协调器从日志中取出命令，依次执行。当某个执行出现错误时，这个错误也被写入日志，并且所有正在执行的命令被停止，开始回滚操作。</p>
-<p>Saga放松了对一致性（Consistency）的要求，它能保证的是最终一致性（Eventual Consistency），因此在事物执行过程中数据是不一致的，并且这种不一致会被别的进程看到。在生活中，大多数情况下，我们对一致性的要求并没有那么高，短暂的不一致性是可以接收的。例如银行的转账操作，它们在执行过程中都不是在一个数据库事物里执行的，而是用记账的方式分成两个动作来执行，保证的也是最终一致性。</p>
-<p>Saga的原理看起来很简单，但要想正确的实施还是有一定难度的。它的核心问题在于对错误的处理，要把它完全讲明白需要另写一遍文章，我现在只讲一下要点。网络环境是不可靠的，正在执行的命令可能很长时间都没有返回结果，这时，第一，你要设定一个超时。第二，因为你不知道没有返回值的原因是，已经完成了命令但网络出了问题，还是没完成就牺牲了，因此不知道是否要执行补偿操作。这时正确的做法是重试原命令，直到得到完成确认，然后再执行补偿操作。但这对命令有一个要求，那就是这个操作必须是幂等的（Idempotent），也就是说它可以执行多次，但最终结果还是一样的。</p>
-<p>另外，有些操作的补偿操作比较容易生成，例如付款操作，你只要把钱款退回就可以了。但有些操作，像发邮件，完成之后就没有办法回到之前的状态了，这时就只能再发一个邮件更正以前的信息。因此补偿操作不一定非要返回到原来的状态，而是抵消掉原来操作产生的效果。</p>
-<h3 id="微服务的拆分">微服务的拆分：</h3>
-<p>我们原来的程序大多数都是单体程序，但现在要把它拆分成微服务，应该怎样做才能降低对现有应用的影响呢？</p>
-<p>假设我们要拆分出来一个微服务叫“client-service”，它需要访问“core client”表。第一步，我们先把程序从原来的代码里拆分出来，变成一个服务. 数据库不动，这个服务仍然指向原来的数据库。其他程序不再直接访问这个服务管理的表，而是通过服务调用或另建共享表来获取数据。</p>
-<p>第二步，再把服务的数据库表拆分出来，这时微服务就拥有它自己的数据库了，而不再需要原来的共享数据库了。这时就成了一个真正意义上的的微服务。</p>
-<p>上面只讲了拆分一个微服务，如果有多个需要拆分，则需一个一个按照上面讲的方法依次进行。</p>
-<p>另外，Martin Fowler在他的文章&quot;Break Monolith into Microservices&quot;里有一个很好的建议。那就是，当你把服务从单体程序里拆分时，不要只想着把代码拆分出来。因为现在的需求可能已经跟原来有所不同，原先的设计可能也不太适用了。而且，技术也已更新，代码也要作相应的改造。更好的办法是重写原来的功能（而不是重写原来的代码），把重点放在拆分业务功能上，而不是拆分代码上，用新的设计和技术来实现这个业务功能。</p>
-<h3 id="结论">结论：</h3>
-<p>数据库设计是微服务设计的一个关键点，基本原则是每个微服务都有自己单独的数据库，而且只有微服务本身可以访问这个数据库。微服务之间的数据共享可以通过服务调用，或者主、从表的方式实现。在共享数据时，要找到合适的同步方式。在微服务架构中，数据库的修改影响广泛，需要保证这种修改是向后兼容的。实现跨服务事物的标准方法是Saga。当把单体程序拆分成微服务时，可以分步进行，以减少对现有程序的影响。</p>
 ]]></content>
     </entry>
 </feed>

@@ -9,7 +9,7 @@
 <meta name="description" content="&lt;a href=&#34;https://https://github.com/chenm0/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
 <title>PostgreSQL踩坑记录 | 观潮亭</title>
-<link rel="shortcut icon" href="/favicon.ico?v=1638158052002">
+<link rel="shortcut icon" href="/favicon.ico?v=1638172857132">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
 <link
@@ -207,7 +207,7 @@
     <div class="sidebar-item-box">
       <a href="/archives/">
         
-        <span class="site-item-stat-count">27</span>
+        <span class="site-item-stat-count">28</span>
         <span class="site-item-stat-name language" data-lan="article">文章</span>
       </a>
     </div>
@@ -1778,7 +1778,422 @@ doSomethingwithconfig(context);
       </div>
       
       <div class="item">
-        <a class="result-title" style="opacity: 0;" href="https://chenm0.github.io/post/maven-assembly-plugin-cha-jian/"" data-c="
+        <a class="result-title" style="opacity: 0;" href="https://chenm0.github.io/post/spring-cloud-gateway/"" data-c="
+          &lt;h3 id=&#34;功能特征&#34;&gt;功能特征&lt;/h3&gt;
+&lt;p&gt;基于Spring Framework 5, Project Reactor 和 Spring Boot 2.0 进行构建；&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;动态路由：能够匹配任何请求属性；&lt;/li&gt;
+&lt;li&gt;集成 Spring Cloud 服务发现功能；&lt;/li&gt;
+&lt;li&gt;可以对路由指定 Predicate（断言）和 Filter（过滤器）；&lt;/li&gt;
+&lt;li&gt;易于编写的 Predicate（断言）和 Filter（过滤器）；&lt;/li&gt;
+&lt;li&gt;集成Hystrix的断路器功能；&lt;/li&gt;
+&lt;li&gt;请求限流功能；&lt;/li&gt;
+&lt;li&gt;支持路径重写&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure data-type=&#34;image&#34; tabindex=&#34;1&#34;&gt;&lt;img src=&#34;https://chenm0.github.io//post-images/1636080636945.jpg&#34; alt=&#34;&#34; loading=&#34;lazy&#34;&gt;&lt;/figure&gt;
+&lt;p&gt;上图中是核心的流程图，最主要的就是Route、Predicates 和 Filters 作用于特定路由。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Route：&lt;strong&gt;路由是网关的基本构件&lt;/strong&gt;。它由ID、目标URI、谓词集合和过滤器集合定义。如果聚合谓词为真，则匹配路由。&lt;/li&gt;
+&lt;li&gt;Predicate：&lt;strong&gt;参照Java8的新特性Predicate&lt;/strong&gt;。这允许开发人员匹配HTTP请求中的任何内容，比如头或参数。&lt;/li&gt;
+&lt;li&gt;Filter：可以在发送下游请求之前或之后修改请求和响应。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;** 我们为什么选择Gateway？**&lt;br&gt;
+一方面因为Zuul已经进入了维护阶段，而且Gateway是SpringCloud团队研发的，是亲儿子产品，值得信赖。而且很多功能Zuul都没有；用起来也非常的简单便捷。&lt;br&gt;
+Gateway是基于异步非阻塞(NIO)模型上进行开发的，性能方面不需要担心。虽然Netflix 早就发布了最新的 Zuul 2.x，但 Spring Cloud 貌似没有整合计划。而且Netflix相关组件都宣布进入维护期；不知前景如何？&lt;/p&gt;
+&lt;h3 id=&#34;工作原理&#34;&gt;工作原理&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&#34;https://chenm0.github.io//post-images/1636080815399.jpg&#34; alt=&#34;&#34; loading=&#34;lazy&#34;&gt;&lt;br&gt;
+客户端向 Spring Cloud Gateway 发出请求。然后在 Gateway Handler Mapping 中找到与请求相匹配的路由，将其发送到 Gateway Web Handler。Handler 再通过指 定的过滤器链来将请求发送到我们实际的服务执行业务逻辑，然后返回。过滤器之间用虚线分开是因为过滤器可能会在发送代理请求之前（“pre”）或之后（“post”）执行业务逻辑。&lt;br&gt;
+Filter在“pre”类型的过滤器可以做参数校验、权限校验、流量监控、日志输出、协议转换等，在“post”类型的过滤器中可以做响应内容、响应头的修改，日志的输出，流量监控等有着非常重要的作用。&lt;br&gt;
+** 核心逻辑就是路由转发，执行过滤器链。**&lt;br&gt;
+在上面的处理过程中，有一个重要的点就是讲请求和路由进行匹配，这时候就需要用到predicate，它是决定了一个请求走哪一个路由。&lt;/p&gt;
+&lt;h3 id=&#34;predicate简介&#34;&gt;predicate简介&lt;/h3&gt;
+&lt;p&gt;Predicate来自于java8的接口。Predicate接受一个输入参数，返回一个布尔值结果。该接口包含多种默认方法来将Predicate组合成其他复杂的逻辑（比如：与，或，非）。可以用于接口请求参数校验、判断新老数据是否有变化需要进行更新操作。add--与、or--或、negate--非。Spring Cloud Gateway内置了许多Predict,这些Predict的源码在org.springframework.cloud.gateway.handler.predicate包中&lt;br&gt;
+&lt;img src=&#34;https://chenm0.github.io//post-images/1636081078455.jpg&#34; alt=&#34;&#34; loading=&#34;lazy&#34;&gt;&lt;br&gt;
+在上图中，有很多类型的Predicate,比如说时间类型的Predicated（AfterRoutePredicateFactory BeforeRoutePredicateFactory BetweenRoutePredicateFactory），当只有满足特定时间要求的请求会进入到此predicate中，并交由router处理；cookie类型的CookieRoutePredicateFactory，指定的cookie满足正则匹配，才会进入此router;以及host、method、path、querparam、remoteaddr类型的predicate，每一种predicate都会对当前的客户端请求进行判断，是否满足当前的要求，如果满足则交给当前请求处理。如果有很多个Predicate，并且一个请求满足多个Predicate，则按照配置的顺序第一个生效。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;After Route Predicate Factory&lt;br&gt;
+After Route Predicate Factory使用的是时间作为匹配规则，只要当前时间大于设定时间，路由才会匹配请求。&lt;br&gt;
+** application.yml：**&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&#34;language-text&#34;&gt;spring:  
+    cloud:    
+        gateway:      
+            routes:      
+            - id: after_route        
+              uri: http://www.google.com        
+              predicates:        
+              - After=2018-12-25T14:33:47.789+08:00
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;u&gt;这个路由规则会在东8区的2018-12-25 14:33:47后，将请求都转跳到google。&lt;/u&gt;&lt;/p&gt;
+&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;Before Route Predicate Factory&lt;br&gt;
+Before Route Predicate Factory也是使用时间作为匹配规则，只要当前时间小于设定时间，路由才会匹配请求。 application.yml：&lt;br&gt;
+** application.yml：**&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&#34;language-text&#34;&gt;spring:  
+    cloud:    
+        gateway:      
+            routes:      
+            - id: before_route        
+              uri: http://www.google.com        
+              predicates:        
+              - Before=2018-12-25T14:33:47.789+08:00
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;u&gt;这个路由规则会在东8区的2018-12-25 14:33:47前，将请求都转跳到google。&lt;/u&gt;&lt;/p&gt;
+&lt;ol start=&#34;3&#34;&gt;
+&lt;li&gt;Between Route Predicate Factory&lt;br&gt;
+Between Route Predicate Factory也是使用两个时间作为匹配规则，只要当前时间大于第一个设定时间，并小于第二个设定时间，路由才会匹配请求。&lt;br&gt;
+** application.yml：**&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&#34;language-text&#34;&gt;spring:  
+    cloud:   
+        gateway:      
+            routes:      
+            - id: between_route        
+              uri: http://www.google.com        
+              predicates:        
+              - Between=2018-12-25T14:33:47.789+08:00, 2018-12-26T14:33:47.789+08:
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;u&gt;这个路由规则会在东8区的2018-12-25 14:33:47到2018-12-26 14:33:47之间，将请求都转跳到google。&lt;/u&gt;&lt;/p&gt;
+&lt;ol start=&#34;4&#34;&gt;
+&lt;li&gt;Cookie Route Predicate Factory&lt;br&gt;
+Cookie Route Predicate Factory使用的是cookie名字和正则表达式的value作为两个输入参数，请求的cookie需要匹配cookie名和符合其中value的正则。&lt;br&gt;
+** application.yml：**&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&#34;language-text&#34;&gt;spring: 
+    cloud:    
+        gateway:  
+            routes:      
+            - id: cookie_route       
+              uri: http://www.google.com        
+              predicates:        
+              - Cookie=cookiename, cookievalue
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;u&gt;路由匹配请求存在cookie名为cookiename，cookie内容匹配cookievalue的，将请求转发到google。&lt;/u&gt;&lt;/p&gt;
+&lt;ol start=&#34;5&#34;&gt;
+&lt;li&gt;Header Route Predicate Factory&lt;br&gt;
+Header Route Predicate Factory，与Cookie Route Predicate Factory类似，也是两个参数，一个header的name，一个是正则匹配的value。&lt;br&gt;
+** application.yml：**&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&#34;language-text&#34;&gt;spring:  
+    cloud:    
+        gateway:     
+            routes:      
+            - id: header_route        
+              uri: http://www.google.com        
+              predicates:        
+              - Header=X-Request-Id, \d+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;u&gt;路由匹配存在名为X-Request-Id，内容为数字的header的请求，将请求转发到google。&lt;/u&gt;&lt;/p&gt;
+&lt;ol start=&#34;6&#34;&gt;
+&lt;li&gt;Host Route Predicate Factory&lt;br&gt;
+Host Route Predicate Factory使用的是host的列表作为参数，host使用Ant style匹配。&lt;br&gt;
+** application.yml：**&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&#34;language-text&#34;&gt;spring:  
+    cloud:    
+        gateway:      
+            routes:      
+            - id: host_route        
+              uri: http://www.google.com        
+              predicates:        
+              - Host=**.somehost.org,**.anotherhost.org
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;u&gt;路由会匹配Host诸如：www.somehost.org 或 beta.somehost.org或www.anotherhost.org等请求。&lt;/u&gt;&lt;/p&gt;
+&lt;ol start=&#34;7&#34;&gt;
+&lt;li&gt;Method Route Predicate Factory&lt;br&gt;
+Method Route Predicate Factory是通过HTTP的method来匹配路由。&lt;br&gt;
+** application.yml：**&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&#34;language-text&#34;&gt;spring:  
+    cloud:    
+        gateway:      
+            routes:      
+            - id: method_route        
+              uri: http://www.google.com        
+              predicates:        
+              - Method=GET
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;路由会匹配到所有GET方法的请求。&lt;/p&gt;
+&lt;ol start=&#34;8&#34;&gt;
+&lt;li&gt;Path Route Predicate Factory&lt;br&gt;
+Path Route Predicate Factory使用的是path列表作为参数，使用Spring的PathMatcher匹配path，可以设置可选变量。&lt;br&gt;
+** application.yml：**&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&#34;language-text&#34;&gt;spring:  
+    cloud:    
+        gateway:      
+            routes:      
+            - id: host_route        
+              uri: http://www.google.com       
+              predicates:        
+              - Path=/foo/{segment},/bar/{segment}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;u&gt;上面路由可以匹配诸如：/foo/1 或 /foo/bar 或 /bar/baz等 其中的segment变量可以通过下面方式获取：&lt;/u&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;PathMatchInfo variables = exchange.getAttribute(URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+Map&amp;lt;String, String&amp;gt; uriVariables = variables.getUriVariables();
+String segment = uriVariables.get(&amp;quot;segment&amp;quot;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在后续的GatewayFilter Factories就可以做对应的操作了&lt;/p&gt;
+&lt;ol start=&#34;9&#34;&gt;
+&lt;li&gt;Query Route Predicate Factory&lt;br&gt;
+Query Route Predicate Factory可以通过一个或两个参数来匹配路由，一个是查询的name，一个是查询的正则value。&lt;br&gt;
+** application.yml：**&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&#34;language-text&#34;&gt;spring:  
+    cloud:    
+        gateway:      
+            routes:      
+            - id: host_route        
+              uri: http://www.google.com       
+              predicates:        
+              - Path=/foo/{segment},/bar/{segment}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;u&gt;路由会匹配所有包含baz查询参数的请求。&lt;/u&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-text&#34;&gt;spring:  
+	cloud:    
+		gateway:      
+			routes:      
+			- id: query_route       
+              uri: http://www.google.com        
+              predicates:       
+              - Query=foo, ba.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;u&gt;路由会匹配所有包含foo，并且foo的内容为诸如：bar或baz等符合ba.正则规则的请求。&lt;/u&gt;&lt;br&gt;
+10.  RemoteAddr Route Predicate Factory&lt;br&gt;
+RemoteAddr Route Predicate Factory通过无类别域间路由(IPv4 or IPv6)列表匹配路由。&lt;br&gt;
+** application.yml：**&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-text&#34;&gt;spring:  
+	cloud:    
+		gateway:    
+        	routes:      
+        	- id: remoteaddr_route        
+        	  uri: http://www.google.com        
+        	  predicates:        
+        	  - RemoteAddr=192.168.1.1/24
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;u&gt;上面路由就会匹配RemoteAddr诸如192.168.1.10等请求。&lt;/u&gt;&lt;br&gt;
+RemoteAddr Route Predicate Factory默认情况下，使用的是请求的remote address。但是如果Spring Cloud Gateway是部署在其他的代理后面的，如Nginx，则Spring Cloud Gateway获取请求的remote address是其他代理的ip，而不是真实客户端的ip。&lt;br&gt;
+考虑到这种情况，你可以自定义获取remote address的处理器RemoteAddressResolver。当然Spring Cloud Gateway也提供了基于X-Forwarded-For请求头的XForwardedRemoteAddressResolver。 熟悉Http代理协议的，都知道X-Forwarded-For头信息做什么的，不熟悉的可以自己谷歌了解一下。&lt;br&gt;
+XForwardedRemoteAddressResolver提供了两个静态方法获取它的实例： XForwardedRemoteAddressResolver::trustAll得到的RemoteAddressResolver总是获取X-Forwarded-For的第一个ip地址作为remote address，这种方式就比较容易被伪装的请求欺骗，模拟请求很容易通过设置初始的X-Forwarded-For头信息，就可以欺骗到gateway。&lt;br&gt;
+XForwardedRemoteAddressResolver::maxTrustedIndex得到的RemoteAddressResolver则会在X-Forwarded-For信息里面，从右到左选择信任最多maxTrustedIndex个ip，因为X-Forwarded-For是越往右是越接近gateway的代理机器ip，所以是越往右的ip，信任度是越高的。 那么如果前面只是挡了一层Nginx的话，如果只需要Nginx前面客户端的ip，则maxTrustedIndex取1，就可以比较安全地获取真实客户端ip。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;使用java的配置： &amp;lt;u&amp;gt;GatewayConfig.java：&amp;lt;/u&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;RemoteAddressResolver resolver = XForwardedRemoteAddressResolver.maxTrustedIndex(1);
+...
+    .route(&amp;quot;direct-route&amp;quot;, r -&amp;gt; r.remoteAddr(&amp;quot;10.1.1.1&amp;quot;, &amp;quot;10.10.1.1/24&amp;quot;)        .uri(&amp;quot;http://www.google.com&amp;quot;)
+    .route(&amp;quot;proxied-route&amp;quot;,r -&amp;gt; r.remoteAddr(resolver,  &amp;quot;10.10.1.1&amp;quot;, &amp;quot;10.10.1.1/24&amp;quot;)        .uri(&amp;quot;http://www.google.com&amp;quot;))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;gatewayfilter-工厂介绍&#34;&gt;GatewayFilter 工厂介绍&lt;/h3&gt;
+&lt;p&gt;Route filters可以通过一些方式修改HTTP请求的输入和输出，针对某些特殊的场景，Spring Cloud Gateway已经内置了很多不同功能的GatewayFilter Factories。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;AddRequestHeader GatewayFilter Factory&lt;br&gt;
+AddRequestHeader GatewayFilter Factory通过配置name和value可以增加请求的header。&lt;br&gt;
+** application.yml：**&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&#34;language-text&#34;&gt;spring:  
+	cloud:    
+		gateway:   
+        	routes: 
+            - id: add_request_header_route  
+              uri: http://www.google.com  
+              filters:
+              - AddRequestHeader=X-Request-Foo, Bar
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;u&gt;对匹配的请求，会额外添加X-Request-Foo:Bar的header。&lt;/u&gt;&lt;/p&gt;
+&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;AddRequestParameter GatewayFilter Factory&lt;br&gt;
+AddRequestParameter GatewayFilter Factory通过配置name和value可以增加请求的参数。&lt;br&gt;
+** application.yml：**&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&#34;language-text&#34;&gt;spring:  
+	cloud:  
+    	gateway:   
+        	routes:      
+        	- id: add_request_parameter_route     
+              uri: http://www.google.com     
+              filters:       
+              - AddRequestParameter=foo, bar
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;u&gt;对匹配的请求，会额外添加foo=bar的请求参数。&lt;/u&gt;&lt;/p&gt;
+&lt;ol start=&#34;3&#34;&gt;
+&lt;li&gt;AddResponseHeader GatewayFilter Factory&lt;br&gt;
+AddResponseHeader GatewayFilter Factory通过配置name和value可以增加响应的header。&lt;br&gt;
+** application.yml：**&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&#34;language-text&#34;&gt;spring:  
+	cloud:   
+    	gateway:  
+        	routes:      
+        	- id: add_request_header_route    
+              uri: http://www.google.com     
+              filters:        
+              - AddResponseHeader=X-Response-Foo, Bar
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;u&gt;对匹配的请求，响应返回时会额外添加X-Response-Foo:Bar的header返回。&lt;/u&gt;&lt;/p&gt;
+&lt;ol start=&#34;4&#34;&gt;
+&lt;li&gt;Hystrix GatewayFilter Factory&lt;br&gt;
+Hystrix是Netflix实现的断路器模式工具包，The Hystrix GatewayFilter就是将断路器使用在gateway的路由上，目的是保护你的服务避免级联故障，以及在下游失败时可以降级返回。&lt;br&gt;
+项目里面引入spring-cloud-starter-netflix-hystrix依赖，并提供HystrixCommand的名字，即可生效Hystrix GatewayFilter。&lt;br&gt;
+** application.yml：**&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&#34;language-text&#34;&gt;spring:  
+	cloud:    
+		gateway:      
+			routes:     
+        	- id: hystrix_route      
+              uri: http://www.google.com     
+              filters:        
+              - Hystrix=myCommandName
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;u&gt;那么剩下的过滤器，就会包装在名为myCommandName的HystrixCommand中运行。&lt;/u&gt;&lt;br&gt;
+Hystrix过滤器也是通过配置可以参数fallbackUri，来支持路由熔断后的降级处理，降级后，请求会跳过fallbackUri配置的路径，目前只支持forward:的URI协议。&lt;br&gt;
+** application.yml：**&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-text&#34;&gt;spring:
+  cloud:
+    gateway:
+      routes:
+      - id: hystrix_route
+        uri: lb://backing-service:8088
+        predicates:
+        - Path=/consumingserviceendpoint
+        filters:
+        - name: Hystrix
+          args:
+            name: fallbackcmd
+            fallbackUri: forward:/incaseoffailureusethis
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;u&gt;当Hystrix降级后就会将请求转发到/incaseoffailureusethis。&lt;/u&gt;&lt;br&gt;
+整个流程其实是用fallbackUri将请求跳转到gateway内部的controller或者handler，然而也可以通过以下的方式将请求转发到外部的服务&lt;br&gt;
+** application.yml：**&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-text&#34;&gt;spring:
+  cloud:
+    gateway:
+      routes:
+      - id: ingredients
+        uri: lb://ingredients
+        predicates:
+        - Path=//ingredients/**
+        filters:
+        - name: Hystrix
+          args:
+            name: fetchIngredients
+            fallbackUri: forward:/fallback
+      - id: ingredients-fallback
+        uri: http://localhost:9994
+        predicates:
+        - Path=/fallback
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;u&gt;以上的例子，gateway降级后就会将请求转发到http://localhost:9994。&lt;/u&gt;&lt;br&gt;
+Hystrix Gateway filter在转发降级请求时，会将造成降级的异常设置在ServerWebExchangeUtils.HYSTRIX_EXECUTION_EXCEPTION_ATTR属性中，在处理降级时也可以用到。&lt;br&gt;
+比如下一节讲到的FallbackHeaders GatewayFilter Factory，就会通过上面的方式拿到异常信息，设置到降级转发请求的header上，来告知降级下游异常信息。&lt;br&gt;
+通过下面配置可以设置Hystrix的全局超时信息：&lt;br&gt;
+** application.yml：**&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-text&#34;&gt;hystrix.command.fallbackcmd.execution.isolation.thread.timeoutInMilliseconds: 5000
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ol start=&#34;5&#34;&gt;
+&lt;li&gt;FallbackHeaders GatewayFilter Factory&lt;br&gt;
+FallbackHeaders GatewayFilter Factory可以将Hystrix执行的异常信息添加到外部请求的fallbackUriheader上。&lt;br&gt;
+** application.yml：**&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&#34;language-text&#34;&gt;spring:
+  cloud:
+    gateway:
+      routes:
+      - id: ingredients
+        uri: lb://ingredients
+        predicates:
+        - Path=//ingredients/**
+        filters:
+        - name: Hystrix
+          args:
+            name: fetchIngredients
+            fallbackUri: forward:/fallback
+      - id: ingredients-fallback
+        uri: http://localhost:9994
+        predicates:
+        - Path=/fallback
+        filters:
+        - name: FallbackHeaders
+          args:
+            executionExceptionTypeHeaderName: Test-Header
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;你也可以使用默认的header，也可以像上面一下配置修改header的名字：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;executionExceptionTypeHeaderName (&amp;quot;Execution-Exception-Type&amp;quot;)
+
+executionExceptionMessageHeaderName (&amp;quot;Execution-Exception-Message&amp;quot;)
+
+rootCauseExceptionTypeHeaderName (&amp;quot;Root-Cause-Exception-Type&amp;quot;)
+
+rootCauseExceptionMessageHeaderName (&amp;quot;Root-Cause-Exception-Message&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ol start=&#34;6&#34;&gt;
+&lt;li&gt;PrefixPath GatewayFilter Factory&lt;br&gt;
+The PrefixPath GatewayFilter Factor通过设置prefix参数来路径前缀&lt;br&gt;
+** application.yml：**&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&#34;language-text&#34;&gt;spring:
+  cloud:
+    gateway:
+      routes:
+      - id: ingredients
+        uri: lb://ingredients
+        predicates:
+        - Path=//ingredients/**
+        filters:
+        - name: Hystrix
+          args:
+            name: fetchIngredients
+            fallbackUri: forward:/fallback
+      - id: ingredients-fallback
+        uri: http://localhost:9994
+        predicates:
+        - Path=/fallback
+        filters:
+        - name: FallbackHeaders
+          args:
+            executionExceptionTypeHeaderName: Test-Header
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;u&gt;如果一个请求是/hello，通过上面路由，就会将请求修改为/mypath/hello。&lt;/u&gt;&lt;/p&gt;
+&lt;ol start=&#34;7&#34;&gt;
+&lt;li&gt;PreserveHostHeader GatewayFilter Factory&lt;br&gt;
+PreserveHostHeader GatewayFilter Factory会保留原始请求的host头信息，并原封不动的转发出去，而不是被gateway的http客户端重置。&lt;br&gt;
+** application.yml：**&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&#34;language-text&#34;&gt;spring:
+  cloud:
+    gateway:
+      routes:
+      - id: preserve_host_route
+        uri: http://www.google.com
+        filters:
+        - PreserveHostHeader
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ol start=&#34;8&#34;&gt;
+&lt;li&gt;RequestRateLimiter GatewayFilter Factory&lt;br&gt;
+RequestRateLimiter GatewayFilter Factory使用RateLimiter来决定当前请求是否允许通过，如果不允许，则默认返回状态码HTTP 429 - Too Many Requests。&lt;br&gt;
+RequestRateLimiter GatewayFilter可以使用一个可选参数keyResolver来做速率限制keyResolver是KeyResolver接口的一个实现bean，在配置里面，通过SpEL表达式#{@myKeyResolver}来管理bean的名字myKeyResolver。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;KeyResolver.java.
+
+public interface KeyResolver {
+	Mono&amp;lt;String&amp;gt; resolve(ServerWebExchange exchange);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;** KeyResolver接口允许你使用不同的策略来得出限制请求的key，未来，官方也会推出一些KeyResolver的不同实现。 **&lt;br&gt;
+KeyResolver默认实现是PrincipalNameKeyResolver，通过ServerWebExchange中获取Principal，并以Principal.getName()作为限流的key。&lt;br&gt;
+如果KeyResolver拿不到key，请求默认都会被限制，你也可以自己配置spring.cloud.gateway.filter.request-rate-limiter.deny-empty-key：是否允许空key，spring.cloud.gateway.filter.request-rate-limiter.empty-key-status-code ：空key时返回的状态码。&lt;/p&gt;
+&lt;p&gt;RequestRateLimiter不支持捷径配置，如下面的配置是非法的&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;application.properties.
+
+# INVALID SHORTCUT CONFIGURATION
+spring.cloud.gateway.routes[0].filters[0]=RequestRateLimiter=2, 2, #{@userkeyresolver}
+&lt;/code&gt;&lt;/pre&gt;
+">Spring Cloud Gateway</a>
+      </div>
+      
+      <div class="item">
+        <a class="result-title" style="opacity: 0;" href="https://chenm0.github.io/post/maven-assembly-plugin/"" data-c="
           &lt;h3 id=&#34;一-assembly-是什么意思&#34;&gt;一. Assembly 是什么意思？&lt;/h3&gt;
 &lt;figure data-type=&#34;image&#34; tabindex=&#34;1&#34;&gt;&lt;img src=&#34;https://chenm0.github.io//post-images/1636076532479.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34;&gt;&lt;/figure&gt;
 &lt;h3 id=&#34;二-maven-assembly-plugin是什么&#34;&gt;二. maven-assembly-plugin是什么？&lt;/h3&gt;
