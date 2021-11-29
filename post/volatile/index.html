@@ -8,7 +8,7 @@
 <meta name="keywords" content="个人博客">
 <meta name="description" content="&lt;a href=&#34;https://https://github.com/chenm0/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
-<title>Maven setting | 草庐破剑与酒壶</title>
+<title>Volatile关键字解析 | 草庐破剑与酒壶</title>
 <link rel="shortcut icon" href="/favicon.ico?v=1638153273144">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
@@ -38,8 +38,8 @@
 
 
 
-  <meta name="description" content="Maven setting" />
-  <meta name="keywords" content="Maven" />
+  <meta name="description" content="Volatile关键字解析" />
+  <meta name="keywords" content="JAVA" />
 </head>
 
 <body>
@@ -190,7 +190,8 @@
       <div class="sidebar-body pisces" id="sidebar_body">
         
           
-            
+            <div class="post-side-meta" id="post_side_meta">
+              
 <div class="sidebar-wrapper box-shadow-wrapper bg-color">
   <div class="sidebar-item">
     <img class="site-author-image right-motion" src="/images/avatar.png"/>
@@ -244,6 +245,201 @@
   </div>
 
 </div>
+            </div>
+            <div class="post-toc sidebar-body-active" id="post_toc" style="opacity: 1;">
+              <div class="toc-box right-motion">
+  <div class="toc-wrapper auto-number auto"
+    id="toc_wrapper">
+    <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E7%9A%84%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5">内存模型的相关概念</a></li>
+<li><a href="#%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B8%AD%E7%9A%84%E4%B8%89%E4%B8%AA%E6%A6%82%E5%BF%B5">并发编程中的三个概念</a></li>
+<li><a href="#java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B">JAVA内存模型</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+</div>
+
+<script>
+
+  let lastTop = 0, lList = [], hList = [], postBody, lastIndex = -1;
+  let active = 'active-show', activeClass = 'active-current';
+  let tocWrapper = document.querySelector('#toc_wrapper');
+  let tocContent = tocWrapper.children[0];
+  let autoNumber = tocWrapper && tocWrapper.classList.contains('auto-number');
+
+  function addTocNumber(elem, deep) {
+    if (!elem) {
+      return;
+    }
+    let prop = elem.__proto__;
+
+    if (prop === HTMLUListElement.prototype) {
+      for (let i = 0; i < elem.children.length; i++) {
+        addTocNumber(elem.children[i], deep + (i + 1) + '.');
+      }
+    } else if (prop === HTMLLIElement.prototype) {
+      // 保存li元素
+      if (elem.children[0] && elem.children[0].__proto__ === HTMLAnchorElement.prototype) {
+        lList.push(elem);
+      }
+      for (let i = 0; i < elem.children.length; i++) {
+        let cur = elem.children[i];
+        if (cur.__proto__ === HTMLAnchorElement.prototype) {
+          if (autoNumber) {
+            cur.text = deep + ' ' + cur.text;
+          }
+        } else if (cur.__proto__ === HTMLUListElement.prototype) {
+          addTocNumber(cur, deep);
+        }
+      }
+    }
+  }
+
+  function removeParentActiveClass() {
+    let parents = tocContent.querySelectorAll('.' + active)
+    parents.forEach(function (elem) {
+      elem.classList.remove(active);
+    });
+  }
+
+  function addActiveClass(index) {
+    if (index >= 0 && index < hList.length) {
+      lList[index].classList.add(activeClass);
+    }
+  }
+
+  function removeActiveClass(index) {
+    if (index >= 0 && index < hList.length) {
+      lList[index].classList.remove(activeClass);
+    }
+  }
+
+  function addActiveLiElemment(elem, parent) {
+    if (!elem || elem === parent) {
+      return;
+    } else {
+      if (elem.__proto__ === HTMLLIElement.prototype) {
+        elem.classList.add(active);
+      }
+      addActiveLiElemment(elem.parentElement, parent);
+    }
+  }
+
+  function showToc() {
+    if (tocWrapper) {
+      postBody = document.querySelector('#post_body');
+      for (let i = 0; i < postBody.children.length; i++) {
+        if (postBody.children[i].__proto__ === HTMLHeadingElement.prototype) {
+          hList.push(postBody.children[i]);
+        }
+      }
+      if (tocWrapper.classList.contains('compress')) {
+        tocContent.classList.add('closed');
+      } else if (tocWrapper.classList.contains('no_compress')) {
+        tocContent.classList.add('expanded');
+      } else {
+        if (hList.length > 10) {
+          active = 'active-hidden'
+          tocContent.classList.add('closed');
+        } else {
+          tocContent.classList.add('expanded');
+        }
+      }
+    }
+  }
+
+  (function () {
+    // 处理不是从#一级标题开始目录
+    if (tocContent.children.length === 1 && tocContent.children[0].__proto__ === HTMLLIElement.prototype) {
+      let con = tocContent.children[0].children[0];
+      tocContent.innerHTML = con.innerHTML;
+    }
+    let markdownItTOC = document.querySelector('.markdownIt-TOC');
+    let innerHeight = window.innerHeight;
+    markdownItTOC.style = `max-height: ${innerHeight - 80 > 0 ? innerHeight - 80 : innerHeight}px`
+    addTocNumber(tocContent, '');
+  })();
+
+  document.addEventListener('scroll', function (e) {
+    if (lList.length <= 0) {
+      return;
+    }
+    let scrollTop = document.scrollingElement.scrollTop + 10;
+    let dir;
+
+    if (lastTop - scrollTop > 0) {
+      dir = 'up';
+    } else {
+      dir = 'down';
+    }
+
+    lastTop = scrollTop;
+    if (scrollTop <= 0) {
+      if (lastIndex >= 0 && lastIndex < hList.length) {
+        lList[lastIndex].classList.remove(activeClass);
+      }
+      return;
+    }
+
+    let current = 0, hasFind = false;
+    for (let i = 0; i < hList.length; i++) {
+      if (hList[i].offsetTop > scrollTop) {
+        current = i;
+        hasFind = true;
+        break;
+      }
+    }
+    if (!hasFind && scrollTop > lList[lList.length - 1].offsetTop) {
+      current = hList.length - 1;
+    } else {
+      current--;
+    }
+    if (dir === 'down') {
+      if (current > lastIndex) {
+        addActiveClass(current);
+        removeActiveClass(lastIndex)
+        lastIndex = current;
+        removeParentActiveClass();
+        lList[current] && addActiveLiElemment(lList[current].parentElement, tocContent);
+      }
+    } else {
+      if (current < lastIndex) {
+        addActiveClass(current);
+        removeActiveClass(lastIndex);
+        lastIndex = current;
+        removeParentActiveClass();
+        lList[current] && addActiveLiElemment(lList[current].parentElement, tocContent);
+      }
+    }
+  });
+
+
+  window.addEventListener('load', function () {
+    showToc();
+    document.querySelector('#sidebar').style = 'display: block;';
+    tocWrapper.classList.add('toc-active');
+    setTimeout(function () {
+      if ("createEvent" in document) {
+        let evt = document.createEvent("HTMLEvents");
+        evt.initEvent("scroll", false, true);
+        document.dispatchEvent(evt);
+      }
+      else {
+        document.fireEvent("scroll");
+      }
+    }, 500)
+  })
+
+</script>
+            </div>
           
         
       </div>
@@ -331,8 +527,8 @@
           <div class="section bg-color post post-page">
             <section class="post-header">
   <h1 class="post-title">
-    <a class="post-title-link" href="https://https://chenm0.github.io/post/maven-setting/">
-      Maven setting
+    <a class="post-title-link" href="https://https://chenm0.github.io/post/volatile/">
+      Volatile关键字解析
     </a>
   </h1>
   <div class="post-meta">
@@ -340,7 +536,7 @@
     <span class="meta-item pc-show">
       <i class="fa fa-calendar-o"></i>
       <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-08-09 09:16:36">2021-08-09</span>
+      <span class="publish-time" data-t="2021-11-25 15:23:21">2021-11-25</span>
       <span class="post-meta-divider pc-show">|</span>
     </span>
     
@@ -349,8 +545,8 @@
       <span class="pc-show language" data-lan="category-in">分类于</span>
       
       
-      <a href="https://https://chenm0.github.io/tag/u1uivsuho/">
-        <span>Maven</span>
+      <a href="https://https://chenm0.github.io/tag/BuwDjq1zh0/">
+        <span>JAVA</span>
       </a>
       
       
@@ -359,17 +555,17 @@
     
     <span class="meta-item">
       <i class="fa fa-clock-o"></i>
-      <span>1<span class="language" data-lan="minute">分钟</span></span>
+      <span>15<span class="language" data-lan="minute">分钟</span></span>
     </span>
     <span class="meta-item">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-file-word-o"></i>
-      <span>108<span class="pc-show language" data-lan="words">字数</span></span>
+      <span>4243<span class="pc-show language" data-lan="words">字数</span></span>
     </span>
     
     
     
-    <span id="//chenm0.github.io/post/maven-setting/" data-flag-title="Maven setting" class="meta-item pc-show leancloud_visitors">
+    <span id="//chenm0.github.io/post/volatile/" data-flag-title="Volatile关键字解析" class="meta-item pc-show leancloud_visitors">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-eye"></i>
       <span><span class="language" data-lan="view">浏览量</span>：<span class="leancloud-visitors-count"></span></span>
@@ -378,177 +574,141 @@
   </div>
 </section>
             <div class="post-body next-md-body" id="post_body">
-              <?xml version="1.0" encoding="UTF-8"?> 
-<p><settings xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
- xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd"></p>
- <!--本地仓库。该值表示构建系统本地仓库的路径。其默认值为~/.m2/repository。 --> 
-<p><localRepository>usr/local/maven</localRepository></p>
- <!--Maven是否需要和用户交互以获得输入。如果Maven需要和用户交互以获得输入，则设置成true，反之则应为false。默认为true。--> 
-<p><interactiveMode>true</interactiveMode></p>
- <!--Maven是否需要使用plugin-registry.xml文件来管理插件版本。如果需要让Maven使用文件~/.m2/plugin-registry.xml来管理插件版本，则设为true。默认为false。--> 
-<p><usePluginRegistry>false</usePluginRegistry></p>
- <!--表示Maven是否需要在离线模式下运行。如果构建系统需要在离线模式下运行，则为true，默认为false。当由于网络设置原因或者安全因素，构建服务器不能连接远程仓库的时候，该配置就十分有用。 --> 
-<p><offline>false</offline></p>
- <!--当插件的组织Id（groupId）没有显式提供时，供搜寻插件组织Id（groupId）的列表。该元素包含一个pluginGroup元素列表，每个子元素包含了一个组织Id（groupId）。当我们使用某个插件，并且没有在命令行为其提供组织Id（groupId）的时候，Maven就会使用该列表。默认情况下该列表包含了org.apache.maven.plugins。 --> 
- <pluginGroups> 
- <!--plugin的组织Id（groupId） --> 
- <pluginGroup>org.codehaus.mojo</pluginGroup> 
- </pluginGroups> 
- <!--用来配置不同的代理，多代理profiles 可以应对笔记本或移动设备的工作环境：通过简单的设置profile id就可以很容易的更换整个代理配置。 --> 
- <proxies> 
- <!--代理元素包含配置代理时需要的信息--> 
- <proxy> 
- <!--代理的唯一定义符，用来区分不同的代理元素。--> 
- <id>myproxy</id> 
- <!--该代理是否是激活的那个。true则激活代理。当我们声明了一组代理，而某个时候只需要激活一个代理的时候，该元素就可以派上用处。 --> 
- <active>true</active> 
- <!--代理的协议。 协议://主机名:端口，分隔成离散的元素以方便配置。--> 
- <protocol>http</protocol> 
- <!--代理的主机名。协议://主机名:端口，分隔成离散的元素以方便配置。 --> 
- <host>proxy.somewhere.com</host> 
- <!--代理的端口。协议://主机名:端口，分隔成离散的元素以方便配置。 --> 
- <port>8080</port> 
- <!--代理的用户名，用户名和密码表示代理服务器认证的登录名和密码。 --> 
- <username>proxyuser</username> 
- <!--代理的密码，用户名和密码表示代理服务器认证的登录名和密码。 --> 
- <password>somepassword</password> 
- <!--不该被代理的主机名列表。该列表的分隔符由代理服务器指定；例子中使用了竖线分隔符，使用逗号分隔也很常见。--> 
- <nonProxyHosts>*.google.com|ibiblio.org</nonProxyHosts> 
- </proxy> 
- </proxies> 
- <!--配置服务端的一些设置。一些设置如安全证书不应该和pom.xml一起分发。这种类型的信息应该存在于构建服务器上的settings.xml文件中。--> 
- <servers> 
- <!--服务器元素包含配置服务器时需要的信息 --> 
- <server> 
- <!--这是server的id（注意不是用户登陆的id），该id与distributionManagement中repository元素的id相匹配。--> 
- <id>server001</id> 
- <!--鉴权用户名。鉴权用户名和鉴权密码表示服务器认证所需要的登录名和密码。 --> 
- <username>my_login</username> 
- <!--鉴权密码 。鉴权用户名和鉴权密码表示服务器认证所需要的登录名和密码。 --> 
- <password>my_password</password> 
- <!--鉴权时使用的私钥位置。和前两个元素类似，私钥位置和私钥密码指定了一个私钥的路径（默认是/home/hudson/.ssh/id_dsa）以及如果需要的话，一个密语。将来passphrase和password元素可能会被提取到外部，但目前它们必须在settings.xml文件以纯文本的形式声明。 --> 
- <privateKey>${usr.home}/.ssh/id_dsa</privateKey> 
- <!--鉴权时使用的私钥密码。--> 
- <passphrase>some_passphrase</passphrase> 
- <!--文件被创建时的权限。如果在部署的时候会创建一个仓库文件或者目录，这时候就可以使用权限（permission）。这两个元素合法的值是一个三位数字，其对应了unix文件系统的权限，如664，或者775。 --> 
- <filePermissions>664</filePermissions> 
- <!--目录被创建时的权限。 --> 
- <directoryPermissions>775</directoryPermissions> 
- <!--传输层额外的配置项 --> 
- <configuration></configuration> 
- </server> 
- </servers> 
- <!--为仓库列表配置的下载镜像列表。 --> 
- <mirrors> 
- <!--给定仓库的下载镜像。 --> 
- <mirror> 
- <!--该镜像的唯一标识符。id用来区分不同的mirror元素。 --> 
- <id>planetmirror.com</id> 
- <!--镜像名称 --> 
- <name>PlanetMirror Australia</name> 
- <!--该镜像的URL。构建系统会优先考虑使用该URL，而非使用默认的服务器URL。 --> 
- <url>http://downloads.planetmirror.com/pub/maven2</url> 
- <!--被镜像的服务器的id。例如，如果我们要设置了一个Maven中央仓库（http://repo1.maven.org/maven2）的镜像，就需要将该元素设置成central。这必须和中央仓库的id central完全一致。--> 
- <mirrorOf>central</mirrorOf> 
- </mirror> 
- </mirrors> 
- <!--根据环境参数来调整构建配置的列表。settings.xml中的profile元素是pom.xml中profile元素的裁剪版本。它包含了id，activation, repositories, pluginRepositories和 properties元素。这里的profile元素只包含这五个子元素是因为这里只关心构建系统这个整体（这正是settings.xml文件的角色定位），而非单独的项目对象模型设置。如果一个settings中的profile被激活，它的值会覆盖任何其它定义在POM中或者profile.xml中的带有相同id的profile。 --> 
- <profiles> 
- <!--根据环境参数来调整的构件的配置--> 
- <profile> 
- <!--该配置的唯一标识符。 --> 
- <id>test</id> 
- <!--自动触发profile的条件逻辑。Activation是profile的开启钥匙。如POM中的profile一样，profile的力量来自于它能够在某些特定的环境中自动使用某些特定的值；这些环境通过activation元素指定。activation元素并不是激活profile的唯一方式。settings.xml文件中的activeProfile元素可以包含profile的id。profile也可以通过在命令行，使用-P标记和逗号分隔的列表来显式的激活（如，-P test）。--> 
- <activation> 
- <!--profile默认是否激活的标识--> 
- <activeByDefault>false</activeByDefault> 
- <!--当匹配的jdk被检测到，profile被激活。例如，1.4激活JDK1.4，1.4.0_2，而!1.4激活所有版本不是以1.4开头的JDK。--> 
- <jdk>1.5</jdk> 
- <!--当匹配的操作系统属性被检测到，profile被激活。os元素可以定义一些操作系统相关的属性。--> 
- <os> 
- <!--激活profile的操作系统的名字 --> 
- <name>Windows XP</name> 
- <!--激活profile的操作系统所属家族(如 'windows') --> 
- <family>Windows</family> 
- <!--激活profile的操作系统体系结构 --> 
- <arch>x86</arch> 
- <!--激活profile的操作系统版本--> 
- <version>5.1.2600</version> 
- </os> 
- <!--如果Maven检测到某一个属性（其值可以在POM中通过${名称}引用），其拥有对应的名称和值，Profile就会被激活。如果值字段是空的，那么存在属性名称字段就会激活profile，否则按区分大小写方式匹配属性值字段--> 
- <property> 
- <!--激活profile的属性的名称--> 
- <name>mavenVersion</name> 
- <!--激活profile的属性的值 --> 
- <value>2.0.3</value> 
- </property> 
- <!--提供一个文件名，通过检测该文件的存在或不存在来激活profile。missing检查文件是否存在，如果不存在则激活profile。另一方面，exists则会检查文件是否存在，如果存在则激活profile。--> 
- <file> 
- <!--如果指定的文件存在，则激活profile。 --> 
- <exists>/usr/local/hudson/hudson-home/jobs/maven-guide-zh-to-production/workspace/</exists> 
- <!--如果指定的文件不存在，则激活profile。--> 
- <missing>/usr/local/hudson/hudson-home/jobs/maven-guide-zh-to-production/workspace/</missing> 
- </file> 
- </activation> 
- <!--对应profile的扩展属性列表。Maven属性和Ant中的属性一样，可以用来存放一些值。这些值可以在POM中的任何地方使用标记${X}来使用，这里X是指属性的名称。属性有五种不同的形式，并且都能在settings.xml文件中访问。 
- 1. env.X: 在一个变量前加上"env."的前缀，会返回一个shell环境变量。例如,"env.PATH"指代了$path环境变量（在Windows上是%PATH%）。 
- 2. project.x：指代了POM中对应的元素值。 
- 3. settings.x: 指代了settings.xml中对应元素的值。 
- 4. Java System Properties: 所有可通过java.lang.System.getProperties()访问的属性都能在POM中使用该形式访问， 
- 如/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0/jre。 
- 5. x: 在<properties/>元素中，或者外部文件中设置，以${someVar}的形式使用。 --> 
- <properties> 
- <user.install>/ebs1/build-machine/usr/local/hudson/hudson-home/jobs/maven-guide-</user.install> 
- </properties> 
- <!--远程仓库列表，它是Maven用来填充构建系统本地仓库所使用的一组远程项目。 --> 
- <repositories> 
- <!--包含需要连接到远程仓库的信息 --> 
- <repository> 
- <!--远程仓库唯一标识--> 
- <id>codehausSnapshots</id> 
- <!--远程仓库名称 --> 
- <name>Codehaus Snapshots</name> 
- <!--如何处理远程仓库里发布版本的下载--> 
- <releases> 
- <!--true或者false表示该仓库是否为下载某种类型构件（发布版，快照版）开启。 --> 
- <enabled>false</enabled> 
- <!--该元素指定更新发生的频率。Maven会比较本地POM和远程POM的时间戳。这里的选项是：always（一直），daily（默认，每日），interval：X（这里X是以分钟为单位的时间间隔），或者never（从不）。 --> 
- <updatePolicy>always</updatePolicy> 
- <!--当Maven验证构件校验文件失败时该怎么做-ignore（忽略），fail（失败），或者warn（警告）。--> 
- <checksumPolicy>warn</checksumPolicy> 
- </releases> 
- <!--如何处理远程仓库里快照版本的下载。有了releases和snapshots这两组配置，POM就可以在每个单独的仓库中，为每种类型的构件采取不同的策略。例如，可能有人会决定只为开发目的开启对快照版本下载的支持。参见repositories/repository/releases元素--> 
- <snapshots> 
- <enabled/><updatePolicy/><checksumPolicy/> 
- </snapshots> 
- <!--远程仓库URL，按protocol://hostname/path形式 --> 
- <url>http://snapshots.maven.codehaus.org/maven2</url> 
- <!--用于定位和排序构件的仓库布局类型-可以是default（默认）或者legacy（遗留）。Maven 2为其仓库提供了一个默认的布局；然而，Maven 1.x有一种不同的布局。我们可以使用该元素指定布局是default（默认）还是legacy（遗留）。 --> 
- <layout>default</layout> 
- </repository> 
- </repositories> 
- <!--发现插件的远程仓库列表。仓库是两种主要构件的家。第一种构件被用作其它构件的依赖。这是中央仓库中存储的大部分构件类型。另外一种构件类型是插件。Maven插件是一种特殊类型的构件。由于这个原因，插件仓库独立于其它仓库。pluginRepositories元素的结构和repositories元素的结构类似。每个pluginRepository元素指定一个Maven可以用来寻找新插件的远程地址。--> 
- <pluginRepositories> 
- <!--包含需要连接到远程插件仓库的信息.参见profiles/profile/repositories/repository元素的说明--> 
- <pluginRepository> 
- <releases> 
- <enabled/><updatePolicy/><checksumPolicy/> 
- </releases> 
- <snapshots> 
- <enabled/><updatePolicy/><checksumPolicy/> 
- </snapshots> 
- <id/><name/><url/><layout/> 
- </pluginRepository> 
- </pluginRepositories> 
- <!--手动激活profiles的列表，按照profile被应用的顺序定义activeProfile。 该元素包含了一组activeProfile元素，每个activeProfile都含有一个profile id。任何在activeProfile中定义的profile id，不论环境设置如何，其对应的 
- profile都会被激活。如果没有匹配的profile，则什么都不会发生。例如，env-test是一个activeProfile，则在pom.xml（或者profile.xml）中对应id的profile会被激活。如果运行过程中找不到这样一个profile，Maven则会像往常一样运行。 --> 
- <activeProfiles> 
- <!-- --> 
- <activeProfile>env-test</activeProfile> 
- </activeProfiles> 
- </profile> 
- </profiles> 
-</settings> 
+              <pre><code>由于volatile关键字是与java的内存模型有关的，所以需要对内存模型相关的概念和知识有所了解。
+</code></pre>
+<h3 id="内存模型的相关概念">内存模型的相关概念</h3>
+<pre><code>计算机在执行程序时，每条指令都是在CPU中执行的，而在执行指令过程中，势必涉及到数据的读取和写入。由于程序运行过程中的临时数据是存放在主存（物理内存）当中的，这时就存在一个问题，由于CPU执行速度很快，而从内存读取数据和向内存写入数据的过程跟CPU执行指令的速度比起来要慢的多，因此如果任何时候对数据的操作都要通过和内存的交互来进行，会大大降低指令执行的速度。因此在CPU里面就有了&lt;B&gt;高速缓存&lt;/B&gt;。
+也就是，当程序在运行过程中，会将运算需要的数据从主存复制一份到CPU的高速缓存当中，那么CPU进行计算时就可以直接从它的高速缓存读取数据和向其中写入数据，当运算结束之后，再将高速缓存中的数据刷新到主存当中。举个简单的例子，比如下面的这段代码：
+</code></pre>
+<pre><code>i = i + 1;
+</code></pre>
+<pre><code>当线程执行这个语句时，会先从主存当中读取i的值，然后复制一份到高速缓存当中，然后CPU执行指令对i进行加1操作，然后将数据写入高速缓存，最后将高速缓存中i最新的值刷新到主存当中。
+这个代码在单线程中运行是没有任何问题的，但是在多线程中运行就会有问题了。在多核CPU中，每条线程可能运行于不同的CPU中，因此每个线程运行时有自己的高速缓存（对单核CPU来说，其实也会出现这种问题，只不过是以线程调度的形式来分别执行的）。
+比如同时有2个线程执行这段代码，假如初始时i的值为0，那么我们希望两个线程执行完之后i的值变为2。但是事实会是这样吗？
+可能存在下面一种情况：初始时，两个线程分别读取i的值存入各自所在的CPU的高速缓存当中，然后线程1进行加1操作，然后把i的最新值1写入到内存。此时线程2的高速缓存当中i的值还是0，进行加1操作之后，i的值为1，然后线程2把i的值写入内存。
+最终结果i的值是1，而不是2。这就是著名的缓存一致性问题。通常称这种被多个线程访问的变量为共享变量。
+也就是说，如果一个变量在多个CPU中都存在缓存（一般在多线程编程时才会出现），那么就可能存在缓存不一致的问题。
+为了解决缓存不一致性问题，通常来说有以下2种解决方法：
+</code></pre>
+<ul>
+<li>通过在总线加LOCK#锁的方式</li>
+<li>通过缓存一致性协议<br>
+这2种方式都是硬件层面上提供的方式。<br>
+在早期的CPU当中，是通过在总线上加LOCK#锁的形式来解决缓存不一致的问题。因为CPU和其他部件进行通信都是通过总线来进行的，如果对总线加LOCK#锁的话，也就是说阻塞了其他CPU对其他部件访问（如内存），从而使得只能有一个CPU能使用这个变量的内存。比如上面例子中 如果一个线程在执行 i = i +1，如果在执行这段代码的过程中，在总线上发出了LCOK#锁的信号，那么只有等待这段代码完全执行完毕之后，其他CPU才能从变量i所在的内存读取变量，然后进行相应的操作。这样就解决了缓存不一致的问题。<br>
+但是上面的方式会有一个问题，由于在锁住总线期间，其他CPU无法访问内存，导致效率低下。<br>
+所以就出现了缓存一致性协议。最出名的就是Intel 的MESI协议，MESI协议保证了每个缓存中使用的共享变量的副本是一致的。它核心的思想是：当CPU写数据时，如果发现操作的变量是共享变量，即在其他CPU中也存在该变量的副本，会发出信号通知其他CPU将该变量的缓存行置为无效状态，因此当其他CPU需要读取这个变量时，发现自己缓存中缓存该变量的缓存行是无效的，那么它就会从内存重新读取。<br>
+<img src="https://https://chenm0.github.io//post-images/1637826258727.jpg" alt="" loading="lazy"></li>
+</ul>
+<h3 id="并发编程中的三个概念">并发编程中的三个概念</h3>
+<pre><code>在并发编程中，通常会遇到以下三个问题：原子性问题，可见性问题，有序性问题。
+</code></pre>
+<ul>
+<li>原子性<br>
+即一个操作或者多个操作 要么全部执行并且执行的过程不会被任何因素打断，要么就都不执行。<br>
+<u>一个很经典的例子就是银行账户转账问题：</u><br>
+比如从账户A向账户B转1000元，那么必然包括2个操作：从账户A减去1000元，往账户B加上1000元<br>
+试想一下，如果这2个操作不具备原子性，会造成什么样的后果。假如从账户A减去1000元之后，操作突然中止。然后又从B取出了500元，取出500元之后，再执行 往账户B加上1000元 的操作。这样就会导致账户A虽然减去了1000元，但是账户B没有收到这个转过来的1000元。<br>
+所以这2个操作必须要具备原子性才能保证不出现一些意外的问题。</li>
+<li>可见性<br>
+可见性是指当多个线程访问同一个变量时，一个线程修改了这个变量的值，其他线程能够立即看得到修改的值。<br>
+举个简单的例子：</li>
+</ul>
+<pre><code>   //线程1执行的代码
+int i = 0;
+i = 10;
+ 
+//线程2执行的代码
+j = i;
+</code></pre>
+<pre><code>假若执行线程1的是CPU1，执行线程2的是CPU2。由上面的分析可知，当线程1执行 i =10这句时，会先把i的初始值加载到CPU1的高速缓存中，然后赋值为10，那么在CPU1的高速缓存当中i的值变为10了，却没有立即写入到主存当中。
+此时线程2执行 j = i，它会先去主存读取i的值并加载到CPU2的缓存当中，注意此时内存当中i的值还是0，那么就会使得j的值为0，而不是10.
+这就是可见性问题，线程1对变量i修改了之后，线程2没有立即看到线程1修改的值。
+</code></pre>
+<ul>
+<li>有序性<br>
+即程序执行的顺序按照代码的先后顺序执行：</li>
+</ul>
+<pre><code>int i = 0;              
+boolean flag = false;
+i = 1;                //语句1  
+flag = true;  
+</code></pre>
+<pre><code>上面代码定义了一个int型变量，定义了一个boolean类型变量，然后分别对两个变量进行赋值操作。从代码顺序上看，语句1是在语句2前面的，那么JVM在真正执行这段代码的时候会保证语句1一定会在语句2前面执行吗？不一定，为什么呢？这里可能会发生指令重排序（Instruction Reorder）。
+下面解释一下什么是指令重排序，一般来说，处理器为了提高程序运行效率，可能会对输入代码进行优化，它不保证程序中各个语句的执行先后顺序同代码中的顺序一致，但是它会保证程序最终执行结果和代码顺序执行的结果是一致的。
+比如上面的代码中，语句1和语句2谁先执行对最终的程序结果并没有影响，那么就有可能在执行过程中，语句2先执行而语句1后执行。
+虽然处理器会对指令进行重排序，但是它会保证程序最终结果会和代码顺序执行结果相同，因为处理器在进行重排序时是会考虑指令之间的数据依赖性，如果一个指令Instruction 2必须用到Instruction 1的结果，那么处理器会保证Instruction 1会在Instruction 2之前执行。
+虽然重排序不会影响单个线程内程序执行的结果，但是多线程呢？
+</code></pre>
+<pre><code>//线程1:
+context = loadContext();   //语句1
+inited = true;             //语句2
+ 
+//线程2:
+while(!inited ){
+  sleep()
+}
+doSomethingwithconfig(context);
+</code></pre>
+<pre><code>上面代码中，由于语句1和语句2没有数据依赖性，因此可能会被重排序。假如发生了重排序，在线程1执行过程中先执行语句2，而此是线程2会以为初始化工作已经完成，那么就会跳出while循环，去执行doSomethingwithconfig(context)方法，而此时context并没有被初始化，就会导致程序出错。
+
+从上面可以看出，指令重排序不会影响单个线程的执行，但是会影响到线程并发执行的正确性。
+也就是说，要想并发程序正确地执行，必须要保证原子性、可见性以及有序性。只要有一个没有被保证，就有可能会导致程序运行不正确。
+</code></pre>
+<h3 id="java内存模型">JAVA内存模型</h3>
+<pre><code>下面研究一下JAVA内存模型提供了哪些保证以及在java中提供了哪些方法和机制保证了多线程编程时的程序执行正确性。
+在Java虚拟机规范中试图定义一种Java内存模型（Java Memory Model，JMM）来屏蔽各个硬件平台和操作系统的内存访问差异，以实现让Java程序在各种平台下都能达到一致的内存访问效果。那么Java内存模型规定了哪些东西呢，它定义了程序中变量的访问规则，往大一点说是定义了程序执行的次序。注意，为了获得较好的执行性能，Java内存模型并没有限制执行引擎使用处理器的寄存器或者高速缓存来提升指令执行速度，也没有限制编译器对指令进行重排序。也就是说，在java内存模型中，也会存在缓存一致性问题和指令重排序的问题。
+Java内存模型规定所有的变量都是存在主存当中（类似于前面说的物理内存），每个线程都有自己的工作内存（类似于前面的高速缓存）。线程对变量的所有操作都必须在工作内存中进行，而不能直接对主存进行操作。并且每个线程不能访问其他线程的工作内存。
+那么Java语言 本身对 原子性、可见性以及有序性提供了哪些保证呢？
+</code></pre>
+<ul>
+<li>原子性<br>
+在Java中，对基本数据类型的变量的读取和赋值操作是原子性操作，即这些操作是不可被中断的，要么执行，要么不执行。</li>
+</ul>
+<pre><code>x = 10;         //语句1
+y = x;         //语句2
+x++;           //语句3
+x = x + 1;     //语句4
+</code></pre>
+<pre><code>上述代码的操作只有语句1是原子性操作，其他三个语句都不是原子性操作。
+
+语句1是直接将数值10赋值给x，也就是说线程执行这个语句的会直接将数值10写入到工作内存中。
+语句2实际上包含2个操作，它先要去读取x的值，再将x的值写入工作内存，虽然读取x的值以及 将x的值写入工作内存 这2个操作都是原子性操作，但是合起来就不是原子性操作了。
+同样的，x++和 x = x+1包括3个操作：读取x的值，进行加1操作，写入新的值。
+
+所以上面4个语句只有语句1的操作具备原子性。也就是说，只有简单的读取、赋值（而且必须是将数字赋值给某个变量，变量之间的相互赋值不是原子操作）才是原子操作。
+不过这里有一点需要注意：在32位平台下，对64位数据的读取和赋值是需要通过两个操作来完成的，不能保证其原子性。但是好像在最新的JDK中，JVM已经保证对64位数据的读取和赋值也是原子性操作了。
+从上面可以看出，Java内存模型只保证了基本读取和赋值是原子性操作，如果要实现更大范围操作的原子性，可以通过synchronized和Lock来实现。由于synchronized和Lock能够保证任一时刻只有一个线程执行该代码块，那么自然就不存在原子性问题了，从而保证了原子性。
+</code></pre>
+<ul>
+<li>
+<p>可见性<br>
+对于可见性，Java提供了volatile关键字来保证可见性。<br>
+当一个共享变量被volatile修饰时，它会保证修改的值会立即被更新到主存，当有其他线程需要读取时，它会去内存中读取新值。<br>
+而普通的共享变量不能保证可见性，因为普通共享变量被修改之后，什么时候被写入主存是不确定的，当其他线程去读取时，此时内存中可能还是原来的旧值，因此无法保证可见性。<br>
+另外，通过synchronized和Lock也能够保证可见性，synchronized和Lock能保证同一时刻只有一个线程获取锁然后执行同步代码，并且在释放锁之前会将对变量的修改刷新到主存当中。因此可以保证可见性。</p>
+</li>
+<li>
+<p>有序性<br>
+在Java内存模型中，允许编译器和处理器对指令进行重排序，但是重排序过程不会影响到单线程程序的执行，却会影响到多线程并发执行的正确性。<br>
+在Java里面，可以通过volatile关键字来保证一定的“有序性”。另外可以通过synchronized和Lock来保证有序性，很显然，synchronized和Lock保证每个时刻是有一个线程执行同步代码，相当于是让线程顺序执行同步代码，自然就保证了有序性。<br>
+另外， <em><strong>Java内存模型具备一些先天的“有序性”，即不需要通过任何手段就能够得到保证的有序性，这个通常也称为 happens-before 原则。如果两个操作的执行次序无法从happens-before原则推导出来，那么它们就不能保证它们的有序性，虚拟机可以随意地对它们进行重排序。</strong></em><br>
+happens-before原则（先行发生原则)：</p>
+<ul>
+<li>程序次序规则：一个线程内，按照代码顺序，书写在前面的操作先行发生于书写在后面的操作</li>
+<li>锁定规则：一个unLock操作先行发生于后面对同一个锁额lock操作</li>
+<li>volatile变量规则：对一个变量的写操作先行发生于后面对这个变量的读操作</li>
+<li>传递规则：如果操作A先行发生于操作B，而操作B又先行发生于操作C，则可以得出操作A先行发生于操作C</li>
+<li>线程启动规则：Thread对象的start()方法先行发生于此线程的每个一个动作</li>
+<li>线程中断规则：对线程interrupt()方法的调用先行发生于被中断线程的代码检测到中断事件的发生</li>
+<li>线程终结规则：线程中所有的操作都先行发生于线程的终止检测，我们可以通过Thread.join()方法结束、Thread.isAlive()的返回值手段检测到线程已经终止执行</li>
+<li>对象终结规则：一个对象的初始化完成先行发生于他的finalize()方法的开始<br>
+前4条规则是比较重要的，后4条规则都是显而易见的。<br>
+第二条规则也比较容易理解，也就是说无论在单线程中还是多线程中，同一个锁如果出于被锁定的状态，那么必须先对锁进行了释放操作，后面才能继续进行lock操作。<br>
+第三条规则是一条比较重要的规则，也是后文将要重点讲述的内容。直观地解释就是，如果一个线程先去写一个变量，然后一个线程去进行读取，那么写入操作肯定会先行发生于读操作。<br>
+第四条规则实际上就是体现happens-before原则具备传递性。</li>
+</ul>
+</li>
+</ul>
 
             </div>
             
@@ -561,7 +721,7 @@
     </li>
     <li class="post-copyright-link">
       <strong class="language" data-lan="link">本文链接：</strong>
-      <a href="https://https://chenm0.github.io/post/maven-setting/" title="Maven setting">https://https://chenm0.github.io/post/maven-setting/</a>
+      <a href="https://https://chenm0.github.io/post/volatile/" title="Volatile关键字解析">https://https://chenm0.github.io/post/volatile/</a>
     </li>
     <li class="post-copyright-license">
       <strong class="language" data-lan="copyright">版权声明： </strong>
@@ -570,21 +730,17 @@
   </ul>
   <div class="tags">
     
-      <a href="https://https://chenm0.github.io/tag/u1uivsuho/"># Maven</a>
+      <a href="https://https://chenm0.github.io/tag/BuwDjq1zh0/"># JAVA</a>
     
   </div>
   <div class="nav">
     <div class="nav-prev">
       
-        <i class="fa fa-chevron-left"></i>
-        <a class="nav-pc-next" title="Leetcode sql题个人题解方案" href="https://https://chenm0.github.io/post/leetcode-sql/">Leetcode sql题个人题解方案</a class="nav-pc-next">
-        <a class="nav-mobile-prev" title="Leetcode sql题个人题解方案" href="https://https://chenm0.github.io/post/leetcode-sql/">上一篇</a>
-      
     </div>
     <div class="nav-next">
       
-        <a class="nav-pc-next" title="@Excel参数大全" href="https://https://chenm0.github.io/post/excel-args/">@Excel参数大全</a>
-        <a class="nav-mobile-next" title="@Excel参数大全" href="https://https://chenm0.github.io/post/excel-args/">下一篇</a>
+        <a class="nav-pc-next" title="maven-assembly-plugin插件" href="https://https://chenm0.github.io/post/maven-assembly-plugin-cha-jian/">maven-assembly-plugin插件</a>
+        <a class="nav-mobile-next" title="maven-assembly-plugin插件" href="https://https://chenm0.github.io/post/maven-assembly-plugin-cha-jian/">下一篇</a>
         <i class="fa fa-chevron-right"></i>
       
     </div>
