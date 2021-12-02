@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://chenm0.github.io/</id>
     <title>观潮亭</title>
-    <updated>2021-12-02T03:19:41.091Z</updated>
+    <updated>2021-12-02T07:30:24.014Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://chenm0.github.io/"/>
     <link rel="self" href="https://chenm0.github.io/atom.xml"/>
@@ -10,6 +10,36 @@
     <logo>https://chenm0.github.io/images/avatar.png</logo>
     <icon>https://chenm0.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, 观潮亭</rights>
+    <entry>
+        <title type="html"><![CDATA[对象的finalization机制、finalize方法理解]]></title>
+        <id>https://chenm0.github.io/post/finalize/</id>
+        <link href="https://chenm0.github.io/post/finalize/">
+        </link>
+        <updated>2021-12-02T06:17:53.000Z</updated>
+        <content type="html"><![CDATA[<h3 id="对象的finalization机制">对象的finalization机制</h3>
+<p>Java提供了finalization机制来允许开发人员提供对象销毁之前自定义处理逻辑。垃圾在回收一个对象之前，总会先调用这个对象的finalize()方法，finalize()方法是object类定义的，允许在任何自类中被重写，用于对象被回收时进行资源释放。例如，关闭数据库连接等等。<br>
+永远不要主动调用对象的finalize()方法，应该交给回收机制调用，理由如下：</p>
+<ol>
+<li>finalize()可能导致对象复活</li>
+<li>finalize()执行时间没有保障，完全由GC线程决定，极端情况下，若不发生GC，finalize()就不会被调用</li>
+<li>糟糕的finalize()会严重影响GC的性能<br>
+如果从所有的根节点都无法访问到每个对象，说明对象已不再使用了。一般来说，此对象就应该jie sjhe由于finalize()方法的存在，虚拟机中的对象一般处于三种可能的状态：</li>
+<li>可触及的：从根节点开始，可以到达这个对象</li>
+<li>可复活的：对象的所有引用都被释放，但是对象可能在finalize()被复活(例如：在finalize()中又有新的引用指向该对象)。</li>
+<li>不可触及的，对象的finalize()被调用之后，对象没有复活，那么会进入不可触及的状态。一般不可触及的对象不可能被复活，<B>因为finalize()只会调用一次   </B><br>
+以上3种状态，由于finalize()方法的存在，进行区分，只有在对象不可触及的时候才可以被回收。<br>
+如何判断一个对象是否可以被回收？</li>
+<li>如果objA到GC Roots没有引用链，则进行第一次标记。（这里的标记意思是，对象是不可达的，对象可能是可复活的或者不可触及的。）</li>
+<li>进行筛选，判断对象是否需要执行finalize()方法
+<ul>
+<li>如果对象objA没有重写finalize()方法，或者finalize()方法已经被虚拟机调用过，则虚拟机认 为“没有必要执行finalize()”，objA被判定为不可触及的</li>
+<li>如果objA重写了finalize()方法，且还未执行过，那么objA会被插入到F-Queue队列中，由一个虚拟机自动创建的、低优先级的Finalizer线程触发其finalize()方法。</li>
+<li>finalize()方法是对象逃脱死亡的最后机会，稍后GC会对F-Queue中的objA对象进行第二次标记，如果objA在finalize()方法中与引用链上的任何一个对象建立了联系（也就是复活了），那么第二次标记时，objA会被移出“即将回收”集合。之后，对象会再次出现没有引用存在的情况，在这个情况下，finalize()方法不会被再次调用，对象会直接变成不可触及状态。因为，一个对象的finalize()方法只会被调用一次。</li>
+</ul>
+</li>
+</ol>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[WeakHashMap的理解]]></title>
         <id>https://chenm0.github.io/post/weakhashmap/</id>
@@ -2421,134 +2451,6 @@ Result table:
  </profile> 
  </profiles> 
 </settings> 
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[@Excel参数大全]]></title>
-        <id>https://chenm0.github.io/post/excel-args/</id>
-        <link href="https://chenm0.github.io/post/excel-args/">
-        </link>
-        <updated>2021-07-19T09:05:37.000Z</updated>
-        <content type="html"><![CDATA[<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>类型</th>
-<th>默认值</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>sort</td>
-<td>int</td>
-<td>Integer.MAX_VALUE</td>
-<td>导出时在excel中排序</td>
-</tr>
-<tr>
-<td>name</td>
-<td>String</td>
-<td>空</td>
-<td>导出到Excel中的名字</td>
-</tr>
-<tr>
-<td>dateFormat</td>
-<td>String</td>
-<td>空</td>
-<td>日期格式, 如: yyyy-MM-dd</td>
-</tr>
-<tr>
-<td>dictType</td>
-<td>String</td>
-<td>空</td>
-<td>如果是字典类型，请设置字典的type值 (如: sys_user_sex)</td>
-</tr>
-<tr>
-<td>readConverterExp</td>
-<td>String</td>
-<td>空</td>
-<td>读取内容转表达式 (如: 0=男,1=女,2=未知)</td>
-</tr>
-<tr>
-<td>separator</td>
-<td>String</td>
-<td>,</td>
-<td>分隔符，读取字符串组内容</td>
-</tr>
-<tr>
-<td>scale</td>
-<td>int</td>
-<td>-1</td>
-<td>BigDecimal 精度 默认:-1(默认不开启BigDecimal格式化)</td>
-</tr>
-<tr>
-<td>roundingMode</td>
-<td>int</td>
-<td>BigDecimal.ROUND_HALF_EVEN</td>
-<td>BigDecimal 舍入规则 默认:BigDecimal.ROUND_HALF_EVEN</td>
-</tr>
-<tr>
-<td>columnType</td>
-<td>Enum</td>
-<td>Type.STRING</td>
-<td>导出类型（0数字 1字符串 2图片）</td>
-</tr>
-<tr>
-<td>height</td>
-<td>String</td>
-<td>14</td>
-<td>导出时在excel中每个列的高度 单位为字符</td>
-</tr>
-<tr>
-<td>width</td>
-<td>String</td>
-<td>16</td>
-<td>导出时在excel中每个列的宽 单位为字符</td>
-</tr>
-<tr>
-<td>suffix</td>
-<td>String</td>
-<td>空</td>
-<td>文字后缀,如% 90 变成90%</td>
-</tr>
-<tr>
-<td>defaultValue</td>
-<td>String</td>
-<td>空</td>
-<td>当值为空时,字段的默认值</td>
-</tr>
-<tr>
-<td>prompt</td>
-<td>String</td>
-<td>空</td>
-<td>提示信息</td>
-</tr>
-<tr>
-<td>combo</td>
-<td>String</td>
-<td>Null</td>
-<td>设置只能选择不能输入的列内容</td>
-</tr>
-<tr>
-<td>targetAttr</td>
-<td>String</td>
-<td>空</td>
-<td>另一个类中的属性名称,支持多级获取,以小数点隔开</td>
-</tr>
-<tr>
-<td>isStatistics</td>
-<td>boolean</td>
-<td>false</td>
-<td>是否自动统计数据,在最后追加一行统计数据总和</td>
-</tr>
-<tr>
-<td>type</td>
-<td>Enum</td>
-<td>Type.ALL</td>
-<td>字段类型（0：导出导入；1：仅导出；2：仅导入）</td>
-</tr>
-</tbody>
-</table>
 ]]></content>
     </entry>
 </feed>
