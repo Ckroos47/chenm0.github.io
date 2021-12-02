@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://chenm0.github.io/</id>
     <title>观潮亭</title>
-    <updated>2021-12-02T02:47:37.185Z</updated>
+    <updated>2021-12-02T03:19:41.091Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://chenm0.github.io/"/>
     <link rel="self" href="https://chenm0.github.io/atom.xml"/>
@@ -10,6 +10,64 @@
     <logo>https://chenm0.github.io/images/avatar.png</logo>
     <icon>https://chenm0.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, 观潮亭</rights>
+    <entry>
+        <title type="html"><![CDATA[WeakHashMap的理解]]></title>
+        <id>https://chenm0.github.io/post/weakhashmap/</id>
+        <link href="https://chenm0.github.io/post/weakhashmap/">
+        </link>
+        <updated>2021-12-02T03:15:19.000Z</updated>
+        <content type="html"><![CDATA[<p>WeakHashMap 继承于AbstractMap，实现了Map接口。<br>
+和HashMap一样，WeakHashMap 也是一个散列表，它存储的内容也是键值对(key-value)映射，而且键和值都可以是null。<br>
+不过WeakHashMap的键是“弱键”。在 WeakHashMap 中，当某个键不再正常使用时，会被从WeakHashMap中被自动移除。更精确地说，对于一个给定的键，其映射的存在并不阻止垃圾回收器对该键的丢弃，这就使该键成为可终止的，被终止，然后被回收。某个键被终止时，它对应的键值对也就从映射中有效地移除了。<br>
+这个“弱键”的原理呢？大致上就是，通过WeakReference和ReferenceQueue实现的。 WeakHashMap的key是“弱键”，即是WeakReference类型的；ReferenceQueue是一个队列，它会保存被GC回收的“弱键”。实现步骤是：</p>
+<ol>
+<li>新建WeakHashMap，将“键值对”添加到WeakHashMap中。实际上，WeakHashMap是通过数组table保存Entry(键值对)；每一个Entry实际上是一个单向链表，即Entry是键值对链表。</li>
+<li>当某“弱键”不再被其它对象引用，并被GC回收时。在GC回收该“弱键”时，这个“弱键”也同时会被添加到ReferenceQueue(queue)队列中。</li>
+<li>当下一次我们需要操作WeakHashMap时，会先同步table和queue。table中保存了全部的键值对，而queue中保存被GC回收的键值对；同步它们，就是删除table中被GC回收的键值对。</li>
+</ol>
+<p>这就是“弱键”如何被自动从WeakHashMap中删除的步骤了。</p>
+<p>和HashMap一样，WeakHashMap是不同步的。可以使用 Collections.synchronizedMap 方法来构造同步的 WeakHashMap。</p>
+<p>既然有WeakHashMap，那么有WeakHashSet吗？  java collections包是没有直接提供WeakHashSet的。<br>
+我们可以通过Collections.newSetFromMap(Map&lt;E,Boolean&gt; map)方法可以将任何 Map包装成一个Set。源码如下：</p>
+<pre><code>public static &lt;E&gt; Set&lt;E&gt; newSetFromMap(Map&lt;E, Boolean&gt; map) {
+        return new SetFromMap&lt;&gt;(map);
+    }
+ 
+    /**
+     * @serial include
+     */
+    private static class SetFromMap&lt;E&gt; extends AbstractSet&lt;E&gt;
+        implements Set&lt;E&gt;, Serializable
+    {
+        private final Map&lt;E, Boolean&gt; m;  // The backing map
+        private transient Set&lt;E&gt; s;       // Its keySet
+ 
+        SetFromMap(Map&lt;E, Boolean&gt; map) {
+            if (!map.isEmpty())
+                throw new IllegalArgumentException(&quot;Map is non-empty&quot;);
+            m = map;
+            s = map.keySet();
+        }
+ 
+        public void clear()               {        m.clear(); }
+        public int size()                 { return m.size(); }
+        public boolean isEmpty()          { return m.isEmpty(); }
+        public boolean contains(Object o) { return m.containsKey(o); }
+        public boolean remove(Object o)   { return m.remove(o) != null; }
+        public boolean add(E e) { return m.put(e, Boolean.TRUE) == null; }
+        public Iterator&lt;E&gt; iterator()     { return s.iterator(); }
+        public Object[] toArray()         { return s.toArray(); }
+        public &lt;T&gt; T[] toArray(T[] a)     { return s.toArray(a); }
+        public String toString()          { return s.toString(); }
+        public int hashCode()             { return s.hashCode(); }
+        public boolean equals(Object o)   { return o == this || s.equals(o); }
+        public boolean containsAll(Collection&lt;?&gt; c) {return s.containsAll(c);}
+        public boolean removeAll(Collection&lt;?&gt; c)   {return s.removeAll(c);}
+        public boolean retainAll(Collection&lt;?&gt; c)   {return s.retainAll(c);}
+        ```
+        就是对传入的map进行了简单的包装</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[java的垃圾回收]]></title>
         <id>https://chenm0.github.io/post/jvm-junk/</id>
@@ -2491,32 +2549,6 @@ Result table:
 </tr>
 </tbody>
 </table>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[JPA踩坑记录]]></title>
-        <id>https://chenm0.github.io/post/jpa-qa/</id>
-        <link href="https://chenm0.github.io/post/jpa-qa/">
-        </link>
-        <updated>2021-06-24T06:08:55.000Z</updated>
-        <content type="html"><![CDATA[<h3 id="spring-data-jpa查询到的对象被set值后自动更新数据库">Spring data JPA查询到的对象被set值后，自动更新数据库</h3>
-<p>做项目开发的时候遇到这样一个问题：数据库有临时表和正式表，数据审批通过后才会进入正式表，根据业务要求，页面的数据需要通过临时表对象来显示，当需要显示正式表数据时，先查询到临时表对象，再查询正式表对象，将正式表对象赋值给临时表对象用于页面显示，代码执行完毕后，发现数据库正式表数据覆盖了临时表数据，很纳闷，查看代码，在把正式表数据赋值给临时表对象后，并没有保存临时表对象的代码呀，数据库怎么会被更新？<br>
-后来查看日志发现，当将正式表数据赋值给临时表时，有一条update语句执行了。查看资料后才知道，使用JPA查询后的对象处于持久态，持久态的对象属性在被set后，会自动执行update语句更新数据库。<br>
-这才恍然大悟，基于这个原因，只要把持久态的对象转换为游离态或者是临时态，就可以解决问题。<br>
-先理解下Hibernate 中对象的三种状态：<br>
-(1)临时状态：通过new新建的对象，没有被持久化，也不在session缓存中<br>
-(2)游离状态：已经被持久化，但不在session缓存中<br>
-(3)持久状态：已经被持久化，也在session缓存中<br>
-(持久化：数据库有这条数据)<br>
-持久态到游离态的方法有：session.close()、session.evict(obj)、session.clear()<br>
-close()：关闭session，整个session中的持久态对象都成为游离态<br>
-clear()：清楚session中的所有缓存，所有持久化对象变为游离态<br>
-evict(obj)：把某个持久化状态的对象从session中清除，该对象变为游离态</p>
-<p>根据三个方法的介绍，最好的处理方式应该选择evict(obj)方法。</p>
-<p>由于业务需求，我的解决方式是，新建一个临时态的临时表对象，将查询到的正式表对象赋值给临时态对象，这样就不会触发update语句，经测试，问题解决。</p>
-<p>`	@PersistenceContext<br>
-private EntityManager entityManager;</p>
-<pre><code>Session session = entityManager.unwrap(Session.class);`</code></pre>
 ]]></content>
     </entry>
 </feed>

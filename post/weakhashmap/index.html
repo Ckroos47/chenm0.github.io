@@ -8,7 +8,7 @@
 <meta name="keywords" content="个人博客">
 <meta name="description" content="&lt;a href=&#34;https://https://github.com/chenm0/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
-<title>《计算机组成与设计》学习笔记——第1章 | 观潮亭</title>
+<title>WeakHashMap的理解 | 观潮亭</title>
 <link rel="shortcut icon" href="/favicon.ico?v=1638415175464">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
@@ -38,8 +38,8 @@
 
 
 
-  <meta name="description" content="《计算机组成与设计》学习笔记——第1章" />
-  <meta name="keywords" content="" />
+  <meta name="description" content="WeakHashMap的理解" />
+  <meta name="keywords" content="JAVA" />
 </head>
 
 <body>
@@ -190,8 +190,7 @@
       <div class="sidebar-body pisces" id="sidebar_body">
         
           
-            <div class="post-side-meta" id="post_side_meta">
-              
+            
 <div class="sidebar-wrapper box-shadow-wrapper bg-color">
   <div class="sidebar-item">
     <img class="site-author-image right-motion" src="/images/avatar.png"/>
@@ -245,208 +244,6 @@
   </div>
 
 </div>
-            </div>
-            <div class="post-toc sidebar-body-active" id="post_toc" style="opacity: 1;">
-              <div class="toc-box right-motion">
-  <div class="toc-wrapper auto-number auto"
-    id="toc_wrapper">
-    <ul class="markdownIt-TOC">
-<li>
-<ul>
-<li>
-<ul>
-<li><a href="#%E7%AC%AC1%E7%AB%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%A6%82%E8%A6%81%E4%B8%8E%E6%8A%80%E6%9C%AF">第1章 计算机概要与技术</a><br>
-*
-<ul>
-<li><a href="#%E8%8B%B1%E8%AF%91">英译：</a></li>
-<li><a href="#11-%E5%BC%95%E8%A8%80">1.1  引言</a></li>
-<li><a href="#12-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E7%BB%93%E6%9E%84%E4%B8%AD%E7%9A%848%E4%B8%AA%E4%BC%9F%E5%A4%A7%E6%80%9D%E6%83%B3">1.2  计算机系统结构中的8个伟大思想</a></li>
-<li><a href="#13-%E7%A8%8B%E5%BA%8F%E6%A6%82%E5%BF%B5%E5%85%A5%E9%97%A8">1.3 程序概念入门</a></li>
-<li><a href="#14-%E7%A1%AC%E4%BB%B6%E6%A6%82%E5%BF%B5%E5%85%A5%E9%97%A8">1.4 硬件概念入门</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-  </div>
-</div>
-
-<script>
-
-  let lastTop = 0, lList = [], hList = [], postBody, lastIndex = -1;
-  let active = 'active-show', activeClass = 'active-current';
-  let tocWrapper = document.querySelector('#toc_wrapper');
-  let tocContent = tocWrapper.children[0];
-  let autoNumber = tocWrapper && tocWrapper.classList.contains('auto-number');
-
-  function addTocNumber(elem, deep) {
-    if (!elem) {
-      return;
-    }
-    let prop = elem.__proto__;
-
-    if (prop === HTMLUListElement.prototype) {
-      for (let i = 0; i < elem.children.length; i++) {
-        addTocNumber(elem.children[i], deep + (i + 1) + '.');
-      }
-    } else if (prop === HTMLLIElement.prototype) {
-      // 保存li元素
-      if (elem.children[0] && elem.children[0].__proto__ === HTMLAnchorElement.prototype) {
-        lList.push(elem);
-      }
-      for (let i = 0; i < elem.children.length; i++) {
-        let cur = elem.children[i];
-        if (cur.__proto__ === HTMLAnchorElement.prototype) {
-          if (autoNumber) {
-            cur.text = deep + ' ' + cur.text;
-          }
-        } else if (cur.__proto__ === HTMLUListElement.prototype) {
-          addTocNumber(cur, deep);
-        }
-      }
-    }
-  }
-
-  function removeParentActiveClass() {
-    let parents = tocContent.querySelectorAll('.' + active)
-    parents.forEach(function (elem) {
-      elem.classList.remove(active);
-    });
-  }
-
-  function addActiveClass(index) {
-    if (index >= 0 && index < hList.length) {
-      lList[index].classList.add(activeClass);
-    }
-  }
-
-  function removeActiveClass(index) {
-    if (index >= 0 && index < hList.length) {
-      lList[index].classList.remove(activeClass);
-    }
-  }
-
-  function addActiveLiElemment(elem, parent) {
-    if (!elem || elem === parent) {
-      return;
-    } else {
-      if (elem.__proto__ === HTMLLIElement.prototype) {
-        elem.classList.add(active);
-      }
-      addActiveLiElemment(elem.parentElement, parent);
-    }
-  }
-
-  function showToc() {
-    if (tocWrapper) {
-      postBody = document.querySelector('#post_body');
-      for (let i = 0; i < postBody.children.length; i++) {
-        if (postBody.children[i].__proto__ === HTMLHeadingElement.prototype) {
-          hList.push(postBody.children[i]);
-        }
-      }
-      if (tocWrapper.classList.contains('compress')) {
-        tocContent.classList.add('closed');
-      } else if (tocWrapper.classList.contains('no_compress')) {
-        tocContent.classList.add('expanded');
-      } else {
-        if (hList.length > 10) {
-          active = 'active-hidden'
-          tocContent.classList.add('closed');
-        } else {
-          tocContent.classList.add('expanded');
-        }
-      }
-    }
-  }
-
-  (function () {
-    // 处理不是从#一级标题开始目录
-    if (tocContent.children.length === 1 && tocContent.children[0].__proto__ === HTMLLIElement.prototype) {
-      let con = tocContent.children[0].children[0];
-      tocContent.innerHTML = con.innerHTML;
-    }
-    let markdownItTOC = document.querySelector('.markdownIt-TOC');
-    let innerHeight = window.innerHeight;
-    markdownItTOC.style = `max-height: ${innerHeight - 80 > 0 ? innerHeight - 80 : innerHeight}px`
-    addTocNumber(tocContent, '');
-  })();
-
-  document.addEventListener('scroll', function (e) {
-    if (lList.length <= 0) {
-      return;
-    }
-    let scrollTop = document.scrollingElement.scrollTop + 10;
-    let dir;
-
-    if (lastTop - scrollTop > 0) {
-      dir = 'up';
-    } else {
-      dir = 'down';
-    }
-
-    lastTop = scrollTop;
-    if (scrollTop <= 0) {
-      if (lastIndex >= 0 && lastIndex < hList.length) {
-        lList[lastIndex].classList.remove(activeClass);
-      }
-      return;
-    }
-
-    let current = 0, hasFind = false;
-    for (let i = 0; i < hList.length; i++) {
-      if (hList[i].offsetTop > scrollTop) {
-        current = i;
-        hasFind = true;
-        break;
-      }
-    }
-    if (!hasFind && scrollTop > lList[lList.length - 1].offsetTop) {
-      current = hList.length - 1;
-    } else {
-      current--;
-    }
-    if (dir === 'down') {
-      if (current > lastIndex) {
-        addActiveClass(current);
-        removeActiveClass(lastIndex)
-        lastIndex = current;
-        removeParentActiveClass();
-        lList[current] && addActiveLiElemment(lList[current].parentElement, tocContent);
-      }
-    } else {
-      if (current < lastIndex) {
-        addActiveClass(current);
-        removeActiveClass(lastIndex);
-        lastIndex = current;
-        removeParentActiveClass();
-        lList[current] && addActiveLiElemment(lList[current].parentElement, tocContent);
-      }
-    }
-  });
-
-
-  window.addEventListener('load', function () {
-    showToc();
-    document.querySelector('#sidebar').style = 'display: block;';
-    tocWrapper.classList.add('toc-active');
-    setTimeout(function () {
-      if ("createEvent" in document) {
-        let evt = document.createEvent("HTMLEvents");
-        evt.initEvent("scroll", false, true);
-        document.dispatchEvent(evt);
-      }
-      else {
-        document.fireEvent("scroll");
-      }
-    }, 500)
-  })
-
-</script>
-            </div>
           
         
       </div>
@@ -534,8 +331,8 @@
           <div class="section bg-color post post-page">
             <section class="post-header">
   <h1 class="post-title">
-    <a class="post-title-link" href="https://chenm0.github.io/post/computer-organization-design-note/">
-      《计算机组成与设计》学习笔记——第1章
+    <a class="post-title-link" href="https://chenm0.github.io/post/weakhashmap/">
+      WeakHashMap的理解
     </a>
   </h1>
   <div class="post-meta">
@@ -543,23 +340,36 @@
     <span class="meta-item pc-show">
       <i class="fa fa-calendar-o"></i>
       <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-09-09 14:01:26">2021-09-09</span>
+      <span class="publish-time" data-t="2021-12-02 11:15:19">2021-12-02</span>
       <span class="post-meta-divider pc-show">|</span>
     </span>
     
     <span class="meta-item">
+      <i class="fa fa-folder-o"></i>
+      <span class="pc-show language" data-lan="category-in">分类于</span>
+      
+      
+      <a href="https://chenm0.github.io/tag/BuwDjq1zh0/">
+        <span>JAVA</span>
+      </a>
+      
+      
+    </span>
+    <span class="post-meta-divider">|</span>
+    
+    <span class="meta-item">
       <i class="fa fa-clock-o"></i>
-      <span>12<span class="language" data-lan="minute">分钟</span></span>
+      <span>4<span class="language" data-lan="minute">分钟</span></span>
     </span>
     <span class="meta-item">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-file-word-o"></i>
-      <span>3163<span class="pc-show language" data-lan="words">字数</span></span>
+      <span>689<span class="pc-show language" data-lan="words">字数</span></span>
     </span>
     
     
     
-    <span id="/post/computer-organization-design-note/" data-flag-title="《计算机组成与设计》学习笔记——第1章" class="meta-item pc-show leancloud_visitors">
+    <span id="/post/weakhashmap/" data-flag-title="WeakHashMap的理解" class="meta-item pc-show leancloud_visitors">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-eye"></i>
       <span><span class="language" data-lan="view">浏览量</span>：<span class="leancloud-visitors-count"></span></span>
@@ -568,236 +378,56 @@
   </div>
 </section>
             <div class="post-body next-md-body" id="post_body">
-              <h3 id="第1章-计算机概要与技术">第1章 计算机概要与技术</h3>
-<h5 id="英译">英译：</h5>
-<pre><code>World Wide Web (www)--- 万维网
-
-Personal Computer (PC) --- 个人计算机
-
-Embedded computer --- 嵌入式计算机
-
-Personal Mobile Device(PMD) --- 个人移动设备
-
-Cloud computing --- 云计算
-
-Warehouse Scale Computer (WSC) --- 仓储规模计算机
-
-Software as a Service (SAAS) --- 软件即服务
-
-Multicore microprocessor --- 多核微处理器
-
-acronym --- 首字母缩略词
-
-Random Access Memory (RAM) --- 随机访问存储器
-
-Central Process Unit (CPU)--- 中央处理单元
-
-Moore's Law --- 摩尔定律
-
-abstraction --- 抽象
-
-common case fast --- 加速大概率事件
-
-parallel performance --- 并行性能
-
-pipeline --- 流水线
-
-prediction --- 预测
-
-hierarchy of memory --- 存储器层次
-
-dependable --- 可靠性
-
-system software --- 系统软件
-
-compiler --- 编译程序
-
-binary digit --- 二进制位
-
-bit --- 位
-
-Instruction --- 指令
-
-assembler --- 汇编程序
-
-assembly language --- 汇编语言
-
-machine language --- 机器语言
-
-high-level programming language --- 高级编程语言
-
-input device --- 输入设备
-
-output device --- 输出设备
-
-Liquid Crystal Display (LCD) --- 液晶显示
-
-active matrix display --- 动态矩阵显示
-
-pixel --- 像素
-
-bit map --- 位图
-
-intergrated circuit --- 集成电路
-
-chip --- 芯片
-
-datapath --- 数据通路
-
-control --- 控制器
-
-Graphic Processor Unit (GPU) --- 图形处理器单元
-
-memory --- 内存
-
-Dynamic Random Access Memory (DRAM) --- 动态随机访问存储器
-
-cache memory --- 缓存
-
-Static Random Access Memory (SRAM) --- 静态随机访问存储器
-
-instruction set architecture --- 指令集体系结构
-
-architecture --- 体系结构
-
-Application Binary Inteface (ABI) --- 应用二进制接口
-
-implementation --- 实现
-
-volatile memory --- 易失性存储器
-
-nonvolatile memory --- 非易失性存储器
-
-main memory 或 primary memory --- 主存储器
-
-secondary memory --- 二级存储器
-
-magnetic disk --- 磁盘
-
-flash memory --- 闪存
-
-hard disk --- 硬盘
-
-Local Area Network (LAN) --- 局域网
-
-Wide Area Network (WAN) --- 广域网
-
-</code></pre>
-<h5 id="11-引言">1.1  引言</h5>
-<p>计算机主要分为以下三类应用及各自的特性：</p>
-<ul>
-<li><strong>个人计算机：</strong> 用于个人使用的计算机，通常包含图形显示器、键盘和鼠标等。个人计算机强调对单用户提供良好的性能，价格低廉，通常运行第三方软件</li>
-<li><strong>服务器：</strong> 用于位多用户运行大型程序的计算机，通常由多个用户并行使用，并且一般通过网络访问。通常情况下，当发生故障时，服务器比个人计算机恢复的代价高的多，因此服务器更加强调可靠性。</li>
-<li><strong>嵌入式计算机：</strong> 嵌入到其他设备中的计算机，一般运行预定义的一个或者一组应用程序。嵌入式计算系统的设计目标是运行单一应用程序或者一组相关的应用程序，并且通常和硬件集成在一起以单一系统的方式一并交付用户。在面向消费者的嵌入式应用中（如数字家电）一般通过简单设计来获得可靠性——其重点在于尽可能地保证一项功能的正常运转。</li>
-</ul>
-<p>后PC时代，在硬件上，由个人移动设备和云计算分别替代了PC和传统的服务器；而通过云计算实现的软件即服务（SAAS) 是软件工业的革命：</p>
-<ul>
-<li><strong>个人移动设备：</strong> 连接到网络上的小型无线设备。PMD由电池供电，通过下载App的方式安装软件。智能手机和平板电脑是典型的PMD</li>
-<li><strong>云计算：</strong> 依赖于称为仓储规模计算机（WSC）的巨型数据中心，在网络上提供服务的大服务器集群，一些运营商根据应用需求出租不同数量的服务器。</li>
-<li><strong>软件即服务：</strong> 在网络上以服务的方式提供软件和数据。其运行方式通常不是在本地设备上运行所有的二进制代码，而是通过诸如运行在本地客户端的浏览器等小程序登录到远程服务器上执行。典型的例子是Web搜索和社交网络。</li>
-</ul>
-<p>硬件和软件如何对程序性能造成影响：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">软件和硬件组成元素</th>
-<th style="text-align:center">该元素如何影响性能</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">算法</td>
-<td style="text-align:center">决定了源码级语句的数量和I/O操作的数量</td>
-</tr>
-<tr>
-<td style="text-align:center">编程语言、编译器和体系结构</td>
-<td style="text-align:center">决定了每条源码级语句对应的计算机指令数量</td>
-</tr>
-<tr>
-<td style="text-align:center">处理器和存储系统</td>
-<td style="text-align:center">决定了指令的执行速度</td>
-</tr>
-<tr>
-<td style="text-align:center">I/O系统（硬件和操作系统）</td>
-<td style="text-align:center">决定了I/O操作可能的执行速度</td>
-</tr>
-</tbody>
-</table>
-<h5 id="12-计算机系统结构中的8个伟大思想">1.2  计算机系统结构中的8个伟大思想</h5>
-<ul>
-<li><strong>面向摩尔定律的设计：</strong> 计算机设计者必须预测其设计完成时的工艺水平，而不是设计开始时的</li>
-<li><strong>使用抽象简化设计：</strong> 用抽象来表示不同的设计层次提高硬件和软件生产率，在高层次中看不到的低层次的细节，只能看到一个简化的模型</li>
-<li><strong>加速大概率事件：</strong> 加速大概率事件远比小概率事件更能提高性能</li>
-<li><strong>通过并行提高性能：</strong> 通过并行执行操作来提高性能</li>
-<li><strong>通过流水线提高性能：</strong> 流水线是特别的并行性场景，可以想象成一系列水管，其中每一块代表一个流水级</li>
-<li><strong>通过预测提高性能：</strong> 在某些情况下，如果假定从误删除恢复执行代价不高并且预测的准确率相对较高，则通过猜测的方式提前开始某些操作。（预测先行）</li>
-<li><strong>存储器层次：</strong> 可以把存储器层次想象成一个堆叠的三角形，该形状表示速度、价格和容量；越靠近顶端，存储器速度越快、每位价格越高；底层宽度越大，存储器容量越大</li>
-<li><strong>通过冗余提高可靠性：</strong> 冗余部件可以替代失效部件并可以帮助检测错误（容灾策略）</li>
-</ul>
-<h5 id="13-程序概念入门">1.3 程序概念入门</h5>
-<p>硬件和软件层次图简化：</p>
-<figure data-type="image" tabindex="1"><img src="https://chenm0.github.io//post-images/1631171219535.jpg" alt="" loading="lazy"></figure>
-<ul>
-<li><strong>系统软件：</strong> 提供常用服务的软件，包括操作系统、编译程序、加载程序和汇编程序等</li>
-</ul>
-<p>系统软件中，有两种是现代计算机系统中必须的：</p>
-<ul>
-<li><strong>操作系统：</strong> 是用户程序与硬件之间的接口，为了使程序更好地在计算机上运行而管理计算机上运行而管理计算机资源的监控程序</li>
-<li><strong>编译程序：</strong> 将高级语言翻译为计算机所能识别的机器语言的程序</li>
-</ul>
-<p>对于计算机来说，最简单的信号就是“通” 和 “断” ，所以计算机只用0和1两个来表示，每个0或1就是一个二进制位，使用数字既表述指令又表示数据是计算机的基础。为符合人类的思维方式，发明了助记符，随后开发了一种称为汇编程序的软件自动将助记符翻译为二进制，但仍需要写出计算机执行的每条命令，要求要像计算机一样思考，于是便出现了高级编程语言。使用高级编程语言有三点好处：</p>
+              <p>WeakHashMap 继承于AbstractMap，实现了Map接口。<br>
+和HashMap一样，WeakHashMap 也是一个散列表，它存储的内容也是键值对(key-value)映射，而且键和值都可以是null。<br>
+不过WeakHashMap的键是“弱键”。在 WeakHashMap 中，当某个键不再正常使用时，会被从WeakHashMap中被自动移除。更精确地说，对于一个给定的键，其映射的存在并不阻止垃圾回收器对该键的丢弃，这就使该键成为可终止的，被终止，然后被回收。某个键被终止时，它对应的键值对也就从映射中有效地移除了。<br>
+这个“弱键”的原理呢？大致上就是，通过WeakReference和ReferenceQueue实现的。 WeakHashMap的key是“弱键”，即是WeakReference类型的；ReferenceQueue是一个队列，它会保存被GC回收的“弱键”。实现步骤是：</p>
 <ol>
-<li>可以用更自然的语言来思考</li>
-<li>简明性</li>
-<li>独立性</li>
+<li>新建WeakHashMap，将“键值对”添加到WeakHashMap中。实际上，WeakHashMap是通过数组table保存Entry(键值对)；每一个Entry实际上是一个单向链表，即Entry是键值对链表。</li>
+<li>当某“弱键”不再被其它对象引用，并被GC回收时。在GC回收该“弱键”时，这个“弱键”也同时会被添加到ReferenceQueue(queue)队列中。</li>
+<li>当下一次我们需要操作WeakHashMap时，会先同步table和queue。table中保存了全部的键值对，而queue中保存被GC回收的键值对；同步它们，就是删除table中被GC回收的键值对。</li>
 </ol>
-<h5 id="14-硬件概念入门">1.4 硬件概念入门</h5>
-<p>组成计算机的5个经典组件是 <mark>输入、输出、存储器、数据通路（也称运算器）和控制器</mark>，数据通路和控制器通常合成为处理器。其中两个关键部件是<strong>输入设备</strong>和<strong>输出设备</strong>，输入设备是为计算机提供信息的装置，如键盘；输出设备是将计算结果输出给用户（如显示器）或其他计算机装置。<br>
-处理器从存储器中得到指令和数据，输入部件将数据写入存储器，输出部件从内存中读出数据，控制器向数据通路、存储器、输入和输出部件发出信号。</p>
-<p><strong>液晶显示（LCD）的原理：</strong><br>
-LCD并非光源，而是控制光的传输。通过电流控制位于两层垂直的偏光板之间的棒状液态分子团形成的转动螺旋线，来弯曲来自显示器后方的光线和少量反射光线（在不施加任何电压的情况下，液晶处于初始状态，并将入射光扭转90度，施加电压时，则不再弯曲，光线不能通过）。<br>
-现在的大多数LCD显示器采用<mark>动态矩阵</mark>显示技术，使用晶体管控制单个像素上光线的传输。每个像素都由晶体管精确地控制电流，使图像更清晰。还有一个红 - 绿 - 蓝屏决定三种颜色分量的强度，每个点需要3个晶体管开关。</p>
-<p>图像由像素矩阵组成，可以表示成二进制位的矩阵，称为“位图”。计算机硬件采用光栅刷新缓冲区（帧缓冲区）来保存位图以支持图像，每个像素的二进制值以刷新频率读出到显示设备。<br>
-而后PC时代使用接触敏感的显示设备替代了键盘和鼠标，拥有良好的用户界面，用户可以直接指向感兴趣的内容。<br>
-触摸屏的原理是电容感应。绝缘玻璃上覆盖一层透明的导体，人的手指接触到屏幕范围时，由于人是导体，将会使屏幕的电场发生变化，进而导致电容的变化。这种技术允许同时接触多个点，可提供非常好的用户界面。</p>
-<p>根据Apple iPad2平板电脑的例子，可以看出I/O是该设备的主要部分，包括一个电容性多触电的LCD、前置摄像头、后置摄像头、麦克风、耳机插孔、扬声器、加速计、陀螺仪、Wi-Fi网络和蓝牙网络。而数据通路、控制器、存储器只占一小部分。<br>
-在Apple iPad2的逻辑主板上由下列设备构成：</p>
-<ul>
-<li><strong>集成电路</strong> ：也叫芯片，一种将几十个至几百万个晶体管连接起来的设备</li>
-<li><strong>中央处理器单元（CPU）</strong>：也成为处理器 ，包括数据通路和控制器
-<ul>
-<li><em>数据通路</em>：是处理器中执行算术操作的部分</li>
-<li><em>控制器</em>：处理器中根据程序的指令指挥数据通路、存储器和I/O设备的部分</li>
-</ul>
-</li>
-</ul>
-<p><strong>关于存储器</strong><br>
-计算机中的存储器设计体现了八大思想中的存储器层次，分为两种类型：<mark>易失性存储器和非易失性存储器</mark>，易失性存储器被称为主存储器，非易失性存储器被称为二级存储器。<br>
-易失性存储器在计算机中有两种存储器</p>
-<ul>
-<li><strong>内存</strong>：程序运行时的存储空间，同时也用于保存程序运行时所需的数据。
-<ul>
-<li><em>DRAM</em>： 动态随机访问存储器，访问时间大约为50ns，每Gib的价格大约为5～10美元</li>
-</ul>
-</li>
-<li><strong>缓存</strong>：小而快的存储器，一般作为DRAM的缓冲
-<ul>
-<li><em>SRAM</em>:  静态随机访问存储器，速度更快且不那么密集，但价格比DRAM高<br>
-非易失性存储器在PC和个人移动设备中的使用不同，PC中磁盘占据主导地位，而闪存在个人移动设备中替代了磁盘。但闪存具有写100000～1000000次后老化或损坏的弱点，所以文件系统必须记录写操作的数目，而且具备避免存储器损坏的策略。例如：避免移动经常使用的数据。磁盘和闪存的区别如下：<br>
-|              |     磁盘      |    闪存     |<br>
-| :----------: | :-----------: | :---------: |<br>
-|  <strong>易失性</strong>  |   非易失性    |  非易失性   |<br>
-| <strong>访问时间</strong> |    5～20ms    |   5～50ms   |<br>
-|   <strong>价格</strong>   | 0.05～0.1美元 | 0.75～1美元 |</li>
-</ul>
-</li>
-</ul>
-<p>计算机硬件的设计也体现了八大思想中的抽象思想，硬件和底层软件之间的接口是最重要的抽象之一，被称为<mark>指令集体系结构</mark>，这一抽象接口使得同一软件可以由成本不同、性能也不同的实现方法完成。<br>
-提供给应用程序员的基本指令集和操作系统接口合称为<mark>应用二进制接口</mark></p>
-<ul>
-<li><strong>指令集体系结构</strong>：也叫体系结构，是低层次软件和硬件之间的抽象接口，包含需要编写正确运行的机器语言程序所需要的全部信息</li>
-<li><strong>应用二进制接口</strong>：用户部分的指令加上应用程序员调用的操作系统接口，定义了二进制层次可移植的计算机的标准</li>
-</ul>
+<p>这就是“弱键”如何被自动从WeakHashMap中删除的步骤了。</p>
+<p>和HashMap一样，WeakHashMap是不同步的。可以使用 Collections.synchronizedMap 方法来构造同步的 WeakHashMap。</p>
+<p>既然有WeakHashMap，那么有WeakHashSet吗？  java collections包是没有直接提供WeakHashSet的。<br>
+我们可以通过Collections.newSetFromMap(Map&lt;E,Boolean&gt; map)方法可以将任何 Map包装成一个Set。源码如下：</p>
+<pre><code>public static &lt;E&gt; Set&lt;E&gt; newSetFromMap(Map&lt;E, Boolean&gt; map) {
+        return new SetFromMap&lt;&gt;(map);
+    }
+ 
+    /**
+     * @serial include
+     */
+    private static class SetFromMap&lt;E&gt; extends AbstractSet&lt;E&gt;
+        implements Set&lt;E&gt;, Serializable
+    {
+        private final Map&lt;E, Boolean&gt; m;  // The backing map
+        private transient Set&lt;E&gt; s;       // Its keySet
+ 
+        SetFromMap(Map&lt;E, Boolean&gt; map) {
+            if (!map.isEmpty())
+                throw new IllegalArgumentException(&quot;Map is non-empty&quot;);
+            m = map;
+            s = map.keySet();
+        }
+ 
+        public void clear()               {        m.clear(); }
+        public int size()                 { return m.size(); }
+        public boolean isEmpty()          { return m.isEmpty(); }
+        public boolean contains(Object o) { return m.containsKey(o); }
+        public boolean remove(Object o)   { return m.remove(o) != null; }
+        public boolean add(E e) { return m.put(e, Boolean.TRUE) == null; }
+        public Iterator&lt;E&gt; iterator()     { return s.iterator(); }
+        public Object[] toArray()         { return s.toArray(); }
+        public &lt;T&gt; T[] toArray(T[] a)     { return s.toArray(a); }
+        public String toString()          { return s.toString(); }
+        public int hashCode()             { return s.hashCode(); }
+        public boolean equals(Object o)   { return o == this || s.equals(o); }
+        public boolean containsAll(Collection&lt;?&gt; c) {return s.containsAll(c);}
+        public boolean removeAll(Collection&lt;?&gt; c)   {return s.removeAll(c);}
+        public boolean retainAll(Collection&lt;?&gt; c)   {return s.retainAll(c);}
+        ```
+        就是对传入的map进行了简单的包装</code></pre>
 
             </div>
             
@@ -810,7 +440,7 @@ LCD并非光源，而是控制光的传输。通过电流控制位于两层垂�
     </li>
     <li class="post-copyright-link">
       <strong class="language" data-lan="link">本文链接：</strong>
-      <a href="https://chenm0.github.io/post/computer-organization-design-note/" title="《计算机组成与设计》学习笔记——第1章">https://chenm0.github.io/post/computer-organization-design-note/</a>
+      <a href="https://chenm0.github.io/post/weakhashmap/" title="WeakHashMap的理解">https://chenm0.github.io/post/weakhashmap/</a>
     </li>
     <li class="post-copyright-license">
       <strong class="language" data-lan="copyright">版权声明： </strong>
@@ -819,19 +449,17 @@ LCD并非光源，而是控制光的传输。通过电流控制位于两层垂�
   </ul>
   <div class="tags">
     
+      <a href="https://chenm0.github.io/tag/BuwDjq1zh0/"># JAVA</a>
+    
   </div>
   <div class="nav">
     <div class="nav-prev">
       
-        <i class="fa fa-chevron-left"></i>
-        <a class="nav-pc-next" title="maven-assembly-plugin插件" href="https://chenm0.github.io/post/maven-assembly-plugin/">maven-assembly-plugin插件</a class="nav-pc-next">
-        <a class="nav-mobile-prev" title="maven-assembly-plugin插件" href="https://chenm0.github.io/post/maven-assembly-plugin/">上一篇</a>
-      
     </div>
     <div class="nav-next">
       
-        <a class="nav-pc-next" title="Mybatis动态SQL" href="https://chenm0.github.io/post/mybatis-sql/">Mybatis动态SQL</a>
-        <a class="nav-mobile-next" title="Mybatis动态SQL" href="https://chenm0.github.io/post/mybatis-sql/">下一篇</a>
+        <a class="nav-pc-next" title="java的垃圾回收" href="https://chenm0.github.io/post/jvm-junk/">java的垃圾回收</a>
+        <a class="nav-mobile-next" title="java的垃圾回收" href="https://chenm0.github.io/post/jvm-junk/">下一篇</a>
         <i class="fa fa-chevron-right"></i>
       
     </div>
