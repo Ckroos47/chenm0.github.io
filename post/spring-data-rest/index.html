@@ -9,7 +9,7 @@
 <meta name="description" content="&lt;a href=&#34;https://https://github.com/chenm0/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
 <title>Spring Data REST 快速构建 restful api 应用 | 观潮亭</title>
-<link rel="shortcut icon" href="/favicon.ico?v=1638430220265">
+<link rel="shortcut icon" href="/favicon.ico?v=1638511866328">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
 <link
@@ -208,7 +208,7 @@
     <div class="sidebar-item-box">
       <a href="/archives/">
         
-        <span class="site-item-stat-count">31</span>
+        <span class="site-item-stat-count">32</span>
         <span class="site-item-stat-name language" data-lan="article">文章</span>
       </a>
     </div>
@@ -1843,6 +1843,54 @@ spring:
       <hr>
     </div>
     <div class="result" id="result">
+      
+      <div class="item">
+        <a class="result-title" style="opacity: 0;" href="https://chenm0.github.io/post/java-instanceof/"" data-c="
+          &lt;p&gt;instanceof 严格来说是Java中的一个双目运算符，用来测试一个对象是否为一个类的实例，用法为：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;boolean result = obj instanceof Class
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;其中 obj 为一个对象，Class 表示一个类或者一个接口，当 obj 为 Class 的对象，或者是其直接或间接子类，或者是其接口的实现类，结果result 都返回 true，否则返回false。&lt;br&gt;
+&lt;U&gt;注意：编译器会检查 obj 是否能转换成右边的class类型，如果不能转换则直接报错，如果不能确定类型，则通过编译，具体看运行时定。&lt;/U&gt;&lt;/p&gt;
+&lt;h3 id=&#34;obj必须为引用类型不能是基本类型&#34;&gt;obj必须为引用类型，不能是基本类型&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;int i = 0;
+System.out.println(i instanceof Integer); //编译不通过
+System.out.println(i instanceof Object);//编译不通过
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;instanceof 运算符只能用作对象的判断。&lt;/p&gt;
+&lt;h3 id=&#34;obj为null&#34;&gt;obj为null&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;System.out.println(null instanceof Object);//false
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;关于 null 类型的描述在官方文档：https://docs.oracle.com/javase/specs/jls/se7/html/jls-4.html#jls-4.1 有一些介绍。一般我们知道Java分为两种数据类型，一种是基本数据类型，有八个分别是 byte  short  int  long  float  double  char boolean,一种是引用类型，包括类，接口，数组等等。而Java中还有一种特殊的 null 类型，该类型没有名字，所以不可能声明为 null 类型的变量或者转换为 null 类型，null 引用是 null 类型表达式唯一可能的值，null 引用也可以转换为任意引用类型。我们不需要对 null 类型有多深刻的了解，我们只需要知道 null 是可以成为任意引用类型的特殊符号。&lt;br&gt;
+&lt;B&gt;在 JavaSE规范 中对 instanceof 运算符的规定就是：如果 obj 为 null，那么将返回 false。&lt;/B&gt;&lt;/p&gt;
+&lt;h3 id=&#34;obj为class类的实例对象&#34;&gt;obj为class类的实例对象&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;Integer integer = new Integer(1);
+System.out.println(integer instanceof  Integer);//true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;obj为class接口的实现类&#34;&gt;obj为class接口的实现类&lt;/h3&gt;
+&lt;p&gt;了解Java 集合的，我们知道集合中有个上层接口 List，其有个典型实现类 ArrayList&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class ArrayList&amp;lt;E&amp;gt; extends AbstractList&amp;lt;E&amp;gt;
+        implements List&amp;lt;E&amp;gt;, RandomAccess, Cloneable, java.io.Serializable
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;所以我们可以用 instanceof 运算符判断 某个对象是否是 List 接口的实现类，如果是返回 true，否则返回 false。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ArrayList arrayList = new ArrayList();
+System.out.println(arrayList instanceof List);//true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;或者反过来也是返回 true&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;List list = new ArrayList();
+System.out.println(list instanceof ArrayList);//true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;obj为class类的直接或间接子类&#34;&gt;obj为class类的直接或间接子类&lt;/h3&gt;
+&lt;p&gt;我们新建一个父类 Person.class，然后在创建它的一个子类 Man.class，然后测试&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Person p1 = new Person();
+Person p2 = new Man();
+Man m1 = new Man();
+System.out.println(p1 instanceof Man);//false
+System.out.println(p2 instanceof Man);//true
+System.out.println(m1 instanceof Man);//true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;注意第一种情况， p1 instanceof Man ，Man 是 Person 的子类，Person 不是 Man 的子类，所以返回结果为 false。&lt;/p&gt;
+">Java关键字--instanceof</a>
+      </div>
       
       <div class="item">
         <a class="result-title" style="opacity: 0;" href="https://chenm0.github.io/post/finalize/"" data-c="

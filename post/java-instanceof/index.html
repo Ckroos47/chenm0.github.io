@@ -8,7 +8,7 @@
 <meta name="keywords" content="个人博客">
 <meta name="description" content="&lt;a href=&#34;https://https://github.com/chenm0/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
-<title>对象的finalization机制、finalize方法理解 | 观潮亭</title>
+<title>Java关键字--instanceof | 观潮亭</title>
 <link rel="shortcut icon" href="/favicon.ico?v=1638511866328">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
@@ -38,7 +38,7 @@
 
 
 
-  <meta name="description" content="对象的finalization机制、finalize方法理解" />
+  <meta name="description" content="Java关键字--instanceof" />
   <meta name="keywords" content="JAVA" />
 </head>
 
@@ -255,7 +255,11 @@
 <ul>
 <li>
 <ul>
-<li><a href="#%E5%AF%B9%E8%B1%A1%E7%9A%84finalization%E6%9C%BA%E5%88%B6">对象的finalization机制</a></li>
+<li><a href="#obj%E5%BF%85%E9%A1%BB%E4%B8%BA%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B%E4%B8%8D%E8%83%BD%E6%98%AF%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B">obj必须为引用类型，不能是基本类型</a></li>
+<li><a href="#obj%E4%B8%BAnull">obj为null</a></li>
+<li><a href="#obj%E4%B8%BAclass%E7%B1%BB%E7%9A%84%E5%AE%9E%E4%BE%8B%E5%AF%B9%E8%B1%A1">obj为class类的实例对象</a></li>
+<li><a href="#obj%E4%B8%BAclass%E6%8E%A5%E5%8F%A3%E7%9A%84%E5%AE%9E%E7%8E%B0%E7%B1%BB">obj为class接口的实现类</a></li>
+<li><a href="#obj%E4%B8%BAclass%E7%B1%BB%E7%9A%84%E7%9B%B4%E6%8E%A5%E6%88%96%E9%97%B4%E6%8E%A5%E5%AD%90%E7%B1%BB">obj为class类的直接或间接子类</a></li>
 </ul>
 </li>
 </ul>
@@ -525,8 +529,8 @@
           <div class="section bg-color post post-page">
             <section class="post-header">
   <h1 class="post-title">
-    <a class="post-title-link" href="https://chenm0.github.io/post/finalize/">
-      对象的finalization机制、finalize方法理解
+    <a class="post-title-link" href="https://chenm0.github.io/post/java-instanceof/">
+      Java关键字--instanceof
     </a>
   </h1>
   <div class="post-meta">
@@ -534,7 +538,7 @@
     <span class="meta-item pc-show">
       <i class="fa fa-calendar-o"></i>
       <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-12-02 14:17:53">2021-12-02</span>
+      <span class="publish-time" data-t="2021-12-03 13:55:47">2021-12-03</span>
       <span class="post-meta-divider pc-show">|</span>
     </span>
     
@@ -558,12 +562,12 @@
     <span class="meta-item">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-file-word-o"></i>
-      <span>729<span class="pc-show language" data-lan="words">字数</span></span>
+      <span>691<span class="pc-show language" data-lan="words">字数</span></span>
     </span>
     
     
     
-    <span id="/post/finalize/" data-flag-title="对象的finalization机制、finalize方法理解" class="meta-item pc-show leancloud_visitors">
+    <span id="/post/java-instanceof/" data-flag-title="Java关键字--instanceof" class="meta-item pc-show leancloud_visitors">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-eye"></i>
       <span><span class="language" data-lan="view">浏览量</span>：<span class="leancloud-visitors-count"></span></span>
@@ -572,28 +576,49 @@
   </div>
 </section>
             <div class="post-body next-md-body" id="post_body">
-              <h3 id="对象的finalization机制">对象的finalization机制</h3>
-<p>Java提供了finalization机制来允许开发人员提供对象销毁之前自定义处理逻辑。垃圾在回收一个对象之前，总会先调用这个对象的finalize()方法，finalize()方法是object类定义的，允许在任何自类中被重写，用于对象被回收时进行资源释放。例如，关闭数据库连接等等。<br>
-永远不要主动调用对象的finalize()方法，应该交给回收机制调用，理由如下：</p>
-<ol>
-<li>finalize()可能导致对象复活</li>
-<li>finalize()执行时间没有保障，完全由GC线程决定，极端情况下，若不发生GC，finalize()就不会被调用</li>
-<li>糟糕的finalize()会严重影响GC的性能<br>
-如果从所有的根节点都无法访问到每个对象，说明对象已不再使用了。一般来说，此对象就应该jie sjhe由于finalize()方法的存在，虚拟机中的对象一般处于三种可能的状态：</li>
-<li>可触及的：从根节点开始，可以到达这个对象</li>
-<li>可复活的：对象的所有引用都被释放，但是对象可能在finalize()被复活(例如：在finalize()中又有新的引用指向该对象)。</li>
-<li>不可触及的，对象的finalize()被调用之后，对象没有复活，那么会进入不可触及的状态。一般不可触及的对象不可能被复活，<B>因为finalize()只会调用一次   </B><br>
-以上3种状态，由于finalize()方法的存在，进行区分，只有在对象不可触及的时候才可以被回收。<br>
-如何判断一个对象是否可以被回收？</li>
-<li>如果objA到GC Roots没有引用链，则进行第一次标记。（这里的标记意思是，对象是不可达的，对象可能是可复活的或者不可触及的。）</li>
-<li>进行筛选，判断对象是否需要执行finalize()方法
-<ul>
-<li>如果对象objA没有重写finalize()方法，或者finalize()方法已经被虚拟机调用过，则虚拟机认 为“没有必要执行finalize()”，objA被判定为不可触及的</li>
-<li>如果objA重写了finalize()方法，且还未执行过，那么objA会被插入到F-Queue队列中，由一个虚拟机自动创建的、低优先级的Finalizer线程触发其finalize()方法。</li>
-<li>finalize()方法是对象逃脱死亡的最后机会，稍后GC会对F-Queue中的objA对象进行第二次标记，如果objA在finalize()方法中与引用链上的任何一个对象建立了联系（也就是复活了），那么第二次标记时，objA会被移出“即将回收”集合。之后，对象会再次出现没有引用存在的情况，在这个情况下，finalize()方法不会被再次调用，对象会直接变成不可触及状态。因为，一个对象的finalize()方法只会被调用一次。</li>
-</ul>
-</li>
-</ol>
+              <p>instanceof 严格来说是Java中的一个双目运算符，用来测试一个对象是否为一个类的实例，用法为：</p>
+<pre><code>boolean result = obj instanceof Class
+</code></pre>
+<p>其中 obj 为一个对象，Class 表示一个类或者一个接口，当 obj 为 Class 的对象，或者是其直接或间接子类，或者是其接口的实现类，结果result 都返回 true，否则返回false。<br>
+<U>注意：编译器会检查 obj 是否能转换成右边的class类型，如果不能转换则直接报错，如果不能确定类型，则通过编译，具体看运行时定。</U></p>
+<h3 id="obj必须为引用类型不能是基本类型">obj必须为引用类型，不能是基本类型</h3>
+<pre><code>int i = 0;
+System.out.println(i instanceof Integer); //编译不通过
+System.out.println(i instanceof Object);//编译不通过
+</code></pre>
+<p>instanceof 运算符只能用作对象的判断。</p>
+<h3 id="obj为null">obj为null</h3>
+<pre><code>System.out.println(null instanceof Object);//false
+</code></pre>
+<p>关于 null 类型的描述在官方文档：https://docs.oracle.com/javase/specs/jls/se7/html/jls-4.html#jls-4.1 有一些介绍。一般我们知道Java分为两种数据类型，一种是基本数据类型，有八个分别是 byte  short  int  long  float  double  char boolean,一种是引用类型，包括类，接口，数组等等。而Java中还有一种特殊的 null 类型，该类型没有名字，所以不可能声明为 null 类型的变量或者转换为 null 类型，null 引用是 null 类型表达式唯一可能的值，null 引用也可以转换为任意引用类型。我们不需要对 null 类型有多深刻的了解，我们只需要知道 null 是可以成为任意引用类型的特殊符号。<br>
+<B>在 JavaSE规范 中对 instanceof 运算符的规定就是：如果 obj 为 null，那么将返回 false。</B></p>
+<h3 id="obj为class类的实例对象">obj为class类的实例对象</h3>
+<pre><code>Integer integer = new Integer(1);
+System.out.println(integer instanceof  Integer);//true
+</code></pre>
+<h3 id="obj为class接口的实现类">obj为class接口的实现类</h3>
+<p>了解Java 集合的，我们知道集合中有个上层接口 List，其有个典型实现类 ArrayList</p>
+<pre><code>public class ArrayList&lt;E&gt; extends AbstractList&lt;E&gt;
+        implements List&lt;E&gt;, RandomAccess, Cloneable, java.io.Serializable
+</code></pre>
+<p>所以我们可以用 instanceof 运算符判断 某个对象是否是 List 接口的实现类，如果是返回 true，否则返回 false。</p>
+<pre><code>ArrayList arrayList = new ArrayList();
+System.out.println(arrayList instanceof List);//true
+</code></pre>
+<p>或者反过来也是返回 true</p>
+<pre><code>List list = new ArrayList();
+System.out.println(list instanceof ArrayList);//true
+</code></pre>
+<h3 id="obj为class类的直接或间接子类">obj为class类的直接或间接子类</h3>
+<p>我们新建一个父类 Person.class，然后在创建它的一个子类 Man.class，然后测试</p>
+<pre><code>Person p1 = new Person();
+Person p2 = new Man();
+Man m1 = new Man();
+System.out.println(p1 instanceof Man);//false
+System.out.println(p2 instanceof Man);//true
+System.out.println(m1 instanceof Man);//true
+</code></pre>
+<p>注意第一种情况， p1 instanceof Man ，Man 是 Person 的子类，Person 不是 Man 的子类，所以返回结果为 false。</p>
 
             </div>
             
@@ -606,7 +631,7 @@
     </li>
     <li class="post-copyright-link">
       <strong class="language" data-lan="link">本文链接：</strong>
-      <a href="https://chenm0.github.io/post/finalize/" title="对象的finalization机制、finalize方法理解">https://chenm0.github.io/post/finalize/</a>
+      <a href="https://chenm0.github.io/post/java-instanceof/" title="Java关键字--instanceof">https://chenm0.github.io/post/java-instanceof/</a>
     </li>
     <li class="post-copyright-license">
       <strong class="language" data-lan="copyright">版权声明： </strong>
@@ -621,15 +646,11 @@
   <div class="nav">
     <div class="nav-prev">
       
-        <i class="fa fa-chevron-left"></i>
-        <a class="nav-pc-next" title="Java关键字--instanceof" href="https://chenm0.github.io/post/java-instanceof/">Java关键字--instanceof</a class="nav-pc-next">
-        <a class="nav-mobile-prev" title="Java关键字--instanceof" href="https://chenm0.github.io/post/java-instanceof/">上一篇</a>
-      
     </div>
     <div class="nav-next">
       
-        <a class="nav-pc-next" title="WeakHashMap的理解" href="https://chenm0.github.io/post/weakhashmap/">WeakHashMap的理解</a>
-        <a class="nav-mobile-next" title="WeakHashMap的理解" href="https://chenm0.github.io/post/weakhashmap/">下一篇</a>
+        <a class="nav-pc-next" title="对象的finalization机制、finalize方法理解" href="https://chenm0.github.io/post/finalize/">对象的finalization机制、finalize方法理解</a>
+        <a class="nav-mobile-next" title="对象的finalization机制、finalize方法理解" href="https://chenm0.github.io/post/finalize/">下一篇</a>
         <i class="fa fa-chevron-right"></i>
       
     </div>
