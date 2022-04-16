@@ -9,7 +9,7 @@
 <meta name="description" content="&lt;a href=&#34;https://https://github.com/chenm0/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
 <title>观潮亭</title>
-<link rel="shortcut icon" href="/favicon.ico?v=1640221684919">
+<link rel="shortcut icon" href="/favicon.ico?v=1650118611476">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
 <link
@@ -190,19 +190,19 @@
     <div class="sidebar-item-box">
       <a href="/archives/">
         
-        <span class="site-item-stat-count">31</span>
+        <span class="site-item-stat-count">32</span>
         <span class="site-item-stat-name language" data-lan="article">文章</span>
       </a>
     </div>
     <div class="sidebar-item-box">
       <a href="">
-        <span class="site-item-stat-count">13</span>
+        <span class="site-item-stat-count">14</span>
         <span class="site-item-stat-name language" data-lan="category">分类</span>
       </a>
     </div>
     <div class="sidebar-item-box">
       <a href="/tags/">
-        <span class="site-item-stat-count">13</span>
+        <span class="site-item-stat-count">14</span>
         <span class="site-item-stat-name language" data-lan="tag">标签</span>
       </a>
     </div>
@@ -253,6 +253,23 @@
           <small class="language" data-lan="tag">标签</small>
         </h2>
       </div>
+      
+      
+      
+      
+      
+      <a href="https://chenm0.github.io/post/jdk-lang-object/">
+        <div class="motion-warpper">
+          <div class="tag-post-node">
+            <h1>
+              04-16
+              <small>JDK源码阅读笔记java.lang篇（1）--- Object</small>
+            </h1>
+          </div>
+        </div>
+      </a>
+      
+      
       
       
       
@@ -1263,6 +1280,58 @@
       <hr>
     </div>
     <div class="result" id="result">
+      
+      <div class="item">
+        <a class="result-title" style="opacity: 0;" href="https://chenm0.github.io/post/jdk-lang-object/"" data-c="
+          &lt;pre&gt;&lt;code&gt;private static native void registerNatives();
+static {
+    registerNatives();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;registerNatives()存在于很多常用的类中，首先要先理解native关键字。&lt;/p&gt;
+&lt;p&gt;在调用本地方法之前，Java会经历两个步骤加载本地方法的实现库，第一步是使用System.loadLibrary()将包含本地方法实现的动态文件加载进内存；第二步是当Java程序需要调用本地方法时，虚拟机在加载的动态文件中定位并链接该本地方法，从而得以执行本地方法。&lt;br&gt;
+&lt;B&gt;注意：&lt;/B&gt; 实现native方法需要本地的C/C++源文件的方法名的格式必须为：Java_完整类名_方法名，包名的.号，以_表示_method，这是因为JVM中对本地方法名有相应的规定，在使用JNI时需要遵守。&lt;/p&gt;
+&lt;p&gt;将.cpp文件打包成dll文件就可以在Java中调用成功，使用JNI_onlad实现native方法的结果与普通JNI实现native的结果相同。使用JNI_onlad可以在C\C++实现native方法时其方法名可以不与生成的头文件方法名相同，相比而言第二种方式更加便捷。除此之外，它们之间的效率也不一样。查阅相关资料使用JNI_onload的方式实现native方法更加高效，其原因如下：&lt;br&gt;
+1.	使用JNI传统方式，当Java类调用本地函数时，通常是依靠虚拟机去动态寻找链接库中的本地函数(因此才需要特定规则的命名格式)，而使用第二种方式的RegisterNatives方法将本地函数向虚拟机进行登记，可以让其更有效率的找到函数；&lt;br&gt;
+2.	在运行时动态调整本地函数与Java函数值之间的映射关系，只需要多次调用RegisterNatives()方法，并传入不同的映射表参数。例如以上中使用static JNINativeMethod methods[] = { { &amp;quot;encrypt&amp;quot;, &amp;quot;([B)[B&amp;quot;, (jbyteArray *) encrypt} }的方式实现多个native方法的映射。&lt;br&gt;
+到这里基本可以得出之所以Thread、Classload源码中使用第二种方式快是因为JNI中的registerNatives()方法使程序主动将本地方法链接到调用方，当Java程序需要调用本地方法时就可以直接调用，而不需要虚拟机再去定位并链接。为了更清晰的认识是如何注册下面需要阅读C/C++的源码。&lt;/p&gt;
+&lt;p&gt;在Object、Thread等类中通过registerNatives将指定的本地方法绑定到指定函数，如将hashCode和clone本地方法绑定到JVM_IHashCode和JVM_IHashCode函数。可知Java中的registerNatives代码的目的就是注册绑定本地方法，其方式是通过JNI_onload函数实现动态绑定。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Native&lt;br&gt;
+Native method是由非Java语言实现的方法。通常Java中的native方法的常是C/C++实现，Java中提供了与其他语言通信的API即JNI（Java Native Interface）。如果要使用Java调用其它语言的函数，就必须遵循JNI的API约定。&lt;br&gt;
+### 使用规则：&lt;br&gt;
+a.	native标识符除不能与abstract联用外，可以与其它标识符联用；&lt;br&gt;
+b.	native method方法可以返回任何java类型，包括非基本类型，也可以进行异常控制；&lt;br&gt;
+c.	如果含有native method方法的类被继承，子类会继承这个native method方法，也可以使用java语言重写这个方法；&lt;br&gt;
+d.	如果一个native method方法被final标识，它被继承后不能被重写。&lt;br&gt;
+### 实现步骤：&lt;br&gt;
+1.	在Java中声明native()方法,然后编译；&lt;br&gt;
+2.	使用javah命令生成.h文件；(.h文件是C语言和【C++】语言的头文件，一般在【.h】类的头文件里面只放入函数声明，宏定义，函数原型，而具体的实现在【.cpp】文件里面。)&lt;br&gt;
+3.	编写.cpp文件实现native导出方法，其中需要包含第二步产生的.h文件（注意其中需包含JDK带的jni.h文件）；&lt;br&gt;
+4.	将本地代码编译成动态库（Windows：&lt;em&gt;.dll，linux/unix：&lt;/em&gt;.so，mac os x：*.jnilib）；&lt;br&gt;
+5.	Java中使用System.loadLibrary()方法加载第四步产生的动态链接库文件，至此，整个过程结束。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre&gt;&lt;code&gt;/**
+ * Constructs a new object.
+ */
+@HotSpotIntrinsicCandidate
+public Object() {}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;@HotSpotIntrinsicCandidate&lt;/strong&gt;&lt;br&gt;
+被@HotSpotIntrinsicCandidate标注的方法，在HotSpot中都有一套高效的实现，该高效实现基于CPU指令，运行时，HotSpot维护的高效实现会替代JDK的源码实现，从而获得更高的效率。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@HotSpotIntrinsicCandidate
+public final native Class&amp;lt;?&amp;gt; getClass();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;返回对象的运行时类，即Class对象。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;讨论“&lt;T&gt;&amp;quot;和&amp;quot;&amp;lt;?&amp;gt;&amp;quot;，首先要区分开两种不同的场景：&lt;br&gt;
+1.	声明一个泛型类或泛型方法。&lt;br&gt;
+2.	使用泛型类或泛型方法。&lt;br&gt;
+类型参数“&lt;T&gt;&amp;quot;主要用于第一种，声明泛型或者泛型方法。无界通配符“&amp;lt;?&amp;gt;&amp;quot;主要用于第二种，&lt;br&gt;
+使用泛型类或者泛型方法&lt;/p&gt;
+&lt;/blockquote&gt;
+">JDK源码阅读笔记java.lang篇（1）--- Object</a>
+      </div>
       
       <div class="item">
         <a class="result-title" style="opacity: 0;" href="https://chenm0.github.io/post/java-instanceof/"" data-c="

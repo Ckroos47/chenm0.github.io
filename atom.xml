@@ -2,14 +2,69 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://chenm0.github.io/</id>
     <title>观潮亭</title>
-    <updated>2021-12-23T01:08:06.858Z</updated>
+    <updated>2022-04-16T14:16:54.497Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://chenm0.github.io/"/>
     <link rel="self" href="https://chenm0.github.io/atom.xml"/>
     <subtitle>&lt;a href=&quot;https://https://github.com/chenm0/&quot; target=&quot;_blank&quot;&gt;code blog&lt;/a&gt;</subtitle>
     <logo>https://chenm0.github.io/images/avatar.png</logo>
     <icon>https://chenm0.github.io/favicon.ico</icon>
-    <rights>All rights reserved 2021, 观潮亭</rights>
+    <rights>All rights reserved 2022, 观潮亭</rights>
+    <entry>
+        <title type="html"><![CDATA[JDK源码阅读笔记java.lang篇（1）--- Object]]></title>
+        <id>https://chenm0.github.io/post/jdk-lang-object/</id>
+        <link href="https://chenm0.github.io/post/jdk-lang-object/">
+        </link>
+        <updated>2022-04-16T14:01:06.000Z</updated>
+        <content type="html"><![CDATA[<pre><code>private static native void registerNatives();
+static {
+    registerNatives();
+}
+</code></pre>
+<p>registerNatives()存在于很多常用的类中，首先要先理解native关键字。</p>
+<p>在调用本地方法之前，Java会经历两个步骤加载本地方法的实现库，第一步是使用System.loadLibrary()将包含本地方法实现的动态文件加载进内存；第二步是当Java程序需要调用本地方法时，虚拟机在加载的动态文件中定位并链接该本地方法，从而得以执行本地方法。<br>
+<B>注意：</B> 实现native方法需要本地的C/C++源文件的方法名的格式必须为：Java_完整类名_方法名，包名的.号，以_表示_method，这是因为JVM中对本地方法名有相应的规定，在使用JNI时需要遵守。</p>
+<p>将.cpp文件打包成dll文件就可以在Java中调用成功，使用JNI_onlad实现native方法的结果与普通JNI实现native的结果相同。使用JNI_onlad可以在C\C++实现native方法时其方法名可以不与生成的头文件方法名相同，相比而言第二种方式更加便捷。除此之外，它们之间的效率也不一样。查阅相关资料使用JNI_onload的方式实现native方法更加高效，其原因如下：<br>
+1.	使用JNI传统方式，当Java类调用本地函数时，通常是依靠虚拟机去动态寻找链接库中的本地函数(因此才需要特定规则的命名格式)，而使用第二种方式的RegisterNatives方法将本地函数向虚拟机进行登记，可以让其更有效率的找到函数；<br>
+2.	在运行时动态调整本地函数与Java函数值之间的映射关系，只需要多次调用RegisterNatives()方法，并传入不同的映射表参数。例如以上中使用static JNINativeMethod methods[] = { { &quot;encrypt&quot;, &quot;([B)[B&quot;, (jbyteArray *) encrypt} }的方式实现多个native方法的映射。<br>
+到这里基本可以得出之所以Thread、Classload源码中使用第二种方式快是因为JNI中的registerNatives()方法使程序主动将本地方法链接到调用方，当Java程序需要调用本地方法时就可以直接调用，而不需要虚拟机再去定位并链接。为了更清晰的认识是如何注册下面需要阅读C/C++的源码。</p>
+<p>在Object、Thread等类中通过registerNatives将指定的本地方法绑定到指定函数，如将hashCode和clone本地方法绑定到JVM_IHashCode和JVM_IHashCode函数。可知Java中的registerNatives代码的目的就是注册绑定本地方法，其方式是通过JNI_onload函数实现动态绑定。</p>
+<blockquote>
+<p>Native<br>
+Native method是由非Java语言实现的方法。通常Java中的native方法的常是C/C++实现，Java中提供了与其他语言通信的API即JNI（Java Native Interface）。如果要使用Java调用其它语言的函数，就必须遵循JNI的API约定。<br>
+### 使用规则：<br>
+a.	native标识符除不能与abstract联用外，可以与其它标识符联用；<br>
+b.	native method方法可以返回任何java类型，包括非基本类型，也可以进行异常控制；<br>
+c.	如果含有native method方法的类被继承，子类会继承这个native method方法，也可以使用java语言重写这个方法；<br>
+d.	如果一个native method方法被final标识，它被继承后不能被重写。<br>
+### 实现步骤：<br>
+1.	在Java中声明native()方法,然后编译；<br>
+2.	使用javah命令生成.h文件；(.h文件是C语言和【C++】语言的头文件，一般在【.h】类的头文件里面只放入函数声明，宏定义，函数原型，而具体的实现在【.cpp】文件里面。)<br>
+3.	编写.cpp文件实现native导出方法，其中需要包含第二步产生的.h文件（注意其中需包含JDK带的jni.h文件）；<br>
+4.	将本地代码编译成动态库（Windows：<em>.dll，linux/unix：</em>.so，mac os x：*.jnilib）；<br>
+5.	Java中使用System.loadLibrary()方法加载第四步产生的动态链接库文件，至此，整个过程结束。</p>
+</blockquote>
+<pre><code>/**
+ * Constructs a new object.
+ */
+@HotSpotIntrinsicCandidate
+public Object() {}
+</code></pre>
+<p><strong>@HotSpotIntrinsicCandidate</strong><br>
+被@HotSpotIntrinsicCandidate标注的方法，在HotSpot中都有一套高效的实现，该高效实现基于CPU指令，运行时，HotSpot维护的高效实现会替代JDK的源码实现，从而获得更高的效率。</p>
+<pre><code>@HotSpotIntrinsicCandidate
+public final native Class&lt;?&gt; getClass();
+</code></pre>
+<p>返回对象的运行时类，即Class对象。</p>
+<blockquote>
+<p>讨论“<T>&quot;和&quot;&lt;?&gt;&quot;，首先要区分开两种不同的场景：<br>
+1.	声明一个泛型类或泛型方法。<br>
+2.	使用泛型类或泛型方法。<br>
+类型参数“<T>&quot;主要用于第一种，声明泛型或者泛型方法。无界通配符“&lt;?&gt;&quot;主要用于第二种，<br>
+使用泛型类或者泛型方法</p>
+</blockquote>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Java关键字--instanceof]]></title>
         <id>https://chenm0.github.io/post/java-instanceof/</id>
@@ -2085,185 +2140,6 @@ Result table:
 </code></pre>
 <h5 id="重点-17"><strong>重点:</strong></h5>
 <p>在sql的update语句中，if语句类似于三目运算符的作用</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Maven setting]]></title>
-        <id>https://chenm0.github.io/post/maven-setting/</id>
-        <link href="https://chenm0.github.io/post/maven-setting/">
-        </link>
-        <updated>2021-08-09T01:16:36.000Z</updated>
-        <content type="html"><![CDATA[<?xml version="1.0" encoding="UTF-8"?> 
-<p><settings xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
- xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd"></p>
- <!--本地仓库。该值表示构建系统本地仓库的路径。其默认值为~/.m2/repository。 --> 
-<p><localRepository>usr/local/maven</localRepository></p>
- <!--Maven是否需要和用户交互以获得输入。如果Maven需要和用户交互以获得输入，则设置成true，反之则应为false。默认为true。--> 
-<p><interactiveMode>true</interactiveMode></p>
- <!--Maven是否需要使用plugin-registry.xml文件来管理插件版本。如果需要让Maven使用文件~/.m2/plugin-registry.xml来管理插件版本，则设为true。默认为false。--> 
-<p><usePluginRegistry>false</usePluginRegistry></p>
- <!--表示Maven是否需要在离线模式下运行。如果构建系统需要在离线模式下运行，则为true，默认为false。当由于网络设置原因或者安全因素，构建服务器不能连接远程仓库的时候，该配置就十分有用。 --> 
-<p><offline>false</offline></p>
- <!--当插件的组织Id（groupId）没有显式提供时，供搜寻插件组织Id（groupId）的列表。该元素包含一个pluginGroup元素列表，每个子元素包含了一个组织Id（groupId）。当我们使用某个插件，并且没有在命令行为其提供组织Id（groupId）的时候，Maven就会使用该列表。默认情况下该列表包含了org.apache.maven.plugins。 --> 
- <pluginGroups> 
- <!--plugin的组织Id（groupId） --> 
- <pluginGroup>org.codehaus.mojo</pluginGroup> 
- </pluginGroups> 
- <!--用来配置不同的代理，多代理profiles 可以应对笔记本或移动设备的工作环境：通过简单的设置profile id就可以很容易的更换整个代理配置。 --> 
- <proxies> 
- <!--代理元素包含配置代理时需要的信息--> 
- <proxy> 
- <!--代理的唯一定义符，用来区分不同的代理元素。--> 
- <id>myproxy</id> 
- <!--该代理是否是激活的那个。true则激活代理。当我们声明了一组代理，而某个时候只需要激活一个代理的时候，该元素就可以派上用处。 --> 
- <active>true</active> 
- <!--代理的协议。 协议://主机名:端口，分隔成离散的元素以方便配置。--> 
- <protocol>http</protocol> 
- <!--代理的主机名。协议://主机名:端口，分隔成离散的元素以方便配置。 --> 
- <host>proxy.somewhere.com</host> 
- <!--代理的端口。协议://主机名:端口，分隔成离散的元素以方便配置。 --> 
- <port>8080</port> 
- <!--代理的用户名，用户名和密码表示代理服务器认证的登录名和密码。 --> 
- <username>proxyuser</username> 
- <!--代理的密码，用户名和密码表示代理服务器认证的登录名和密码。 --> 
- <password>somepassword</password> 
- <!--不该被代理的主机名列表。该列表的分隔符由代理服务器指定；例子中使用了竖线分隔符，使用逗号分隔也很常见。--> 
- <nonProxyHosts>*.google.com|ibiblio.org</nonProxyHosts> 
- </proxy> 
- </proxies> 
- <!--配置服务端的一些设置。一些设置如安全证书不应该和pom.xml一起分发。这种类型的信息应该存在于构建服务器上的settings.xml文件中。--> 
- <servers> 
- <!--服务器元素包含配置服务器时需要的信息 --> 
- <server> 
- <!--这是server的id（注意不是用户登陆的id），该id与distributionManagement中repository元素的id相匹配。--> 
- <id>server001</id> 
- <!--鉴权用户名。鉴权用户名和鉴权密码表示服务器认证所需要的登录名和密码。 --> 
- <username>my_login</username> 
- <!--鉴权密码 。鉴权用户名和鉴权密码表示服务器认证所需要的登录名和密码。 --> 
- <password>my_password</password> 
- <!--鉴权时使用的私钥位置。和前两个元素类似，私钥位置和私钥密码指定了一个私钥的路径（默认是/home/hudson/.ssh/id_dsa）以及如果需要的话，一个密语。将来passphrase和password元素可能会被提取到外部，但目前它们必须在settings.xml文件以纯文本的形式声明。 --> 
- <privateKey>${usr.home}/.ssh/id_dsa</privateKey> 
- <!--鉴权时使用的私钥密码。--> 
- <passphrase>some_passphrase</passphrase> 
- <!--文件被创建时的权限。如果在部署的时候会创建一个仓库文件或者目录，这时候就可以使用权限（permission）。这两个元素合法的值是一个三位数字，其对应了unix文件系统的权限，如664，或者775。 --> 
- <filePermissions>664</filePermissions> 
- <!--目录被创建时的权限。 --> 
- <directoryPermissions>775</directoryPermissions> 
- <!--传输层额外的配置项 --> 
- <configuration></configuration> 
- </server> 
- </servers> 
- <!--为仓库列表配置的下载镜像列表。 --> 
- <mirrors> 
- <!--给定仓库的下载镜像。 --> 
- <mirror> 
- <!--该镜像的唯一标识符。id用来区分不同的mirror元素。 --> 
- <id>planetmirror.com</id> 
- <!--镜像名称 --> 
- <name>PlanetMirror Australia</name> 
- <!--该镜像的URL。构建系统会优先考虑使用该URL，而非使用默认的服务器URL。 --> 
- <url>http://downloads.planetmirror.com/pub/maven2</url> 
- <!--被镜像的服务器的id。例如，如果我们要设置了一个Maven中央仓库（http://repo1.maven.org/maven2）的镜像，就需要将该元素设置成central。这必须和中央仓库的id central完全一致。--> 
- <mirrorOf>central</mirrorOf> 
- </mirror> 
- </mirrors> 
- <!--根据环境参数来调整构建配置的列表。settings.xml中的profile元素是pom.xml中profile元素的裁剪版本。它包含了id，activation, repositories, pluginRepositories和 properties元素。这里的profile元素只包含这五个子元素是因为这里只关心构建系统这个整体（这正是settings.xml文件的角色定位），而非单独的项目对象模型设置。如果一个settings中的profile被激活，它的值会覆盖任何其它定义在POM中或者profile.xml中的带有相同id的profile。 --> 
- <profiles> 
- <!--根据环境参数来调整的构件的配置--> 
- <profile> 
- <!--该配置的唯一标识符。 --> 
- <id>test</id> 
- <!--自动触发profile的条件逻辑。Activation是profile的开启钥匙。如POM中的profile一样，profile的力量来自于它能够在某些特定的环境中自动使用某些特定的值；这些环境通过activation元素指定。activation元素并不是激活profile的唯一方式。settings.xml文件中的activeProfile元素可以包含profile的id。profile也可以通过在命令行，使用-P标记和逗号分隔的列表来显式的激活（如，-P test）。--> 
- <activation> 
- <!--profile默认是否激活的标识--> 
- <activeByDefault>false</activeByDefault> 
- <!--当匹配的jdk被检测到，profile被激活。例如，1.4激活JDK1.4，1.4.0_2，而!1.4激活所有版本不是以1.4开头的JDK。--> 
- <jdk>1.5</jdk> 
- <!--当匹配的操作系统属性被检测到，profile被激活。os元素可以定义一些操作系统相关的属性。--> 
- <os> 
- <!--激活profile的操作系统的名字 --> 
- <name>Windows XP</name> 
- <!--激活profile的操作系统所属家族(如 'windows') --> 
- <family>Windows</family> 
- <!--激活profile的操作系统体系结构 --> 
- <arch>x86</arch> 
- <!--激活profile的操作系统版本--> 
- <version>5.1.2600</version> 
- </os> 
- <!--如果Maven检测到某一个属性（其值可以在POM中通过${名称}引用），其拥有对应的名称和值，Profile就会被激活。如果值字段是空的，那么存在属性名称字段就会激活profile，否则按区分大小写方式匹配属性值字段--> 
- <property> 
- <!--激活profile的属性的名称--> 
- <name>mavenVersion</name> 
- <!--激活profile的属性的值 --> 
- <value>2.0.3</value> 
- </property> 
- <!--提供一个文件名，通过检测该文件的存在或不存在来激活profile。missing检查文件是否存在，如果不存在则激活profile。另一方面，exists则会检查文件是否存在，如果存在则激活profile。--> 
- <file> 
- <!--如果指定的文件存在，则激活profile。 --> 
- <exists>/usr/local/hudson/hudson-home/jobs/maven-guide-zh-to-production/workspace/</exists> 
- <!--如果指定的文件不存在，则激活profile。--> 
- <missing>/usr/local/hudson/hudson-home/jobs/maven-guide-zh-to-production/workspace/</missing> 
- </file> 
- </activation> 
- <!--对应profile的扩展属性列表。Maven属性和Ant中的属性一样，可以用来存放一些值。这些值可以在POM中的任何地方使用标记${X}来使用，这里X是指属性的名称。属性有五种不同的形式，并且都能在settings.xml文件中访问。 
- 1. env.X: 在一个变量前加上"env."的前缀，会返回一个shell环境变量。例如,"env.PATH"指代了$path环境变量（在Windows上是%PATH%）。 
- 2. project.x：指代了POM中对应的元素值。 
- 3. settings.x: 指代了settings.xml中对应元素的值。 
- 4. Java System Properties: 所有可通过java.lang.System.getProperties()访问的属性都能在POM中使用该形式访问， 
- 如/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0/jre。 
- 5. x: 在<properties/>元素中，或者外部文件中设置，以${someVar}的形式使用。 --> 
- <properties> 
- <user.install>/ebs1/build-machine/usr/local/hudson/hudson-home/jobs/maven-guide-</user.install> 
- </properties> 
- <!--远程仓库列表，它是Maven用来填充构建系统本地仓库所使用的一组远程项目。 --> 
- <repositories> 
- <!--包含需要连接到远程仓库的信息 --> 
- <repository> 
- <!--远程仓库唯一标识--> 
- <id>codehausSnapshots</id> 
- <!--远程仓库名称 --> 
- <name>Codehaus Snapshots</name> 
- <!--如何处理远程仓库里发布版本的下载--> 
- <releases> 
- <!--true或者false表示该仓库是否为下载某种类型构件（发布版，快照版）开启。 --> 
- <enabled>false</enabled> 
- <!--该元素指定更新发生的频率。Maven会比较本地POM和远程POM的时间戳。这里的选项是：always（一直），daily（默认，每日），interval：X（这里X是以分钟为单位的时间间隔），或者never（从不）。 --> 
- <updatePolicy>always</updatePolicy> 
- <!--当Maven验证构件校验文件失败时该怎么做-ignore（忽略），fail（失败），或者warn（警告）。--> 
- <checksumPolicy>warn</checksumPolicy> 
- </releases> 
- <!--如何处理远程仓库里快照版本的下载。有了releases和snapshots这两组配置，POM就可以在每个单独的仓库中，为每种类型的构件采取不同的策略。例如，可能有人会决定只为开发目的开启对快照版本下载的支持。参见repositories/repository/releases元素--> 
- <snapshots> 
- <enabled/><updatePolicy/><checksumPolicy/> 
- </snapshots> 
- <!--远程仓库URL，按protocol://hostname/path形式 --> 
- <url>http://snapshots.maven.codehaus.org/maven2</url> 
- <!--用于定位和排序构件的仓库布局类型-可以是default（默认）或者legacy（遗留）。Maven 2为其仓库提供了一个默认的布局；然而，Maven 1.x有一种不同的布局。我们可以使用该元素指定布局是default（默认）还是legacy（遗留）。 --> 
- <layout>default</layout> 
- </repository> 
- </repositories> 
- <!--发现插件的远程仓库列表。仓库是两种主要构件的家。第一种构件被用作其它构件的依赖。这是中央仓库中存储的大部分构件类型。另外一种构件类型是插件。Maven插件是一种特殊类型的构件。由于这个原因，插件仓库独立于其它仓库。pluginRepositories元素的结构和repositories元素的结构类似。每个pluginRepository元素指定一个Maven可以用来寻找新插件的远程地址。--> 
- <pluginRepositories> 
- <!--包含需要连接到远程插件仓库的信息.参见profiles/profile/repositories/repository元素的说明--> 
- <pluginRepository> 
- <releases> 
- <enabled/><updatePolicy/><checksumPolicy/> 
- </releases> 
- <snapshots> 
- <enabled/><updatePolicy/><checksumPolicy/> 
- </snapshots> 
- <id/><name/><url/><layout/> 
- </pluginRepository> 
- </pluginRepositories> 
- <!--手动激活profiles的列表，按照profile被应用的顺序定义activeProfile。 该元素包含了一组activeProfile元素，每个activeProfile都含有一个profile id。任何在activeProfile中定义的profile id，不论环境设置如何，其对应的 
- profile都会被激活。如果没有匹配的profile，则什么都不会发生。例如，env-test是一个activeProfile，则在pom.xml（或者profile.xml）中对应id的profile会被激活。如果运行过程中找不到这样一个profile，Maven则会像往常一样运行。 --> 
- <activeProfiles> 
- <!-- --> 
- <activeProfile>env-test</activeProfile> 
- </activeProfiles> 
- </profile> 
- </profiles> 
-</settings> 
 ]]></content>
     </entry>
 </feed>

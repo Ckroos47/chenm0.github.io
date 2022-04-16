@@ -8,7 +8,7 @@
 <meta name="keywords" content="个人博客">
 <meta name="description" content="&lt;a href=&#34;https://https://github.com/chenm0/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
-<title>PostgreSQL踩坑记录 | 观潮亭</title>
+<title>JDK源码阅读笔记java.lang篇（1）--- Object | 观潮亭</title>
 <link rel="shortcut icon" href="/favicon.ico?v=1650118611476">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
@@ -38,8 +38,8 @@
 
 
 
-  <meta name="description" content="PostgreSQL踩坑记录" />
-  <meta name="keywords" content="PostgreSQL" />
+  <meta name="description" content="JDK源码阅读笔记java.lang篇（1）--- Object" />
+  <meta name="keywords" content="源码,JAVA" />
 </head>
 
 <body>
@@ -331,8 +331,8 @@
           <div class="section bg-color post post-page">
             <section class="post-header">
   <h1 class="post-title">
-    <a class="post-title-link" href="https://chenm0.github.io/post/postgresql-ques/">
-      PostgreSQL踩坑记录
+    <a class="post-title-link" href="https://chenm0.github.io/post/jdk-lang-object/">
+      JDK源码阅读笔记java.lang篇（1）--- Object
     </a>
   </h1>
   <div class="post-meta">
@@ -340,7 +340,7 @@
     <span class="meta-item pc-show">
       <i class="fa fa-calendar-o"></i>
       <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-06-03 14:26:03">2021-06-03</span>
+      <span class="publish-time" data-t="2022-04-16 22:01:06">2022-04-16</span>
       <span class="post-meta-divider pc-show">|</span>
     </span>
     
@@ -349,8 +349,14 @@
       <span class="pc-show language" data-lan="category-in">分类于</span>
       
       
-      <a href="https://chenm0.github.io/tag/kzUuE88e_/">
-        <span>PostgreSQL</span>
+      <a href="https://chenm0.github.io/tag/-8yQ3hsv9/">
+        <span>源码</span>
+      </a>、
+      
+      
+      
+      <a href="https://chenm0.github.io/tag/BuwDjq1zh0/">
+        <span>JAVA</span>
       </a>
       
       
@@ -359,17 +365,17 @@
     
     <span class="meta-item">
       <i class="fa fa-clock-o"></i>
-      <span>1<span class="language" data-lan="minute">分钟</span></span>
+      <span>5<span class="language" data-lan="minute">分钟</span></span>
     </span>
     <span class="meta-item">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-file-word-o"></i>
-      <span>40<span class="pc-show language" data-lan="words">字数</span></span>
+      <span>1203<span class="pc-show language" data-lan="words">字数</span></span>
     </span>
     
     
     
-    <span id="/post/postgresql-ques/" data-flag-title="PostgreSQL踩坑记录" class="meta-item pc-show leancloud_visitors">
+    <span id="/post/jdk-lang-object/" data-flag-title="JDK源码阅读笔记java.lang篇（1）--- Object" class="meta-item pc-show leancloud_visitors">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-eye"></i>
       <span><span class="language" data-lan="view">浏览量</span>：<span class="leancloud-visitors-count"></span></span>
@@ -378,14 +384,53 @@
   </div>
 </section>
             <div class="post-body next-md-body" id="post_body">
-              <ol>
-<li>在进行数据库记录的迁移和复制数据后容易出现错误</li>
-</ol>
-<pre><code>DETAIL:  Key (id)=(1) already exists
+              <pre><code>private static native void registerNatives();
+static {
+    registerNatives();
+}
 </code></pre>
-<p>解决方案：</p>
-<pre><code>select setval('tablename_id_seq', max(id)) from tablename;
+<p>registerNatives()存在于很多常用的类中，首先要先理解native关键字。</p>
+<p>在调用本地方法之前，Java会经历两个步骤加载本地方法的实现库，第一步是使用System.loadLibrary()将包含本地方法实现的动态文件加载进内存；第二步是当Java程序需要调用本地方法时，虚拟机在加载的动态文件中定位并链接该本地方法，从而得以执行本地方法。<br>
+<B>注意：</B> 实现native方法需要本地的C/C++源文件的方法名的格式必须为：Java_完整类名_方法名，包名的.号，以_表示_method，这是因为JVM中对本地方法名有相应的规定，在使用JNI时需要遵守。</p>
+<p>将.cpp文件打包成dll文件就可以在Java中调用成功，使用JNI_onlad实现native方法的结果与普通JNI实现native的结果相同。使用JNI_onlad可以在C\C++实现native方法时其方法名可以不与生成的头文件方法名相同，相比而言第二种方式更加便捷。除此之外，它们之间的效率也不一样。查阅相关资料使用JNI_onload的方式实现native方法更加高效，其原因如下：<br>
+1.	使用JNI传统方式，当Java类调用本地函数时，通常是依靠虚拟机去动态寻找链接库中的本地函数(因此才需要特定规则的命名格式)，而使用第二种方式的RegisterNatives方法将本地函数向虚拟机进行登记，可以让其更有效率的找到函数；<br>
+2.	在运行时动态调整本地函数与Java函数值之间的映射关系，只需要多次调用RegisterNatives()方法，并传入不同的映射表参数。例如以上中使用static JNINativeMethod methods[] = { { &quot;encrypt&quot;, &quot;([B)[B&quot;, (jbyteArray *) encrypt} }的方式实现多个native方法的映射。<br>
+到这里基本可以得出之所以Thread、Classload源码中使用第二种方式快是因为JNI中的registerNatives()方法使程序主动将本地方法链接到调用方，当Java程序需要调用本地方法时就可以直接调用，而不需要虚拟机再去定位并链接。为了更清晰的认识是如何注册下面需要阅读C/C++的源码。</p>
+<p>在Object、Thread等类中通过registerNatives将指定的本地方法绑定到指定函数，如将hashCode和clone本地方法绑定到JVM_IHashCode和JVM_IHashCode函数。可知Java中的registerNatives代码的目的就是注册绑定本地方法，其方式是通过JNI_onload函数实现动态绑定。</p>
+<blockquote>
+<p>Native<br>
+Native method是由非Java语言实现的方法。通常Java中的native方法的常是C/C++实现，Java中提供了与其他语言通信的API即JNI（Java Native Interface）。如果要使用Java调用其它语言的函数，就必须遵循JNI的API约定。<br>
+### 使用规则：<br>
+a.	native标识符除不能与abstract联用外，可以与其它标识符联用；<br>
+b.	native method方法可以返回任何java类型，包括非基本类型，也可以进行异常控制；<br>
+c.	如果含有native method方法的类被继承，子类会继承这个native method方法，也可以使用java语言重写这个方法；<br>
+d.	如果一个native method方法被final标识，它被继承后不能被重写。<br>
+### 实现步骤：<br>
+1.	在Java中声明native()方法,然后编译；<br>
+2.	使用javah命令生成.h文件；(.h文件是C语言和【C++】语言的头文件，一般在【.h】类的头文件里面只放入函数声明，宏定义，函数原型，而具体的实现在【.cpp】文件里面。)<br>
+3.	编写.cpp文件实现native导出方法，其中需要包含第二步产生的.h文件（注意其中需包含JDK带的jni.h文件）；<br>
+4.	将本地代码编译成动态库（Windows：<em>.dll，linux/unix：</em>.so，mac os x：*.jnilib）；<br>
+5.	Java中使用System.loadLibrary()方法加载第四步产生的动态链接库文件，至此，整个过程结束。</p>
+</blockquote>
+<pre><code>/**
+ * Constructs a new object.
+ */
+@HotSpotIntrinsicCandidate
+public Object() {}
 </code></pre>
+<p><strong>@HotSpotIntrinsicCandidate</strong><br>
+被@HotSpotIntrinsicCandidate标注的方法，在HotSpot中都有一套高效的实现，该高效实现基于CPU指令，运行时，HotSpot维护的高效实现会替代JDK的源码实现，从而获得更高的效率。</p>
+<pre><code>@HotSpotIntrinsicCandidate
+public final native Class&lt;?&gt; getClass();
+</code></pre>
+<p>返回对象的运行时类，即Class对象。</p>
+<blockquote>
+<p>讨论“<T>&quot;和&quot;&lt;?&gt;&quot;，首先要区分开两种不同的场景：<br>
+1.	声明一个泛型类或泛型方法。<br>
+2.	使用泛型类或泛型方法。<br>
+类型参数“<T>&quot;主要用于第一种，声明泛型或者泛型方法。无界通配符“&lt;?&gt;&quot;主要用于第二种，<br>
+使用泛型类或者泛型方法</p>
+</blockquote>
 
             </div>
             
@@ -398,7 +443,7 @@
     </li>
     <li class="post-copyright-link">
       <strong class="language" data-lan="link">本文链接：</strong>
-      <a href="https://chenm0.github.io/post/postgresql-ques/" title="PostgreSQL踩坑记录">https://chenm0.github.io/post/postgresql-ques/</a>
+      <a href="https://chenm0.github.io/post/jdk-lang-object/" title="JDK源码阅读笔记java.lang篇（1）--- Object">https://chenm0.github.io/post/jdk-lang-object/</a>
     </li>
     <li class="post-copyright-license">
       <strong class="language" data-lan="copyright">版权声明： </strong>
@@ -407,21 +452,19 @@
   </ul>
   <div class="tags">
     
-      <a href="https://chenm0.github.io/tag/kzUuE88e_/"># PostgreSQL</a>
+      <a href="https://chenm0.github.io/tag/-8yQ3hsv9/"># 源码</a>
+    
+      <a href="https://chenm0.github.io/tag/BuwDjq1zh0/"># JAVA</a>
     
   </div>
   <div class="nav">
     <div class="nav-prev">
       
-        <i class="fa fa-chevron-left"></i>
-        <a class="nav-pc-next" title="hibernate CascadeType属性说明" href="https://chenm0.github.io/post/hibernate-cascadetype/">hibernate CascadeType属性说明</a class="nav-pc-next">
-        <a class="nav-mobile-prev" title="hibernate CascadeType属性说明" href="https://chenm0.github.io/post/hibernate-cascadetype/">上一篇</a>
-      
     </div>
     <div class="nav-next">
       
-        <a class="nav-pc-next" title="设计模式的通俗理解" href="https://chenm0.github.io/post/shejimoshi-tongsu/">设计模式的通俗理解</a>
-        <a class="nav-mobile-next" title="设计模式的通俗理解" href="https://chenm0.github.io/post/shejimoshi-tongsu/">下一篇</a>
+        <a class="nav-pc-next" title="Java关键字--instanceof" href="https://chenm0.github.io/post/java-instanceof/">Java关键字--instanceof</a>
+        <a class="nav-mobile-next" title="Java关键字--instanceof" href="https://chenm0.github.io/post/java-instanceof/">下一篇</a>
         <i class="fa fa-chevron-right"></i>
       
     </div>
