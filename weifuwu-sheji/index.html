@@ -8,7 +8,7 @@
 <meta name="keywords" content="个人博客">
 <meta name="description" content="&lt;a href=&#34;https://https://github.com/chenm0/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
-<title>xxx.class</title>
+<title>微服务的数据库设计 | xxx.class</title>
 <link rel="shortcut icon" href="/favicon.ico?v=1650247342073">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
@@ -38,6 +38,8 @@
 
 
 
+  <meta name="description" content="微服务的数据库设计" />
+  <meta name="keywords" content="微服务" />
 </head>
 
 <body>
@@ -73,7 +75,7 @@
             
               
             
-            <li class="nav-item nav-item-active">
+            <li class="nav-item ">
               
               
                 <a href="/" target="_self">
@@ -172,8 +174,24 @@
     <div
       class="section-layout pisces ">
       <div class="section-layout-wrapper">
-        <div id="sidebarMeta" class="sidebar">
-    
+        
+
+<div class="sidebar">
+  
+    <div class="sidebar-box box-shadow-wrapper bg-color right-motion" id="sidebar">
+      
+        <div class="post-list-sidebar">
+          <div class="sidebar-title">
+            <span id="tocSideBar" class="sidebar-title-item sidebar-title-active language" data-lan="index">文章目录</span>
+            <span id="metaSideBar" class="sidebar-title-item language" data-lan="preview">站点概览</span>
+          </div>
+        </div>
+      
+      <div class="sidebar-body pisces" id="sidebar_body">
+        
+          
+            <div class="post-side-meta" id="post_side_meta">
+              
 <div class="sidebar-wrapper box-shadow-wrapper bg-color">
   <div class="sidebar-item">
     <img class="site-author-image right-motion" src="/images/avatar.png"/>
@@ -227,957 +245,440 @@
   </div>
 
 </div>
+            </div>
+            <div class="post-toc sidebar-body-active" id="post_toc" style="opacity: 1;">
+              <div class="toc-box right-motion">
+  <div class="toc-wrapper auto-number auto"
+    id="toc_wrapper">
+    <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#%E5%8D%95%E7%8B%AC%E7%9A%84%E6%95%B0%E6%8D%AE%E5%BA%93">单独的数据库：</a></li>
+<li><a href="#%E5%85%B1%E4%BA%AB%E6%95%B0%E6%8D%AE">共享数据：</a>
+<ul>
+<li><a href="#%E9%9D%99%E6%80%81%E8%A1%A8">静态表：</a></li>
+<li><a href="#%E5%8F%AA%E8%AF%BB%E4%B8%9A%E5%8A%A1%E6%95%B0%E6%8D%AE%E8%AE%BF%E9%97%AE">只读业务数据访问：</a></li>
+<li><a href="#%E8%AF%BB%E5%86%99%E4%B8%9A%E5%8A%A1%E6%95%B0%E6%8D%AE%E8%AE%BF%E9%97%AE">读写业务数据访问：</a></li>
+<li><a href="#%E7%9B%B4%E6%8E%A5%E8%AE%BF%E9%97%AE%E5%85%B6%E5%AE%83%E6%95%B0%E6%8D%AE%E5%BA%93">直接访问其它数据库：</a></li>
+</ul>
+</li>
+<li><a href="#%E5%90%91%E5%90%8E%E5%85%BC%E5%AE%B9%E7%9A%84%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9B%B4%E6%96%B0">向后兼容的数据库更新：</a></li>
+<li><a href="#%E8%B7%A8%E6%9C%8D%E5%8A%A1%E4%BA%8B%E7%89%A9">跨服务事物：</a></li>
+<li><a href="#%E5%BE%AE%E6%9C%8D%E5%8A%A1%E7%9A%84%E6%8B%86%E5%88%86">微服务的拆分：</a></li>
+<li><a href="#%E7%BB%93%E8%AE%BA">结论：</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
 </div>
+
 <script>
-  let sidebarMeta = document.querySelector('#sidebarMeta');
-  let scheme = 'pisces';
-  let sidebarWrapper = document.querySelector('.sidebar-wrapper');
-  if (sidebarMeta && (scheme === 'pisces' || scheme === 'gemini')) {
-    document.addEventListener('scroll', function(e) {
-      if (document.scrollingElement.scrollTop > parseInt(sidebarMeta.style.marginTop) + 10) {
-        sidebarWrapper.classList.add('home-sidebar-fixed')
-      } else {
-        sidebarWrapper.classList.remove('home-sidebar-fixed')
+
+  let lastTop = 0, lList = [], hList = [], postBody, lastIndex = -1;
+  let active = 'active-show', activeClass = 'active-current';
+  let tocWrapper = document.querySelector('#toc_wrapper');
+  let tocContent = tocWrapper.children[0];
+  let autoNumber = tocWrapper && tocWrapper.classList.contains('auto-number');
+
+  function addTocNumber(elem, deep) {
+    if (!elem) {
+      return;
+    }
+    let prop = elem.__proto__;
+
+    if (prop === HTMLUListElement.prototype) {
+      for (let i = 0; i < elem.children.length; i++) {
+        addTocNumber(elem.children[i], deep + (i + 1) + '.');
       }
+    } else if (prop === HTMLLIElement.prototype) {
+      // 保存li元素
+      if (elem.children[0] && elem.children[0].__proto__ === HTMLAnchorElement.prototype) {
+        lList.push(elem);
+      }
+      for (let i = 0; i < elem.children.length; i++) {
+        let cur = elem.children[i];
+        if (cur.__proto__ === HTMLAnchorElement.prototype) {
+          if (autoNumber) {
+            cur.text = deep + ' ' + cur.text;
+          }
+        } else if (cur.__proto__ === HTMLUListElement.prototype) {
+          addTocNumber(cur, deep);
+        }
+      }
+    }
+  }
+
+  function removeParentActiveClass() {
+    let parents = tocContent.querySelectorAll('.' + active)
+    parents.forEach(function (elem) {
+      elem.classList.remove(active);
     });
   }
-  </script>
-        <div class="section-box pisces">
-          <section class="section bg-color posts-expand slide-down-in">
-            
-  <article class="post-list-box  post box-shadow-wrapper">
-    <div class="article-wrapper bg-color">
-      <section class="post-header">
-  <h1 class="post-title">
-    <a class="post-title-link" href="https://chenm0.github.io/postgresql-ques/">
-      PostgreSQL踩坑记录
-    </a>
-  </h1>
-  <div class="post-meta">
-    
-    <span class="meta-item pc-show">
-      <i class="fa fa-calendar-o"></i>
-      <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-06-03 14:26:03">2021-06-03</span>
-      <span class="post-meta-divider pc-show">|</span>
-    </span>
-    
-    <span class="meta-item">
-      <i class="fa fa-folder-o"></i>
-      <span class="pc-show language" data-lan="category-in">分类于</span>
-      
-      
-      <a href="https://chenm0.github.io/kzUuE88e_/">
-        <span>PostgreSQL</span>
-      </a>
-      
-      
-    </span>
-    <span class="post-meta-divider">|</span>
-    
-    <span class="meta-item">
-      <i class="fa fa-clock-o"></i>
-      <span>1<span class="language" data-lan="minute">分钟</span></span>
-    </span>
-    <span class="meta-item">
-      <span class="post-meta-divider">|</span>
-      <i class="fa fa-file-word-o"></i>
-      <span>40<span class="pc-show language" data-lan="words">字数</span></span>
-    </span>
-    
-  </div>
-</section>
-      <div class="post-body">
-        
-        
-          
-            <!-- 没有手动摘要切开启了自动摘要,则根据配置筛除摘要内容 -->
-            
-            
-              
-              
-              
-            
-              
-              
-              
-            
-              
-              
-              
-            
-            
-              <p><ol>
-<li>在进行数据库记录的迁移和复制数据后容易出现错误</li>
-</ol>
 
-                
-              <p>
-            
+  function addActiveClass(index) {
+    if (index >= 0 && index < hList.length) {
+      lList[index].classList.add(activeClass);
+    }
+  }
+
+  function removeActiveClass(index) {
+    if (index >= 0 && index < hList.length) {
+      lList[index].classList.remove(activeClass);
+    }
+  }
+
+  function addActiveLiElemment(elem, parent) {
+    if (!elem || elem === parent) {
+      return;
+    } else {
+      if (elem.__proto__ === HTMLLIElement.prototype) {
+        elem.classList.add(active);
+      }
+      addActiveLiElemment(elem.parentElement, parent);
+    }
+  }
+
+  function showToc() {
+    if (tocWrapper) {
+      postBody = document.querySelector('#post_body');
+      for (let i = 0; i < postBody.children.length; i++) {
+        if (postBody.children[i].__proto__ === HTMLHeadingElement.prototype) {
+          hList.push(postBody.children[i]);
+        }
+      }
+      if (tocWrapper.classList.contains('compress')) {
+        tocContent.classList.add('closed');
+      } else if (tocWrapper.classList.contains('no_compress')) {
+        tocContent.classList.add('expanded');
+      } else {
+        if (hList.length > 10) {
+          active = 'active-hidden'
+          tocContent.classList.add('closed');
+        } else {
+          tocContent.classList.add('expanded');
+        }
+      }
+    }
+  }
+
+  (function () {
+    // 处理不是从#一级标题开始目录
+    if (tocContent.children.length === 1 && tocContent.children[0].__proto__ === HTMLLIElement.prototype) {
+      let con = tocContent.children[0].children[0];
+      tocContent.innerHTML = con.innerHTML;
+    }
+    let markdownItTOC = document.querySelector('.markdownIt-TOC');
+    let innerHeight = window.innerHeight;
+    markdownItTOC.style = `max-height: ${innerHeight - 80 > 0 ? innerHeight - 80 : innerHeight}px`
+    addTocNumber(tocContent, '');
+  })();
+
+  document.addEventListener('scroll', function (e) {
+    if (lList.length <= 0) {
+      return;
+    }
+    let scrollTop = document.scrollingElement.scrollTop + 10;
+    let dir;
+
+    if (lastTop - scrollTop > 0) {
+      dir = 'up';
+    } else {
+      dir = 'down';
+    }
+
+    lastTop = scrollTop;
+    if (scrollTop <= 0) {
+      if (lastIndex >= 0 && lastIndex < hList.length) {
+        lList[lastIndex].classList.remove(activeClass);
+      }
+      return;
+    }
+
+    let current = 0, hasFind = false;
+    for (let i = 0; i < hList.length; i++) {
+      if (hList[i].offsetTop > scrollTop) {
+        current = i;
+        hasFind = true;
+        break;
+      }
+    }
+    if (!hasFind && scrollTop > lList[lList.length - 1].offsetTop) {
+      current = hList.length - 1;
+    } else {
+      current--;
+    }
+    if (dir === 'down') {
+      if (current > lastIndex) {
+        addActiveClass(current);
+        removeActiveClass(lastIndex)
+        lastIndex = current;
+        removeParentActiveClass();
+        lList[current] && addActiveLiElemment(lList[current].parentElement, tocContent);
+      }
+    } else {
+      if (current < lastIndex) {
+        addActiveClass(current);
+        removeActiveClass(lastIndex);
+        lastIndex = current;
+        removeParentActiveClass();
+        lList[current] && addActiveLiElemment(lList[current].parentElement, tocContent);
+      }
+    }
+  });
+
+
+  window.addEventListener('load', function () {
+    showToc();
+    document.querySelector('#sidebar').style = 'display: block;';
+    tocWrapper.classList.add('toc-active');
+    setTimeout(function () {
+      if ("createEvent" in document) {
+        let evt = document.createEvent("HTMLEvents");
+        evt.initEvent("scroll", false, true);
+        document.dispatchEvent(evt);
+      }
+      else {
+        document.fireEvent("scroll");
+      }
+    }, 500)
+  })
+
+</script>
+            </div>
           
-        
-        
-        <div class="post-button text-center">
-          <a class="btn language" data-lan="read-more" href="https://chenm0.github.io/postgresql-ques/" rel="contents">
-            阅读全文 »
-          </a>
-        </div>
         
       </div>
-      
-        <footer class="post-footer">
-          <div class="post-eof"></div>
-        </footer>
-      
     </div>
-  </article>
-
-  <article class="post-list-box  post box-shadow-wrapper">
-    <div class="article-wrapper bg-color">
-      <section class="post-header">
-  <h1 class="post-title">
-    <a class="post-title-link" href="https://chenm0.github.io/shejimoshi-tongsu/">
-      设计模式的通俗理解
-    </a>
-  </h1>
-  <div class="post-meta">
-    
-    <span class="meta-item pc-show">
-      <i class="fa fa-calendar-o"></i>
-      <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-05-27 08:56:09">2021-05-27</span>
-      <span class="post-meta-divider pc-show">|</span>
-    </span>
-    
-    <span class="meta-item">
-      <i class="fa fa-folder-o"></i>
-      <span class="pc-show language" data-lan="category-in">分类于</span>
-      
-      
-      <a href="https://chenm0.github.io/BuwDjq1zh0/">
-        <span>JAVA</span>
-      </a>
-      
-      
-    </span>
-    <span class="post-meta-divider">|</span>
-    
-    <span class="meta-item">
-      <i class="fa fa-clock-o"></i>
-      <span>19<span class="language" data-lan="minute">分钟</span></span>
-    </span>
-    <span class="meta-item">
-      <span class="post-meta-divider">|</span>
-      <i class="fa fa-file-word-o"></i>
-      <span>5335<span class="pc-show language" data-lan="words">字数</span></span>
-    </span>
-    
-  </div>
-</section>
-      <div class="post-body">
-        
-        
-          
-            <!-- 没有手动摘要切开启了自动摘要,则根据配置筛除摘要内容 -->
-            
-            
-              
-              
-              
-            
-              
-              
-              
-            
-              
-              
-              
-            
-            
-              <p><h3 id="工厂方法">工厂方法</h3>
-<p>追 MM 少不了请吃饭了，麦当劳的鸡翅和肯德基的鸡翅都是 MM 爱吃的东西，虽然口味有所不同，但不管你带 MM 去麦当劳或肯德基，只管向服务员说「来四个鸡翅」就行了。麦当劳和肯德基就是生产鸡翅的 Factory 工厂模式：客户类和工厂类分开。</p>
-<p>消费者任何时候需要某种产品，只需向工厂请求即可。消费者无须修改就可以接纳新产品。缺点是当产品修改时，工厂类也要做相应的修改。如：如何创建及如何向客户端提供。</p>
-
-                
-              <p>
-            
-          
-        
-        
-        <div class="post-button text-center">
-          <a class="btn language" data-lan="read-more" href="https://chenm0.github.io/shejimoshi-tongsu/" rel="contents">
-            阅读全文 »
-          </a>
-        </div>
-        
-      </div>
-      
-        <footer class="post-footer">
-          <div class="post-eof"></div>
-        </footer>
-      
-    </div>
-  </article>
-
-  <article class="post-list-box  post box-shadow-wrapper">
-    <div class="article-wrapper bg-color">
-      <section class="post-header">
-  <h1 class="post-title">
-    <a class="post-title-link" href="https://chenm0.github.io/thymeleaf/">
-      Thymeleaf常用属性
-    </a>
-  </h1>
-  <div class="post-meta">
-    
-    <span class="meta-item pc-show">
-      <i class="fa fa-calendar-o"></i>
-      <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-05-21 17:12:09">2021-05-21</span>
-      <span class="post-meta-divider pc-show">|</span>
-    </span>
-    
-    <span class="meta-item">
-      <i class="fa fa-folder-o"></i>
-      <span class="pc-show language" data-lan="category-in">分类于</span>
-      
-      
-      <a href="https://chenm0.github.io/IviFwFxex/">
-        <span>Thymeleaf</span>
-      </a>
-      
-      
-    </span>
-    <span class="post-meta-divider">|</span>
-    
-    <span class="meta-item">
-      <i class="fa fa-clock-o"></i>
-      <span>5<span class="language" data-lan="minute">分钟</span></span>
-    </span>
-    <span class="meta-item">
-      <span class="post-meta-divider">|</span>
-      <i class="fa fa-file-word-o"></i>
-      <span>836<span class="pc-show language" data-lan="words">字数</span></span>
-    </span>
-    
-  </div>
-</section>
-      <div class="post-body">
-        
-        
-          
-            <!-- 没有手动摘要切开启了自动摘要,则根据配置筛除摘要内容 -->
-            
-            
-              
-              
-              
-            
-              
-              
-              
-            
-              
-              
-              
-            
-            
-              <p><p>如需了解Thymeleaf 基本表达式，请参考《<a href="http://www.cnblogs.com/hjwublog/p/5051632.html">Thymeleaf </a><a href="http://www.cnblogs.com/hjwublog/p/5051632.html">基本表达式</a>》一文</p>
-<h1 id="thaction"><strong>th:action</strong></h1>
-<p>定义后台控制器路径，类似<form>标签的action属性。</p>
-
-                
-              <p>
-            
-          
-        
-        
-        <div class="post-button text-center">
-          <a class="btn language" data-lan="read-more" href="https://chenm0.github.io/thymeleaf/" rel="contents">
-            阅读全文 »
-          </a>
-        </div>
-        
-      </div>
-      
-        <footer class="post-footer">
-          <div class="post-eof"></div>
-        </footer>
-      
-    </div>
-  </article>
-
-  <article class="post-list-box  post box-shadow-wrapper">
-    <div class="article-wrapper bg-color">
-      <section class="post-header">
-  <h1 class="post-title">
-    <a class="post-title-link" href="https://chenm0.github.io/cms1/">
-      搭建内容管理系统CMS（1）：如何支持内容生产？
-    </a>
-  </h1>
-  <div class="post-meta">
-    
-    <span class="meta-item pc-show">
-      <i class="fa fa-calendar-o"></i>
-      <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-05-21 14:52:55">2021-05-21</span>
-      <span class="post-meta-divider pc-show">|</span>
-    </span>
-    
-    <span class="meta-item">
-      <i class="fa fa-folder-o"></i>
-      <span class="pc-show language" data-lan="category-in">分类于</span>
-      
-      
-      <a href="https://chenm0.github.io/-ySK4Nuuw/">
-        <span>产品</span>
-      </a>
-      
-      
-    </span>
-    <span class="post-meta-divider">|</span>
-    
-    <span class="meta-item">
-      <i class="fa fa-clock-o"></i>
-      <span>8<span class="language" data-lan="minute">分钟</span></span>
-    </span>
-    <span class="meta-item">
-      <span class="post-meta-divider">|</span>
-      <i class="fa fa-file-word-o"></i>
-      <span>2210<span class="pc-show language" data-lan="words">字数</span></span>
-    </span>
-    
-  </div>
-</section>
-      <div class="post-body">
-        
-        
-          
-            <!-- 没有手动摘要切开启了自动摘要,则根据配置筛除摘要内容 -->
-            
-            
-              
-              
-              
-            
-              
-              
-              
-            
-              
-              
-              
-            
-            
-              <p><pre><code>内容管理系统是一种位于WEB 前端（Web 服务器）和后端办公系统或流程（内容创作、编辑）之间的软件系统，本文是对于内容管理系统CMS在内容生产环节的总结与分享。
-</code></pre>
-<p><em><strong>*关于CMS内容管理系统：*</strong></em></p>
-
-                
-                  <!-- 自动摘要出来的内容有<code则补上结尾,防止格式错误 -->
-                  </code></pre>
-                
-              <p>
-            
-          
-        
-        
-        <div class="post-button text-center">
-          <a class="btn language" data-lan="read-more" href="https://chenm0.github.io/cms1/" rel="contents">
-            阅读全文 »
-          </a>
-        </div>
-        
-      </div>
-      
-        <footer class="post-footer">
-          <div class="post-eof"></div>
-        </footer>
-      
-    </div>
-  </article>
-
-  <article class="post-list-box  post box-shadow-wrapper">
-    <div class="article-wrapper bg-color">
-      <section class="post-header">
-  <h1 class="post-title">
-    <a class="post-title-link" href="https://chenm0.github.io/amazons3-util/">
-      AmazonS3工具类
-    </a>
-  </h1>
-  <div class="post-meta">
-    
-    <span class="meta-item pc-show">
-      <i class="fa fa-calendar-o"></i>
-      <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-05-13 15:00:29">2021-05-13</span>
-      <span class="post-meta-divider pc-show">|</span>
-    </span>
-    
-    <span class="meta-item">
-      <i class="fa fa-folder-o"></i>
-      <span class="pc-show language" data-lan="category-in">分类于</span>
-      
-      
-      <a href="https://chenm0.github.io/BuwDjq1zh0/">
-        <span>JAVA</span>
-      </a>
-      
-      
-    </span>
-    <span class="post-meta-divider">|</span>
-    
-    <span class="meta-item">
-      <i class="fa fa-clock-o"></i>
-      <span>2<span class="language" data-lan="minute">分钟</span></span>
-    </span>
-    <span class="meta-item">
-      <span class="post-meta-divider">|</span>
-      <i class="fa fa-file-word-o"></i>
-      <span>265<span class="pc-show language" data-lan="words">字数</span></span>
-    </span>
-    
-  </div>
-</section>
-      <div class="post-body">
-        
-        
-          
-            <!-- 没有手动摘要切开启了自动摘要,则根据配置筛除摘要内容 -->
-            
-            
-              
-              
-              
-            
-              
-              
-              
-            
-              
-              
-              
-            
-            
-              <p><pre><code>/**
- * @author chenmo
- * @Date: Created in 2021/5/12 5:05 下午
-
-                
-                  <!-- 自动摘要出来的内容有<code则补上结尾,防止格式错误 -->
-                  </code></pre>
-                
-              <p>
-            
-          
-        
-        
-        <div class="post-button text-center">
-          <a class="btn language" data-lan="read-more" href="https://chenm0.github.io/amazons3-util/" rel="contents">
-            阅读全文 »
-          </a>
-        </div>
-        
-      </div>
-      
-        <footer class="post-footer">
-          <div class="post-eof"></div>
-        </footer>
-      
-    </div>
-  </article>
-
-  <article class="post-list-box  post box-shadow-wrapper">
-    <div class="article-wrapper bg-color">
-      <section class="post-header">
-  <h1 class="post-title">
-    <a class="post-title-link" href="https://chenm0.github.io/design-study/">
-      设计模式的学习
-    </a>
-  </h1>
-  <div class="post-meta">
-    
-    <span class="meta-item pc-show">
-      <i class="fa fa-calendar-o"></i>
-      <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-05-09 17:21:27">2021-05-09</span>
-      <span class="post-meta-divider pc-show">|</span>
-    </span>
-    
-    <span class="meta-item">
-      <i class="fa fa-folder-o"></i>
-      <span class="pc-show language" data-lan="category-in">分类于</span>
-      
-      
-      <a href="https://chenm0.github.io/BuwDjq1zh0/">
-        <span>JAVA</span>
-      </a>
-      
-      
-    </span>
-    <span class="post-meta-divider">|</span>
-    
-    <span class="meta-item">
-      <i class="fa fa-clock-o"></i>
-      <span>6<span class="language" data-lan="minute">分钟</span></span>
-    </span>
-    <span class="meta-item">
-      <span class="post-meta-divider">|</span>
-      <i class="fa fa-file-word-o"></i>
-      <span>1326<span class="pc-show language" data-lan="words">字数</span></span>
-    </span>
-    
-  </div>
-</section>
-      <div class="post-body">
-        
-        
-          
-            <!-- 没有手动摘要切开启了自动摘要,则根据配置筛除摘要内容 -->
-            
-            
-              
-              
-              
-            
-              
-              
-              
-            
-              
-              
-              
-            
-            
-              <p><h3 id="设计模式的目的">设计模式的目的</h3>
-<p>编写软件过程中，程序员面临着来自 耦合性，内聚性以及可维护性，可扩展性，重用性，灵活性 等多方面的挑战，设计模式是为了让程序(软件)具有更好的:</p>
-<ol>
-
-                
-              <p>
-            
-          
-        
-        
-        <div class="post-button text-center">
-          <a class="btn language" data-lan="read-more" href="https://chenm0.github.io/design-study/" rel="contents">
-            阅读全文 »
-          </a>
-        </div>
-        
-      </div>
-      
-        <footer class="post-footer">
-          <div class="post-eof"></div>
-        </footer>
-      
-    </div>
-  </article>
-
-  <article class="post-list-box  post box-shadow-wrapper">
-    <div class="article-wrapper bg-color">
-      <section class="post-header">
-  <h1 class="post-title">
-    <a class="post-title-link" href="https://chenm0.github.io/postgresql-jiansuo/">
-      PostgreSQL自带全文检索
-    </a>
-  </h1>
-  <div class="post-meta">
-    
-    <span class="meta-item pc-show">
-      <i class="fa fa-calendar-o"></i>
-      <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-05-06 16:38:50">2021-05-06</span>
-      <span class="post-meta-divider pc-show">|</span>
-    </span>
-    
-    <span class="meta-item">
-      <i class="fa fa-folder-o"></i>
-      <span class="pc-show language" data-lan="category-in">分类于</span>
-      
-      
-      <a href="https://chenm0.github.io/kzUuE88e_/">
-        <span>PostgreSQL</span>
-      </a>
-      
-      
-    </span>
-    <span class="post-meta-divider">|</span>
-    
-    <span class="meta-item">
-      <i class="fa fa-clock-o"></i>
-      <span>2<span class="language" data-lan="minute">分钟</span></span>
-    </span>
-    <span class="meta-item">
-      <span class="post-meta-divider">|</span>
-      <i class="fa fa-file-word-o"></i>
-      <span>380<span class="pc-show language" data-lan="words">字数</span></span>
-    </span>
-    
-  </div>
-</section>
-      <div class="post-body">
-        
-        
-          
-            <!-- 没有手动摘要切开启了自动摘要,则根据配置筛除摘要内容 -->
-            
-            
-              
-              
-              
-            
-              
-              
-              
-            
-              
-              
-              
-            
-            
-              <p><h3 id="相关文档">相关文档</h3>
-<pre><code>文本搜索的函数与操作符中文说明: 
-http://www.postgres.cn/docs/9.3.4/functions-textsearch.html
-
-                
-                  <!-- 自动摘要出来的内容有<code则补上结尾,防止格式错误 -->
-                  </code></pre>
-                
-              <p>
-            
-          
-        
-        
-        <div class="post-button text-center">
-          <a class="btn language" data-lan="read-more" href="https://chenm0.github.io/postgresql-jiansuo/" rel="contents">
-            阅读全文 »
-          </a>
-        </div>
-        
-      </div>
-      
-        <footer class="post-footer">
-          <div class="post-eof"></div>
-        </footer>
-      
-    </div>
-  </article>
-
-  <article class="post-list-box  post box-shadow-wrapper">
-    <div class="article-wrapper bg-color">
-      <section class="post-header">
-  <h1 class="post-title">
-    <a class="post-title-link" href="https://chenm0.github.io/doge/">
-      全面复盘：狗狗币是如何上涨400倍的？ 
-    </a>
-  </h1>
-  <div class="post-meta">
-    
-    <span class="meta-item pc-show">
-      <i class="fa fa-calendar-o"></i>
-      <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-05-05 12:17:59">2021-05-05</span>
-      <span class="post-meta-divider pc-show">|</span>
-    </span>
-    
-    <span class="meta-item">
-      <i class="fa fa-folder-o"></i>
-      <span class="pc-show language" data-lan="category-in">分类于</span>
-      
-      
-      <a href="https://chenm0.github.io/ru-8HDqLr/">
-        <span>虚拟货币</span>
-      </a>
-      
-      
-    </span>
-    <span class="post-meta-divider">|</span>
-    
-    <span class="meta-item">
-      <i class="fa fa-clock-o"></i>
-      <span>11<span class="language" data-lan="minute">分钟</span></span>
-    </span>
-    <span class="meta-item">
-      <span class="post-meta-divider">|</span>
-      <i class="fa fa-file-word-o"></i>
-      <span>2917<span class="pc-show language" data-lan="words">字数</span></span>
-    </span>
-    
-  </div>
-</section>
-      <div class="post-body">
-        
-        
-          
-            <!-- 没有手动摘要切开启了自动摘要,则根据配置筛除摘要内容 -->
-            
-            
-              
-              
-              
-            
-              
-              
-              
-            
-              
-              
-              
-            
-            
-              <p><pre><code>    ​
- 4月20日，狗狗币纪念日。美国知名财经媒体在首页刊登了狗狗币相关报道，标题为《狗狗币交易赶上线上狂潮》，其中提到狗狗币在2021年的回报率超过8100%，是1998年以来标普500涨幅的2倍多，狗狗币市值大约为500亿美元，超过了万豪国际和福特汽车。
-</code></pre>
-
-                
-                  <!-- 自动摘要出来的内容有<code则补上结尾,防止格式错误 -->
-                  </code></pre>
-                
-              <p>
-            
-          
-        
-        
-        <div class="post-button text-center">
-          <a class="btn language" data-lan="read-more" href="https://chenm0.github.io/doge/" rel="contents">
-            阅读全文 »
-          </a>
-        </div>
-        
-      </div>
-      
-        <footer class="post-footer">
-          <div class="post-eof"></div>
-        </footer>
-      
-    </div>
-  </article>
-
-  <article class="post-list-box  post box-shadow-wrapper">
-    <div class="article-wrapper bg-color">
-      <section class="post-header">
-  <h1 class="post-title">
-    <a class="post-title-link" href="https://chenm0.github.io/java8-optional/">
-      理解、学习与使用 JAVA 中的 OPTIONAL
-    </a>
-  </h1>
-  <div class="post-meta">
-    
-    <span class="meta-item pc-show">
-      <i class="fa fa-calendar-o"></i>
-      <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-04-26 14:14:05">2021-04-26</span>
-      <span class="post-meta-divider pc-show">|</span>
-    </span>
-    
-    <span class="meta-item">
-      <i class="fa fa-folder-o"></i>
-      <span class="pc-show language" data-lan="category-in">分类于</span>
-      
-      
-      <a href="https://chenm0.github.io/BuwDjq1zh0/">
-        <span>JAVA</span>
-      </a>
-      
-      
-    </span>
-    <span class="post-meta-divider">|</span>
-    
-    <span class="meta-item">
-      <i class="fa fa-clock-o"></i>
-      <span>13<span class="language" data-lan="minute">分钟</span></span>
-    </span>
-    <span class="meta-item">
-      <span class="post-meta-divider">|</span>
-      <i class="fa fa-file-word-o"></i>
-      <span>2939<span class="pc-show language" data-lan="words">字数</span></span>
-    </span>
-    
-  </div>
-</section>
-      <div class="post-body">
-        
-        
-          
-            <!-- 没有手动摘要切开启了自动摘要,则根据配置筛除摘要内容 -->
-            
-            
-              
-              
-              
-            
-              
-              
-              
-            
-              
-              
-              
-            
-            
-              <p><p>​		从 Java 8 引入的一个很有趣的特性是 <em>Optional</em>  类。Optional 类主要解决的问题是臭名昭著的空指针异常（NullPointerException） —— 每个 Java 程序员都非常了解的异常。</p>
-<p>​		本质上，这是一个包含有可选值的包装类，这意味着 Optional 类既可以含有对象也可以为空。Optional 是 Java 实现函数式编程的强劲一步，并且帮助在范式中实现。但是 Optional 的意义显然不止于此。</p>
-<pre><code>if (user != null) {
-
-                
-                  <!-- 自动摘要出来的内容有<code则补上结尾,防止格式错误 -->
-                  </code></pre>
-                
-              <p>
-            
-          
-        
-        
-        <div class="post-button text-center">
-          <a class="btn language" data-lan="read-more" href="https://chenm0.github.io/java8-optional/" rel="contents">
-            阅读全文 »
-          </a>
-        </div>
-        
-      </div>
-      
-        <footer class="post-footer">
-          <div class="post-eof"></div>
-        </footer>
-      
-    </div>
-  </article>
-
-  <article class="post-list-box  post box-shadow-wrapper">
-    <div class="article-wrapper bg-color">
-      <section class="post-header">
-  <h1 class="post-title">
-    <a class="post-title-link" href="https://chenm0.github.io/spring-data-rest/">
-      Spring Data REST 快速构建 restful api 应用
-    </a>
-  </h1>
-  <div class="post-meta">
-    
-    <span class="meta-item pc-show">
-      <i class="fa fa-calendar-o"></i>
-      <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-04-22 14:00:24">2021-04-22</span>
-      <span class="post-meta-divider pc-show">|</span>
-    </span>
-    
-    <span class="meta-item">
-      <i class="fa fa-folder-o"></i>
-      <span class="pc-show language" data-lan="category-in">分类于</span>
-      
-      
-      <a href="https://chenm0.github.io/hB0nBywri/">
-        <span>SpringDataRest</span>
-      </a>
-      
-      
-    </span>
-    <span class="post-meta-divider">|</span>
-    
-    <span class="meta-item">
-      <i class="fa fa-clock-o"></i>
-      <span>7<span class="language" data-lan="minute">分钟</span></span>
-    </span>
-    <span class="meta-item">
-      <span class="post-meta-divider">|</span>
-      <i class="fa fa-file-word-o"></i>
-      <span>1242<span class="pc-show language" data-lan="words">字数</span></span>
-    </span>
-    
-  </div>
-</section>
-      <div class="post-body">
-        
-        
-          
-            <!-- 没有手动摘要切开启了自动摘要,则根据配置筛除摘要内容 -->
-            
-            
-              
-              
-              
-            
-              
-              
-              
-            
-              
-              
-              
-            
-            
-              <p><h3 id="什么是spring-data-rest">什么是Spring Data REST</h3>
-<blockquote>
-<p>​		Spring Data REST是基于Spring Data的repository之上，可以把 repository 自动输出为REST资源，目前支持Spring Data JPA、Spring Data <a href="https://cloud.tencent.com/product/mongodb?from=10680">MongoDB</a>、Spring Data Neo4j、Spring Data GemFire、Spring Data Cassandra的 repository 自动转换成REST服务。注意是自动。简单点说，Spring Data REST把我们需要编写的大量REST模版接口做了自动化实现.</p>
-
-                
-              <p>
-            
-          
-        
-        
-        <div class="post-button text-center">
-          <a class="btn language" data-lan="read-more" href="https://chenm0.github.io/spring-data-rest/" rel="contents">
-            阅读全文 »
-          </a>
-        </div>
-        
-      </div>
-      
-        <footer class="post-footer">
-          <div class="post-eof"></div>
-        </footer>
-      
-    </div>
-  </article>
   
-            
-            
-<div class="page bg-color">
-  <ul class="pagination-ul">
-    
-      <li class="pagination-dir">
-        <a href="https://chenm0.github.io/page/2/">
-          <i class="fa fa-angle-left"></i>
-        </a>
-      </li>
-    
-    
-      
-        <li class="pagination-li ">
-            <a href="/page/../">
-              1
-            </a>
-        </li>
-      
-        <li class="pagination-li ">
-            <a href="/page/2">
-              2
-            </a>
-        </li>
-      
-        <li class="pagination-li pagination-active">
-            <a href="/page/3">
-              3
-            </a>
-        </li>
-      
-        <li class="pagination-li ">
-            <a href="/page/4">
-              4
-            </a>
-        </li>
-      
-    
-    
-      <li class="pagination-dir">
-        <a href="/page/4">
-          <i class="fa fa-angle-right"></i>
-        </a>
-      </li>
-    
-  </ul>
 </div>
-          </section>
+<script>
+  const SIDEBAR_TITLE_ACTIVE = 'sidebar-title-active';
+  const SIDEBAR_BODY_ACTIVE = 'sidebar-body-active';
+  const SLIDE_UP_IN = 'slide-up-in';
+
+  let sidebar = document.querySelector('#sidebar'),
+  tocSideBar = document.querySelector('#tocSideBar'),
+  metaSideBar = document.querySelector('#metaSideBar'),
+  postToc = document.querySelector('#post_toc'),
+  postSiteMeta = document.querySelector('#post_side_meta'),
+  sidebarTitle = document.querySelector('.sidebar-title'),
+  sidebarBody = document.querySelector('#sidebar_body');
+
+  tocSideBar && tocSideBar.addEventListener('click', (e) => {
+    toggleSidebar(e);
+  });
+
+  metaSideBar && metaSideBar.addEventListener('click', (e) => {
+    toggleSidebar(e);
+  });
+
+  function toggleSidebar(e) {
+    let currentTitle = document.querySelector("."+SIDEBAR_TITLE_ACTIVE);
+    if (currentTitle == e.srcElement) {
+      return ;
+    }
+    let current, showElement, hideElement;
+    if (e.srcElement == metaSideBar) {
+      showElement = postSiteMeta;
+      hideElement = postToc;
+    } else if (e.srcElement == tocSideBar){
+      showElement = postToc;
+      hideElement = postSiteMeta;
+    }
+    currentTitle.classList.remove(SIDEBAR_TITLE_ACTIVE);
+    e.srcElement.classList.add(SIDEBAR_TITLE_ACTIVE);
+
+    window.Velocity(hideElement, 'stop');
+    window.Velocity(hideElement, 'transition.slideUpOut', {
+      display: 'none',
+      duration: 200,
+      complete: function () {
+        window.Velocity(showElement, 'transition.slideDownIn', {
+          duration: 200
+        });
+      }
+    })
+    hideElement.classList.remove(SIDEBAR_BODY_ACTIVE);
+    showElement.classList.add(SIDEBAR_BODY_ACTIVE);
+  }
+
+  postToc && postToc.addEventListener('transitionend', function() {
+    this.classList.remove(SLIDE_UP_IN);
+  });
+
+  if (sidebarBody) {
+    if (sidebarBody.classList.contains('pisces') || sidebarBody.classList.contains('gemini')) {
+      let hasFix = false;
+      let scrollEl = document.querySelector('.main-continer');
+      let limitTop = document.querySelector('#nav_ul').children.length * 42 + 162;
+      window.addEventListener('scroll', function(e) {
+        if (document.scrollingElement.scrollTop >= limitTop) {
+          if (!hasFix) {
+            sidebar.classList.add('sidebar-fixed');
+            hasFix = true;
+          }
+        } else {
+          if (hasFix) {
+            sidebar.classList.remove('sidebar-fixed');
+            hasFix = false;
+          }
+        }
+      });
+    }
+  }
+  
+</script>
+        <div class="section-box box-shadow-wrapper">
+          <div class="section bg-color post post-page">
+            <section class="post-header">
+  <h1 class="post-title">
+    <a class="post-title-link" href="https://chenm0.github.io/weifuwu-sheji/">
+      微服务的数据库设计
+    </a>
+  </h1>
+  <div class="post-meta">
+    
+    <span class="meta-item pc-show">
+      <i class="fa fa-calendar-o"></i>
+      <span class="language" data-lan="publish">发布于</span>
+      <span class="publish-time" data-t="2021-06-17 13:19:26">2021-06-17</span>
+      <span class="post-meta-divider pc-show">|</span>
+    </span>
+    
+    <span class="meta-item">
+      <i class="fa fa-folder-o"></i>
+      <span class="pc-show language" data-lan="category-in">分类于</span>
+      
+      
+      <a href="https://chenm0.github.io/pismF1VXY/">
+        <span>微服务</span>
+      </a>
+      
+      
+    </span>
+    <span class="post-meta-divider">|</span>
+    
+    <span class="meta-item">
+      <i class="fa fa-clock-o"></i>
+      <span>15<span class="language" data-lan="minute">分钟</span></span>
+    </span>
+    <span class="meta-item">
+      <span class="post-meta-divider">|</span>
+      <i class="fa fa-file-word-o"></i>
+      <span>4265<span class="pc-show language" data-lan="words">字数</span></span>
+    </span>
+    
+    
+    
+    <span id="/weifuwu-sheji/" data-flag-title="微服务的数据库设计" class="meta-item pc-show leancloud_visitors">
+      <span class="post-meta-divider">|</span>
+      <i class="fa fa-eye"></i>
+      <span><span class="language" data-lan="view">浏览量</span>：<span class="leancloud-visitors-count"></span></span>
+    </span>
+    
+  </div>
+</section>
+            <div class="post-body next-md-body" id="post_body">
+              <h3 id="单独的数据库">单独的数据库：</h3>
+<p>微服务设计的一个关键是数据库设计，基本原则是每个服务都有自己单独的数据库，而且只有微服务本身可以访问这个数据库。它是基于下面三个原因。</p>
+<p><strong>优化服务接口</strong>：微服务之间的接口越小越好，最好只有服务调用接口（RPC或消息），没有其他接口。如果微服务不能独享自己的数据库，那么数据库也变成了接口的一部分，这大大拓展了接口范围。</p>
+<p><strong>错误诊断</strong>：生产环境中的错误大部分都是和数据库有关的，要么是数据出了问题，要么是数据库的使用方式出了问题。当你不能完全控制数据库的访问时，会有各种各样的错误发生。它可能是别的程序直接连到你的数据库或者是其他部门直接用客户端访问数据库的数据，而这些都是在程序中查不到的，增加了错误排查难度。如果是程序中的问题，只要修改了代码，那么这个错误就不会再有。而上面提到的错误，你永远都没法预测它们什么时候还会再次发生。</p>
+<p><strong>性能调优</strong>：性能调优也是一样，你需要对数据库有全权控制才能保证它的性能。如果其他部门一定要访问数据库，而且只是查询的话，那么可以另外创建一份只读数据库，让他们在另一个库中查询，这样才不会影响到你的库。</p>
+<p>理想的设计是你的数据库只有你的服务能访问，你也只调用自己数据库中的数据，所有对别的微服务的访问都通过服务调用来实现（请参阅<a href="https://blog.csdn.net/weixin_38748858/article/details/101062272">“微服务之间调用的最佳设计“</a>）。当然，在实际应用中，单纯的服务调用可能不能满足性能或其他要求，不同的微服务都多少需要共享一些数据。</p>
+<h3 id="共享数据">共享数据：</h3>
+<p>微服务之间的数据共享可以有下四种方式。</p>
+<h4 id="静态表">静态表：</h4>
+<p>有一些静态的数据库表，例如国家，可能会被很多程序用到，而且程序内部需要对国家这个表做连接（join）生成最终用户展示数据，这样用微服务调用的方式就效率不高，影响性能。一个办法是在每个微服务中配置一个这样的表，它是只读的，这样就可以做数据库连接了。当然你需要保证数据同步。这个方案在多数情况下都是可以接受的，因为以下两点：</p>
+<ol>
+<li>静态的数据库表结构基本不变：因为一旦表结构变了，你不但要更改所有微服务的数据库表，还要修改所有微服务的程序。</li>
+<li>数据库表中的数据变化不频繁：这样数据同步的工作量不大。另外当你同步数据库时总会有延迟，如果数据变化不频繁那么你有很多同步方式可供选择。</li>
+</ol>
+<h4 id="只读业务数据访问">只读业务数据访问：</h4>
+<p>如果你需要读取别的数据库里的动态业务数据， 理想的方式是服务调用。如果你只是调用其他微服务做一些计算，一般情况下性能都是可以接受的。如果你需要做数据的连接，那么你可以用程序代码来做，而不是用SQL语句。如果测试之后性能不能满足要求，那你可以考虑在自己的数据库里建一套只读数据表。数据同步方式大致有两种。如果是事件驱动方式，就用发消息的方式进行同步，如果是RPC方式，就用数据库本身提供的同步方式或者第三方同步软件。<br>
+通常情况下，你可能只需要其他数据库的几张表，每张表只需要几个字段。这时，其他数据库是数据的最终来源，控制所有写操作以及相应的业务验证逻辑，我们叫它主表。你的只读库可以叫从表。 当一条数据写入主表后，会发一条广播消息，所有拥有从表的微服务监听消息并更新只读表中的数据。但这时你要特别小心，因为它的危险性要比静态表大得多。第一它的表结构变更会更频繁，而且它的变更完全不受你控制。第二业务数据不像静态表，它是经常更新的，这样对数据同步的要求就比较高。要根据具体的业务需求来决定多大的延迟是可以接受的。<br>
+另外它还有两个问题：</p>
+<ol>
+<li><strong>数据的容量</strong>：数据库中的数据量是影响性能的主要因素。因为这个数据是外来的，不利于掌握它的流量规律，很难进行容量规划，也不能更好地进行性能调优。</li>
+<li><strong>接口外泄</strong>: 微服务之间的接口本来只有服务调用接口，这时你可以对内部程序和数据库做任何更改，而不影响其他服务。现在数据库表结构也变成了接口的一部分。接口一旦发布之后，基本是不能更改的，这大大限制了你的灵活性。幸运的是因为另外建了一套表，有了一个缓冲，当主表修改时，从表也许不需要同步更新。</li>
+</ol>
+<p>除非你能用服务调用（没有本地只读数据库）的方式完成所有功能，不然不管你是用RPC方式还是事件驱动方式进行微服务集成，上面提到的问题都是不可避免的。但是你可以通过合理规划数据库更改，来减少上面问题带来的影响，下面将会详细讲解。</p>
+<h4 id="读写业务数据访问">读写业务数据访问：</h4>
+<p>这是最复杂的一种情况。一般情况下，你有一个表是主表，而其他表是从表。主表包含主要信息，而且这些主要信息被复制到从表，但微服务会有额外字段需要写入从表。这样本地微服务对从表就既有读也有写的操作。而且主表和从表有一个先后次序的关系。从表的主键来源于主表，因此一定先有主表，再有从表。</p>
+<p>假设我们有两个与电影有关的微服务，一个是电影论坛，用户可以发表对电影的评论。另一个是电影商店。“movie”是共享表，左边的一个是电影论坛库，它的“movie”表是主表。右边的是电影商店库，它的“movie”表是从表。它们共享“id”字段（主键）。主表是数据的主要来源，但从表里的“quantity”和“price”字段主表里面没有。主表插入数据后，发消息，从表接到消息，插入一条数据到本地“movie”表。并且从表还会修改表里的“quantity”和“price”字段。在这种情况下，要给每一个字段分配一个唯一源头（微服务），只有源头才有权利主动更改字段，其他微服务只能被动更改（接收源头发出的更改消息之后再改）。在本例子中， “quantity”和“price”字段的源头是右边的表，其他的字段的源头都是左边的表。本例子中“quantity”和“price”只在从表中存在，因此数据写入是单向的，方向是主表到从表。如果主表也需要这些字段，那么它们还要被回写，那数据写入就变成双向的。</p>
+<h4 id="直接访问其它数据库">直接访问其它数据库：</h4>
+<p>这种方式是要绝对禁止的。生产环境中的许多程序错误和性能问题都是由这种方式产生的。上面的三种方式由于是另外新建了本地只读数据库表，产生了数据库的物理隔离，这样一个数据库的性能问题不会影响到另一个。另外，当主库中的表结构更改时，你可以暂时保持从库中的表不变，这样程序还可以运行。如果直接访问别人的库，主库一修改，别的微服务程序马上就会报错。请参阅ApplicationDatabase。</p>
+<h3 id="向后兼容的数据库更新">向后兼容的数据库更新：</h3>
+<p>从上面的论述可以看出，数据库表结构的修改是一个影响范围很广的事情。在微服务架构中，共享的表在别的服务中也会有一个只读的拷贝。现在当你要更改表结构时，还需要考虑到对别的微服务的影响。当在单体（Monolithic）架构中，为了保证程序部署能够回滚，数据库的更新是向后兼容的。需要兼容性的另一个原因是支持蓝绿发布（Blue-Green Deployment）。在这种部署方式中，你同时拥有新旧版本的代码，由负载均衡来决定每一个请求指向那个版本。它们可以共享一个数据库（这就要求数据库是向后兼容的），也可以使用不同的数据。数据库的更新简单来讲有以下几种类型：<br>
+<strong>增加表或字段</strong>：如果字段可取空值，这个操作是向后兼容的。如果是非空值就要插入一个缺省值。</p>
+<p><strong>删除表或字段</strong>：可先暂时保留被删除表或字段，经过几个版本之后再删除。</p>
+<p><strong>修改字段名</strong>：新增加一个字段，把数据从旧字段拷贝到新字段，用数据库触发器（或程序）同步旧字段和新字段（供过渡时期使用）。 然后再在几个版本之后把原来的字段删除（请参阅<a href="https://thoughts-on-java.org/update-database-schema-without-downtime/">Update your Database Schema Without Downtime</a>）。</p>
+<p><strong>修改表名</strong>：如果数据库支持可更新视图，最简单的办法是先修改表的名字，然后创建一个可更新视图指向原来的表（请参阅<a href="https://martinfowler.com/articles/evodb.html">Evolutionary Database Design</a> ）。如果数据库不支持可更新视图，使用的方法与修改字段名相似，需要创建新的表并做数据同步。</p>
+<p><strong>修改字段类型</strong>：与修改字段名几乎相同，只是在拷贝数据时，需要做数据类型转换。</p>
+<p>向后兼容的数据库更新的好处是，当程序部署出现问题时，如需进行回滚。只要回滚程序就行了，而不必回滚数据库。回滚时一般只回滚一个版本。凡是需要删除的表或字段在本次部署时都不做修改，等到一个或几个版本之后，确认没有问题了再删除。它的另一个好处就是不会对其他微服务中的共享表产生立刻的直接影响。当本微服务升级后，其他微服务可以评估这些数据库更新带来的影响再决定是否需要做相应的程序或数据库修改。</p>
+<h3 id="跨服务事物">跨服务事物：</h3>
+<p>微服务的一个难点是如何实现跨服务的事物支持。两阶段提交（Two-Phase Commit）已被证明性能上不能满足需求，现在基本上没有人用。被一致认可的方法叫Saga。它的原理是为事物中的每个操作写一个补偿操作（Compensating Transaction），然后在回滚阶段挨个执行每一个补偿操作。示例如下图，在一个事物中共有3个操作T1，T2，T3。每一个操作要定义一个补偿操作，C1，C2，C3。事物执行时是按照正向顺序先执行T1，当回滚时是按照反向顺序先执行C3。 事物中的每一个操作（正向操作和补偿操作）都被包装成一个命令（Command），Saga执行协调器（Saga Execution Coordinator (SEC)）负责执行所有命令。在执行之前，所有的命令都会按顺序被存入日志中，然后Saga执行协调器从日志中取出命令，依次执行。当某个执行出现错误时，这个错误也被写入日志，并且所有正在执行的命令被停止，开始回滚操作。</p>
+<p>Saga放松了对一致性（Consistency）的要求，它能保证的是最终一致性（Eventual Consistency），因此在事物执行过程中数据是不一致的，并且这种不一致会被别的进程看到。在生活中，大多数情况下，我们对一致性的要求并没有那么高，短暂的不一致性是可以接收的。例如银行的转账操作，它们在执行过程中都不是在一个数据库事物里执行的，而是用记账的方式分成两个动作来执行，保证的也是最终一致性。</p>
+<p>Saga的原理看起来很简单，但要想正确的实施还是有一定难度的。它的核心问题在于对错误的处理，要把它完全讲明白需要另写一遍文章，我现在只讲一下要点。网络环境是不可靠的，正在执行的命令可能很长时间都没有返回结果，这时，第一，你要设定一个超时。第二，因为你不知道没有返回值的原因是，已经完成了命令但网络出了问题，还是没完成就牺牲了，因此不知道是否要执行补偿操作。这时正确的做法是重试原命令，直到得到完成确认，然后再执行补偿操作。但这对命令有一个要求，那就是这个操作必须是幂等的（Idempotent），也就是说它可以执行多次，但最终结果还是一样的。</p>
+<p>另外，有些操作的补偿操作比较容易生成，例如付款操作，你只要把钱款退回就可以了。但有些操作，像发邮件，完成之后就没有办法回到之前的状态了，这时就只能再发一个邮件更正以前的信息。因此补偿操作不一定非要返回到原来的状态，而是抵消掉原来操作产生的效果。</p>
+<h3 id="微服务的拆分">微服务的拆分：</h3>
+<p>我们原来的程序大多数都是单体程序，但现在要把它拆分成微服务，应该怎样做才能降低对现有应用的影响呢？</p>
+<p>假设我们要拆分出来一个微服务叫“client-service”，它需要访问“core client”表。第一步，我们先把程序从原来的代码里拆分出来，变成一个服务. 数据库不动，这个服务仍然指向原来的数据库。其他程序不再直接访问这个服务管理的表，而是通过服务调用或另建共享表来获取数据。</p>
+<p>第二步，再把服务的数据库表拆分出来，这时微服务就拥有它自己的数据库了，而不再需要原来的共享数据库了。这时就成了一个真正意义上的的微服务。</p>
+<p>上面只讲了拆分一个微服务，如果有多个需要拆分，则需一个一个按照上面讲的方法依次进行。</p>
+<p>另外，Martin Fowler在他的文章&quot;Break Monolith into Microservices&quot;里有一个很好的建议。那就是，当你把服务从单体程序里拆分时，不要只想着把代码拆分出来。因为现在的需求可能已经跟原来有所不同，原先的设计可能也不太适用了。而且，技术也已更新，代码也要作相应的改造。更好的办法是重写原来的功能（而不是重写原来的代码），把重点放在拆分业务功能上，而不是拆分代码上，用新的设计和技术来实现这个业务功能。</p>
+<h3 id="结论">结论：</h3>
+<p>数据库设计是微服务设计的一个关键点，基本原则是每个微服务都有自己单独的数据库，而且只有微服务本身可以访问这个数据库。微服务之间的数据共享可以通过服务调用，或者主、从表的方式实现。在共享数据时，要找到合适的同步方式。在微服务架构中，数据库的修改影响广泛，需要保证这种修改是向后兼容的。实现跨服务事物的标准方法是Saga。当把单体程序拆分成微服务时，可以分步进行，以减少对现有程序的影响。</p>
+
+            </div>
+            
+            
+              <div class="post-footer">
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong class="language" data-lan="author">本文作者：</strong>
+      陈陌
+    </li>
+    <li class="post-copyright-link">
+      <strong class="language" data-lan="link">本文链接：</strong>
+      <a href="https://chenm0.github.io/weifuwu-sheji/" title="微服务的数据库设计">https://chenm0.github.io/weifuwu-sheji/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong class="language" data-lan="copyright">版权声明： </strong>
+      本博客所有文章除特别声明外，均采用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i> BY-NC-SA</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+  <div class="tags">
+    
+      <a href="https://chenm0.github.io/pismF1VXY/"># 微服务</a>
+    
+  </div>
+  <div class="nav">
+    <div class="nav-prev">
+      
+        <i class="fa fa-chevron-left"></i>
+        <a class="nav-pc-next" title="springboot2的配置文件properties和yml的一些常用属性" href="https://chenm0.github.io/springboot2-yml/">springboot2的配置文件properties和yml的一些常用属性</a class="nav-pc-next">
+        <a class="nav-mobile-prev" title="springboot2的配置文件properties和yml的一些常用属性" href="https://chenm0.github.io/springboot2-yml/">上一篇</a>
+      
+    </div>
+    <div class="nav-next">
+      
+        <a class="nav-pc-next" title="两数之和" href="https://chenm0.github.io/twonum/">两数之和</a>
+        <a class="nav-mobile-next" title="两数之和" href="https://chenm0.github.io/twonum/">下一篇</a>
+        <i class="fa fa-chevron-right"></i>
+      
+    </div>
+  </div>
+</div>
+            
+            
+  
+
+          </div>
         </div>
       </div>
     </div>
@@ -1919,6 +1420,223 @@ http://www.postgres.cn/docs/9.3.4/functions-textsearch.html
     aelem.appendChild(image);
     parent.insertBefore(aelem, next);
   })
+</script>
+
+    <div class="reward-mask" style="display: none;">
+  <div class="reward-relative">
+    <span class="close" aria-hidden="true">x</span>
+    <div class="reward-body">
+      <h2>感谢您的支持，我会继续努力的!</h2>
+      <div class="reward-img-box">
+        <div style="position: relative; width: 140px; height: 140px;">
+          
+          
+          
+        </div>
+      </div>
+      <p class="reward-word">扫码打赏，你说多少就多少</p>
+      <p class="reward-tip">打开微信扫一扫，即可进行扫码打赏哦</p>
+    </div>
+    <div class="bottom">
+      
+      
+    </div>
+  </div>
+</div>
+<style>
+  .reward-mask {
+    position: fixed;
+    z-index: 99999;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #00000054;
+  }
+
+  .reward-relative {
+    position: relative;
+    width: 480px;
+    text-align: center;
+    margin: 0 auto;
+    border-radius: 5px;
+    background-color: #fff;
+    top: 50%;
+    margin-top: -205px;
+  }
+
+  .reward-relative .close {
+    position: absolute;
+    right: 10px;
+    font-weight: normal;
+    font-size: 16px;
+    color: #929292;
+  }
+
+  .reward-body {
+    padding: 40px 20px 20px;
+  }
+
+  .bottom {
+    display: flex;
+  }
+
+  .reward-btn {
+    text-align: center;
+  }
+
+  .reward-btn-text {
+    display: inline-block;
+    cursor: pointer;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    border-radius: 50%;
+    background-color: #ff9734;
+    color: #FFF;
+    margin-top: 20px;
+  }
+
+  .pay-text {
+    margin-top: 10px;
+    padding: 10px;
+    flex: 1;
+    transition: all .2s linear;
+  }
+
+  .pay-text:hover {
+    background-color: #a5a5a536;
+  }
+
+  .reward-body h2 {
+    padding-top: 10px;
+    text-align: center;
+    color: #a3a3a3;
+    font-size: 16px;
+    font-weight: normal;
+    margin: 0 0 20px;
+  }
+
+  .reward-body h2:after,
+  .reward-body h2:before {
+    font-family: Arial, Helvetica, sans-serif;
+    background: 0 0;
+    width: 0;
+    height: 0;
+    font-style: normal;
+    color: #eee;
+    font-size: 80px;
+    position: absolute;
+    top: 20px;
+  }
+
+  .reward-body h2:before {
+    content: '\201c';
+    left: 50px;
+  }
+
+  .reward-body h2:after {
+    content: '\201d';
+    right: 80px;
+  }
+
+  .reward-img-box {
+    display: inline-block;
+    padding: 10px;
+    border: 6px solid #ea5f00;
+    margin: 0 auto;
+    border-radius: 3px;
+    position: relative;
+  }
+
+  .reward-img {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+  }
+
+  @media (max-width: 767px) {
+    .reward-relative {
+      height: 100%;
+      top: 0px;
+      margin-top: 0;
+      width: auto;
+    }
+
+    .reward-relative .bottom {
+      flex-direction: column;
+    }
+
+    .reward-relative .pay-text {
+      width: 80%;
+      margin: 5px auto;
+      border: 1px solid silver;
+      padding: 6px;
+      border-radius: 4px;
+    }
+
+    .reward-body h2:after {
+      right: 40px;
+    }
+
+    .reward-body h2:after,
+    .reward-body h2:before {
+      font-size: 60px;
+    }
+
+    .reward-body h2:before {
+      left: 20px;
+    }
+  }
+</style>
+<script>
+  !function () {
+    var mask = document.querySelector('.reward-mask');
+    let close = document.querySelector('.reward-relative .close');
+    let rewardBtn = document.querySelector('.reward-btn');
+
+    let zfb = document.querySelector('#zfb'),
+      wx = document.querySelector('#wx'),
+      zfbBtn = document.querySelector('#zfbBtn'),
+      wxBtn = document.querySelector('#wxBtn');
+
+    if (zfbBtn && wxBtn) {
+      zfbBtn.addEventListener('click', () => {
+        window.Velocity(zfb, 'transition.slideLeftIn', {
+          duration: 400
+        });
+        window.Velocity(wx, 'transition.slideRightOut', {
+          display: 'none',
+          duration: 400
+        });
+      });
+
+      wxBtn.addEventListener('click', () => {
+        window.Velocity(wx, 'transition.slideRightIn', {
+          duration: 400
+        });
+        window.Velocity(zfb, 'transition.slideLeftOut', {
+          display: 'none',
+          duration: 400
+        });
+      });
+    }
+
+    rewardBtn.addEventListener('click', (e) => {
+      window.Velocity(mask, 'transition.slideDownIn', {
+        duration: 400
+      })
+    });
+
+    close.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.Velocity(mask, 'transition.slideUpOut', {
+        duration: 400
+      })
+    })
+  }()
 </script>
 
   </div>
@@ -7953,6 +7671,5 @@ JAVA PROGRAMMER👨‍💻&lt;/p&gt;
   // Using config rendering effect at 'element'.
   const cn = new CanvasNest(document.querySelector('.snow-container'), config);
   </script>
-
 
 </html>

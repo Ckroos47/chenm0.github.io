@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://chenm0.github.io/</id>
-    <title>观潮亭</title>
-    <updated>2022-04-16T14:16:54.497Z</updated>
+    <title>xxx.class</title>
+    <updated>2022-04-18T02:02:24.850Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://chenm0.github.io/"/>
     <link rel="self" href="https://chenm0.github.io/atom.xml"/>
     <subtitle>&lt;a href=&quot;https://https://github.com/chenm0/&quot; target=&quot;_blank&quot;&gt;code blog&lt;/a&gt;</subtitle>
     <logo>https://chenm0.github.io/images/avatar.png</logo>
     <icon>https://chenm0.github.io/favicon.ico</icon>
-    <rights>All rights reserved 2022, 观潮亭</rights>
+    <rights>All rights reserved 2022, xxx.class</rights>
     <entry>
         <title type="html"><![CDATA[JDK源码阅读笔记java.lang篇（1）--- Object]]></title>
-        <id>https://chenm0.github.io/post/jdk-lang-object/</id>
-        <link href="https://chenm0.github.io/post/jdk-lang-object/">
+        <id>https://chenm0.github.io/jdk-lang-object/</id>
+        <link href="https://chenm0.github.io/jdk-lang-object/">
         </link>
         <updated>2022-04-16T14:01:06.000Z</updated>
         <content type="html"><![CDATA[<pre><code>private static native void registerNatives();
@@ -67,8 +67,8 @@ public final native Class&lt;?&gt; getClass();
     </entry>
     <entry>
         <title type="html"><![CDATA[Java关键字--instanceof]]></title>
-        <id>https://chenm0.github.io/post/java-instanceof/</id>
-        <link href="https://chenm0.github.io/post/java-instanceof/">
+        <id>https://chenm0.github.io/java-instanceof/</id>
+        <link href="https://chenm0.github.io/java-instanceof/">
         </link>
         <updated>2021-12-03T05:55:47.000Z</updated>
         <content type="html"><![CDATA[<p>instanceof 严格来说是Java中的一个双目运算符，用来测试一个对象是否为一个类的实例，用法为：</p>
@@ -118,8 +118,8 @@ System.out.println(m1 instanceof Man);//true
     </entry>
     <entry>
         <title type="html"><![CDATA[对象的finalization机制、finalize方法理解]]></title>
-        <id>https://chenm0.github.io/post/finalize/</id>
-        <link href="https://chenm0.github.io/post/finalize/">
+        <id>https://chenm0.github.io/finalize/</id>
+        <link href="https://chenm0.github.io/finalize/">
         </link>
         <updated>2021-12-02T06:17:53.000Z</updated>
         <content type="html"><![CDATA[<h3 id="对象的finalization机制">对象的finalization机制</h3>
@@ -148,8 +148,8 @@ System.out.println(m1 instanceof Man);//true
     </entry>
     <entry>
         <title type="html"><![CDATA[WeakHashMap的理解]]></title>
-        <id>https://chenm0.github.io/post/weakhashmap/</id>
-        <link href="https://chenm0.github.io/post/weakhashmap/">
+        <id>https://chenm0.github.io/weakhashmap/</id>
+        <link href="https://chenm0.github.io/weakhashmap/">
         </link>
         <updated>2021-12-02T03:15:19.000Z</updated>
         <content type="html"><![CDATA[<p>WeakHashMap 继承于AbstractMap，实现了Map接口。<br>
@@ -206,8 +206,8 @@ System.out.println(m1 instanceof Man);//true
     </entry>
     <entry>
         <title type="html"><![CDATA[java的垃圾回收]]></title>
-        <id>https://chenm0.github.io/post/jvm-junk/</id>
-        <link href="https://chenm0.github.io/post/jvm-junk/">
+        <id>https://chenm0.github.io/jvm-junk/</id>
+        <link href="https://chenm0.github.io/jvm-junk/">
         </link>
         <updated>2021-12-02T01:29:51.000Z</updated>
         <content type="html"><![CDATA[<h3 id="什么是垃圾回收">什么是垃圾回收</h3>
@@ -356,8 +356,8 @@ s = null;
     </entry>
     <entry>
         <title type="html"><![CDATA[Volatile关键字解析]]></title>
-        <id>https://chenm0.github.io/post/volatile/</id>
-        <link href="https://chenm0.github.io/post/volatile/">
+        <id>https://chenm0.github.io/volatile/</id>
+        <link href="https://chenm0.github.io/volatile/">
         </link>
         <updated>2021-11-25T07:23:21.000Z</updated>
         <content type="html"><![CDATA[<pre><code>由于volatile关键字是与java的内存模型有关的，所以需要对内存模型相关的概念和知识有所了解。
@@ -726,8 +726,8 @@ doSomethingwithconfig(context);
     </entry>
     <entry>
         <title type="html"><![CDATA[Spring Cloud Gateway]]></title>
-        <id>https://chenm0.github.io/post/spring-cloud-gateway/</id>
-        <link href="https://chenm0.github.io/post/spring-cloud-gateway/">
+        <id>https://chenm0.github.io/spring-cloud-gateway/</id>
+        <link href="https://chenm0.github.io/spring-cloud-gateway/">
         </link>
         <updated>2021-11-05T02:48:36.000Z</updated>
         <content type="html"><![CDATA[<h3 id="功能特征">功能特征</h3>
@@ -1144,8 +1144,8 @@ spring.cloud.gateway.routes[0].filters[0]=RequestRateLimiter=2, 2, #{@userkeyres
     </entry>
     <entry>
         <title type="html"><![CDATA[maven-assembly-plugin插件]]></title>
-        <id>https://chenm0.github.io/post/maven-assembly-plugin/</id>
-        <link href="https://chenm0.github.io/post/maven-assembly-plugin/">
+        <id>https://chenm0.github.io/maven-assembly-plugin/</id>
+        <link href="https://chenm0.github.io/maven-assembly-plugin/">
         </link>
         <updated>2021-11-05T01:41:22.000Z</updated>
         <content type="html"><![CDATA[<h3 id="一-assembly-是什么意思">一. Assembly 是什么意思？</h3>
@@ -1279,8 +1279,8 @@ system<br>
     </entry>
     <entry>
         <title type="html"><![CDATA[Mybatis动态SQL]]></title>
-        <id>https://chenm0.github.io/post/mybatis-sql/</id>
-        <link href="https://chenm0.github.io/post/mybatis-sql/">
+        <id>https://chenm0.github.io/mybatis-sql/</id>
+        <link href="https://chenm0.github.io/mybatis-sql/">
         </link>
         <updated>2021-09-03T01:24:52.000Z</updated>
         <content type="html"><![CDATA[<p>动态 SQL 是 MyBatis 的强大特性之一。如果你使用过 JDBC 或其它类似的框架，你应该能理解根据不同条件拼接 SQL 语句有多痛苦，例如拼接时要确保不能忘记添加必要的空格，还要注意去掉列表最后一个列名的逗号。利用动态 SQL，可以彻底摆脱这种痛苦。</p>
@@ -1491,8 +1491,8 @@ AND title like ‘someTitle’
     </entry>
     <entry>
         <title type="html"><![CDATA[Leetcode sql题个人题解方案]]></title>
-        <id>https://chenm0.github.io/post/leetcode-sql/</id>
-        <link href="https://chenm0.github.io/post/leetcode-sql/">
+        <id>https://chenm0.github.io/leetcode-sql/</id>
+        <link href="https://chenm0.github.io/leetcode-sql/">
         </link>
         <updated>2021-08-26T00:03:11.000Z</updated>
         <content type="html"><![CDATA[<h2 id="1-组合两个表">1. 组合两个表</h2>
