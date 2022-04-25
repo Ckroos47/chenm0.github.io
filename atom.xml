@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://chenm0.github.io/</id>
     <title>xxx.class</title>
-    <updated>2022-04-18T02:02:24.850Z</updated>
+    <updated>2022-04-25T10:16:02.032Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://chenm0.github.io/"/>
     <link rel="self" href="https://chenm0.github.io/atom.xml"/>
@@ -10,6 +10,176 @@
     <logo>https://chenm0.github.io/images/avatar.png</logo>
     <icon>https://chenm0.github.io/favicon.ico</icon>
     <rights>All rights reserved 2022, xxx.class</rights>
+    <entry>
+        <title type="html"><![CDATA[JVM笔记---1.类加载子系统]]></title>
+        <id>https://chenm0.github.io/CwyaFdgZf/</id>
+        <link href="https://chenm0.github.io/CwyaFdgZf/">
+        </link>
+        <updated>2022-04-25T08:01:10.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="内存结构概述">内存结构概述</h2>
+<figure data-type="image" tabindex="1"><img src="https://chenm0.github.io//post-images/1650873818317.jpeg" alt="" loading="lazy"></figure>
+<h2 id="类加载子系统的作用">类加载子系统的作用</h2>
+<ol>
+<li>类加载器子系统负责从文件系统或者网络中加载Class文件，class文件在文件开头有特定的文件标识。</li>
+<li>ClassLoader只负责class文件的加载，至于它是否可以运行，则由Execution Engine决定。</li>
+<li>加载的类信息存放于一块称为方法区的内存空间。除了类的信息外，方法区中还会存放运行时常量池信息，可能还包括字符串字面量和数字常量（这部分常量信息是Class文件中常量池部分的内存映射）</li>
+</ol>
+<h2 id="类加载过程">类加载过程</h2>
+<h3 id="概述">概述</h3>
+<ul>
+<li>执行 main() 方法（静态方法）就需要先加载main方法所在类 HelloLoader</li>
+<li>加载成功，则进行链接、初始化等操作。完成后调用 HelloLoader 类中的静态方法 main</li>
+<li>加载失败则抛出异常<br>
+完整流程图：<br>
+<img src="https://chenm0.github.io//post-images/1650874291163.png" alt="" loading="lazy"></li>
+</ul>
+<h3 id="加载阶段">加载阶段</h3>
+<p>流程：</p>
+<ol>
+<li>通过一个类的全限定名获取定义此类的二进制字节流</li>
+<li>将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构</li>
+<li>在内存中生成一个代表这个类的java.lang.Class对象，作为方法区这个类的各种数据的访问入口</li>
+</ol>
+<p><B>加载class文件的方式：</B></p>
+<ol>
+<li>从本地系统中直接加载</li>
+<li>通过网络获取，典型场景：Web Applet</li>
+<li>从zip压缩包中读取，成为日后jar、war格式的基础</li>
+<li>运行时计算生成，使用最多的是：动态代理技术</li>
+<li>由其他文件生成，典型场景：JSP应用从专有数据库中提取.class文件，比较少见</li>
+<li>从加密文件中获取，典型的防Class文件被反编译的保护措施</li>
+</ol>
+<h3 id="链接阶段">链接阶段</h3>
+<p>链接分为三个子阶段：验证 -&gt; 准备 -&gt; 解析</p>
+<h5 id="验证verify">验证(Verify)</h5>
+<ol>
+<li>目的在于确保Class文件的字节流中包含信息符合当前虚拟机要求，保证被加载类的正确性，不会危害虚拟机自身安全</li>
+<li>主要包括四种验证，文件格式验证，元数据验证，字节码验证，符号引用验证。</li>
+</ol>
+<h5 id="准备prepare">准备(Prepare)</h5>
+<ol>
+<li>为类变量（static变量）分配内存并且设置该类变量的默认初始值，即零值</li>
+<li>这里不包含用final修饰的static，因为final在编译的时候就会分配好了默认值，准备阶段会显式初始化</li>
+<li>注意：这里不会为实例变量分配初始化，类变量会分配在方法区中，而实例变量是会随着对象一起分配到Java堆中</li>
+</ol>
+<h5 id="解析resolve">解析(Resolve)</h5>
+<ol>
+<li>将常量池内的符号引用转换为直接引用的过程</li>
+<li>事实上，解析操作往往会伴随着JVM在执行完初始化之后再执行</li>
+<li>符号引用就是一组符号来描述所引用的目标。符号引用的字面量形式明确定义在《java虚拟机规范》的class文件格式中。直接引用就是直接指向目标的指针、相对偏移量或一个间接定位到目标的句柄</li>
+<li>解析动作主要针对类或接口、字段、类方法、接口方法、方法类型等。对应常量池中的CONSTANT Class info、CONSTANT Fieldref info、CONSTANT Methodref info等</li>
+</ol>
+<h3 id="初始化阶段">初始化阶段</h3>
+<p><B>类的初始化时机</B></p>
+<ol>
+<li>创建类的实例</li>
+<li>访问某个类或接口的静态变量，或者对该静态变量赋值</li>
+<li>调用类的静态方法</li>
+<li>反射（比如：Class.forName(“com.atguigu.Test”)）</li>
+<li>初始化一个类的子类</li>
+<li>Java虚拟机启动时被标明为启动类的类</li>
+<li>JDK7开始提供的动态语言支持：java.lang.invoke.MethodHandle实例的解析结果REF_getStatic、REF putStatic、REF_invokeStatic句柄对应的类没有初始化，则初始化</li>
+</ol>
+<p><code>除了以上七种情况，其他使用Java类的方式都被看作是对类的被动使用，都不会导致类的初始化，即不会执行初始化阶段（不会调用 clinit() 方法和 init() 方法）</code><br>
+<B>clinit()</B></p>
+<ol>
+<li>初始化阶段就是执行类构造器方法<clinit>()的过程</li>
+<li>此方法不需定义，是javac编译器自动收集类中的所有类变量的赋值动作和静态代码块中的语句合并而来。也就是说，当我们代码中包含static变量的时候，就会有clinit方法</li>
+<li><clinit>()方法中的指令按语句在源文件中出现的顺序执行</li>
+<li><clinit>()不同于类的构造器。（关联：构造器是虚拟机视角下的<init>()）</li>
+<li>若该类具有父类，JVM会保证子类的<clinit>()执行前，父类的<clinit>()已经执行完毕</li>
+<li>虚拟机必须保证一个类的<clinit>()方法在多线程下被同步加锁<br>
+<code>IDEA 中安装 JClassLib Bytecode viewer 插件，可以很方便的看字节码。</code></li>
+</ol>
+<h2 id="类加载器的分类">类加载器的分类</h2>
+<h3 id="概述-2">概述</h3>
+<ol>
+<li>JVM严格来讲支持两种类型的类加载器 。分别为<B>引导类加载器（Bootstrap ClassLoader）</B>和<B>自定义类加载器（User-Defined ClassLoader）</B></li>
+<li>从概念上来讲，自定义类加载器一般指的是程序中由开发人员自定义的一类类加载器，但是Java虚拟机规范却没有这么定义，而是将<B>所有派生于抽象类ClassLoader的类加载器都划分为自定义类加载器</B></li>
+<li>无论类加载器的类型如何划分，在程序中我们最常见的类加载器始终只有3个<br>
+<img src="https://chenm0.github.io//post-images/1650877008960.png" alt="" loading="lazy"></li>
+</ol>
+<pre><code>· 我们尝试获取引导类加载器，获取到的值为 null ，这并不代表引导类加载器不存在，因为引导类加载器使用C/C++ 语言，我们获取不到
+· 两次获取系统类加载器的值都相同：sun.misc.Launcher$AppClassLoader@18b4aac2 ，这说明系统类加载器是全局唯一的
+</code></pre>
+<h3 id="启动类加载器引导类加载器bootstrap-classloader">启动类加载器（引导类加载器，Bootstrap ClassLoader)</h3>
+<ol>
+<li>这个类加载使用C/C++语言实现的，嵌套在JVM内部</li>
+<li>它用来加载Java的核心库（JAVA_HOME/jre/lib/rt.jar、resources.jar或sun.boot.class.path路径下的内容），用于提供JVM自身需要的类</li>
+<li>并不继承自java.lang.ClassLoader，没有父加载器</li>
+<li>加载扩展类和应用程序类加载器，并作为他们的父类加载器</li>
+<li>出于安全考虑，Bootstrap启动类加载器只加载包名为java、javax、sun等开头的类</li>
+</ol>
+<h3 id="扩展类加载器extension-classloader">扩展类加载器（Extension ClassLoader）</h3>
+<ol>
+<li>Java语言编写，由sun.misc.Launcher$ExtClassLoader实现</li>
+<li>派生于ClassLoader类</li>
+<li>父类加载器为启动类加载器</li>
+<li>从java.ext.dirs系统属性所指定的目录中加载类库，或从JDK的安装目录的jre/lib/ext子目录（扩展目录）下加载类库。如果用户创建的JAR放在此目录下，也会自动由扩展类加载器加载</li>
+</ol>
+<h3 id="系统类加载器应用程序类加载器appclassloader">系统类加载器（应用程序类加载器，AppClassLoader）</h3>
+<ol>
+<li>Java语言编写，由sun.misc.LaunchersAppClassLoader实现</li>
+<li>派生于ClassLoader类</li>
+<li>父类加载器为扩展类加载器</li>
+<li>它负责加载环境变量classpath或系统属性java.class.path指定路径下的类库</li>
+<li>该类加载是程序中默认的类加载器，一般来说，Java应用的类都是由它来完成加载</li>
+<li>通过classLoader.getSystemclassLoader()方法可以获取到该类加载器</li>
+</ol>
+<h3 id="用户自定义类加载器">用户自定义类加载器</h3>
+<p>在Java的日常应用程序开发中，类的加载几乎是由上述3种类加载器相互配合执行的，在必要时，我们还可以自定义类加载器，来定制类的加载方式<br>
+<B>为什么要自定义类加载器？</B></p>
+<ul>
+<li>隔离加载类</li>
+<li>修改类加载的方式</li>
+<li>扩展加载源</li>
+<li>防止源码泄漏<br>
+<B>实现步骤：</B></li>
+</ul>
+<ol>
+<li>开发人员可以通过继承抽象类java.lang.ClassLoader类的方式，实现自己的类加载器，以满足一些特殊的需求</li>
+<li>在JDK1.2之前，在自定义类加载器时，总会去继承ClassLoader类并重写loadClass()方法，从而实现自定义的类加载类，但是在JDK1.2之后已不再建议用户去覆盖loadClass()方法，而是建议把自定义的类加载逻辑写在findclass()方法中</li>
+<li>在编写自定义类加载器时，如果没有太过于复杂的需求，可以直接继承URIClassLoader类，这样就可以避免自己去编写findclass()方法及其获取字节码流的方式，使自定义类加载器编写更加简洁。</li>
+</ol>
+<h2 id="关于classloader">关于ClassLoader</h2>
+<p>ClassLoader类，它是一个抽象类，其后所有的类加载器都继承自ClassLoader（不包括启动类加载器）<br>
+<img src="https://chenm0.github.io//post-images/1650878823904.png" alt="" loading="lazy"><br>
+<B>获取ClassLoader的途径</B></p>
+<ol>
+<li>获取当前类的ClassLoader<br>
+clazz.getClassLoader()</li>
+<li>获取线程上下文的ClassLoader<br>
+Thread.currentThread().getContextClassLoader()</li>
+<li>获取系统的ClassLoader<br>
+ClassLoader.getSystemClassLoader()</li>
+<li>获取调用者的ClassLoader<br>
+DriverManager.getCallerClassLoader()</li>
+</ol>
+<h2 id="双亲委派机制">双亲委派机制</h2>
+<h3 id="原理">原理</h3>
+<p>Java虚拟机对class文件采用的是按需加载的方式，也就是说当需要使用该类时才会将它的class文件加载到内存生成class对象。而且加载某个类的class文件时，Java虚拟机采用的是双亲委派模式，即把请求交由父类处理，它是一种任务委派模式。</p>
+<ol>
+<li>如果一个类加载器收到了类加载请求，它并不会自己先去加载，而是把这个请求委托给父类的加载器去执行；</li>
+<li>如果父类加载器还存在其父类加载器，则进一步向上委托，依次递归，请求最终将到达顶层的启动类加载器；</li>
+<li>如果父类加载器可以完成类加载任务，就成功返回，倘若父类加载器无法完成此加载任务，子加载器才会尝试自己去加载，这就是双亲委派模式。</li>
+<li>父类加载器一层一层往下分配任务，如果子类加载器能加载，则加载此类，如果将加载任务分配至系统类加载器也无法加载此类，则抛出异常<br>
+<img src="https://chenm0.github.io//post-images/1650879512446.png" alt="" loading="lazy"></li>
+</ol>
+<h3 id="优势">优势</h3>
+<ol>
+<li>避免类的重复加载</li>
+<li>保护程序安全，防止核心API被随意篡改 - <B>沙箱安全机制</B></li>
+</ol>
+<h2 id="其他">其他</h2>
+<h3 id="如何判断两个class对象是否相同">如何判断两个class对象是否相同？</h3>
+<p>在JVM中表示两个class对象是否为同一个类存在两个必要条件：</p>
+<ol>
+<li>类的完整类名必须一致，包括包名</li>
+<li>加载这个类的ClassLoader（指ClassLoader实例对象）必须相同</li>
+<li>换句话说，在JVM中，即使这两个类对象（class对象）来源同一个Class文件，被同一个虚拟机所加载，但只要加载它们的ClassLoader实例对象不同，那么这两个类对象也是不相等的</li>
+</ol>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[JDK源码阅读笔记java.lang篇（1）--- Object]]></title>
         <id>https://chenm0.github.io/jdk-lang-object/</id>
@@ -1487,659 +1657,6 @@ AND title like ‘someTitle’
 </code></pre>
 <p><strong>提示</strong> 可以使用 Apache Velocity 作为动态语言，更多细节请参考 MyBatis-Velocity 项目。</p>
 <p>你前面看到的所有 xml 标签都由默认 MyBatis 语言提供，而它由语言驱动 <code>org.apache.ibatis.scripting.xmltags.XmlLanguageDriver</code>（别名为 <code>xml</code>）所提供。</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Leetcode sql题个人题解方案]]></title>
-        <id>https://chenm0.github.io/leetcode-sql/</id>
-        <link href="https://chenm0.github.io/leetcode-sql/">
-        </link>
-        <updated>2021-08-26T00:03:11.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="1-组合两个表">1. 组合两个表</h2>
-<p>表1: Person</p>
-<pre><code>+-------------+---------+
-
-| 列名         | 类型     |
-
-+-------------+---------+
-
-| PersonId    | int     |
-
-| FirstName   | varchar |
-
-| LastName    | varchar |
-
-+-------------+---------+
-
-PersonId 是上表主键
-</code></pre>
-<p>表2: <code>Address</code></p>
-<pre><code>+-------------+---------+
-| 列名         | 类型    |
-+-------------+---------+
-| AddressId   | int     |
-| PersonId    | int     |
-| City        | varchar |
-| State       | varchar |
-+-------------+---------+
-AddressId 是上表主键
-</code></pre>
-<p>编写一个 SQL 查询，满足条件：无论 person 是否有地址信息，都需要基于上述两表提供 person 的以下信息：</p>
-<pre><code>FirstName, LastName, City, State
-</code></pre>
-<h3 id="解答">解答</h3>
-<h5 id="思路">思路:</h5>
-<p>根据题目要求得知,需要查询的为Person表的FirstName,LastName和Address表的City,State字段,以Person表为主表,Address表的PersonId为外键进行查询,可保证无论Address表中是否有关联的值,Person表都能展示其信息。</p>
-<h5 id="答案">答案：</h5>
-<p>SELECT p.FirstName,p.LastName,a.City,a.State FROM Person p left join Address a  on  p.PersonId = a.PersonId</p>
-<h5 id="重点"><strong>重点：</strong></h5>
-<p>连表查询中，主表的内容都会被展示</p>
-<h2 id="2第二高的薪水">2.第二高的薪水</h2>
-<p>编写一个 SQL 查询，获取 <code>Employee</code> 表中第二高的薪水（Salary） 。</p>
-<pre><code>+----+--------+
-| Id | Salary |
-+----+--------+
-| 1  | 100    |
-| 2  | 200    |
-| 3  | 300    |
-+----+--------+
-</code></pre>
-<p>例如上述 <code>Employee</code> 表，SQL查询应该返回 <code>200</code> 作为第二高的薪水。如果不存在第二高的薪水，那么查询应返回 <code>null</code>。</p>
-<pre><code>+---------------------+
-| SecondHighestSalary |
-+---------------------+
-| 200                 |
-+---------------------+
-</code></pre>
-<h3 id="解答-2">解答</h3>
-<h5 id="思路-2">思路：</h5>
-<p>审题发现几个本题重要的考点：</p>
-<p>1.获取第二高的薪水，需要掌握orderby和limit的使用，‘第二高’ 是降序的排序方式，所以需要使用order by  。。 desc。</p>
-<pre><code> 			limit y 分句表示: 读取 y 条数据
-	  	limit x, y 分句表示: 跳过 x 条数据，读取 y 条数据
-      limit y offset x 分句表示: 跳过 x 条数据，读取 y 条数据
-      limit n 等价于 limit 0,n
-</code></pre>
-<p>2.其次需要考虑特殊情况，首先需要去重同样的salary，其次就是如果不存在第二高的薪水，结果应为null，可以有两种解决方式：一种是用临时表，还有一种就是使用IFNULL函数。</p>
-<h5 id="答案-2">答案：</h5>
-<p>select IFNULL((select distinct Salary from Employee order by Salary desc limit 1,1),null) as SecondHighestSalary;</p>
-<h5 id="重点-2"><strong>重点</strong>：</h5>
-<p>1.limit的使用</p>
-<pre><code>	  	limit y 分句表示: 读取 y 条数据
-	  	limit x, y 分句表示: 跳过 x 条数据，读取 y 条数据
-      limit y offset x 分句表示: 跳过 x 条数据，读取 y 条数据
-      limit n 等价于 limit 0,n
-</code></pre>
-<p>2.IFNULL和临时表判空的方式</p>
-<h2 id="3第n高的薪水">3.第N高的薪水</h2>
-<p>编写一个 SQL 查询，获取 <code>Employee</code> 表中第 <em>n</em> 高的薪水（Salary）。</p>
-<pre><code>+----+--------+
-| Id | Salary |
-+----+--------+
-| 1  | 100    |
-| 2  | 200    |
-| 3  | 300    |
-+----+--------+
-</code></pre>
-<p>例如上述 <code>Employee</code> 表，<em>n = 2</em> 时，应返回第二高的薪水 <code>200</code>。如果不存在第 <em>n</em> 高的薪水，那么查询应返回 <code>null</code>。</p>
-<pre><code>+------------------------+
-| getNthHighestSalary(2) |
-+------------------------+
-| 200                    |
-+------------------------+
-</code></pre>
-<h3 id="解答-3"><strong>解答</strong></h3>
-<h5 id="思路-3"><strong>思路:</strong></h5>
-<p>首先对存储过程的语法进行了基本的了解，题目的要求和上一题基本相同，但需要查的位置变成了变量，所以需要在limit后用变量选择跳过的个数</p>
-<h5 id="答案-3"><strong>答案：</strong></h5>
-<pre><code>CREATE FUNCTION getNthHighestSalary(N INT) RETURNS INT
-
-BEGIN
-
-  set N = N - 1;
-
-  RETURN (
-
-​      \# Write your MySQL query statement below.
-
-​      SELECT IFNULl((SELECT distinct Salary from Employee order by Salary desc limit N,1),null)
-
-  );
-
-END
-</code></pre>
-<h5 id="重点-3"><strong>重点：</strong></h5>
-<p>1.存储结构的基础语法</p>
-<pre><code>create procedure sp_name()
-begin
-.........
-end
-</code></pre>
-<p>2.limit后不能进行运算，所以应该在begin前就将需要跳过的数算好，这里需要跳过的数应为需要查到的位数-1</p>
-<h2 id="4分数排名">4.分数排名</h2>
-<p>编写一个 SQL 查询来实现分数排名。</p>
-<p>如果两个分数相同，则两个分数排名（Rank）相同。请注意，平分后的下一个名次应该是下一个连续的整数值。换句话说，名次之间不应该有“间隔”。</p>
-<pre><code>+----+-------+
-| Id | Score |
-+----+-------+
-| 1  | 3.50  |
-| 2  | 3.65  |
-| 3  | 4.00  |
-| 4  | 3.85  |
-| 5  | 4.00  |
-| 6  | 3.65  |
-+----+-------+
-</code></pre>
-<p>例如，根据上述给定的 <code>Scores</code> 表，你的查询应该返回（按分数从高到低排列）：</p>
-<pre><code>+-------+------+
-| Score | Rank |
-+-------+------+
-| 4.00  | 1    |
-| 4.00  | 1    |
-| 3.85  | 2    |
-| 3.65  | 3    |
-| 3.65  | 3    |
-| 3.50  | 4    |
-+-------+------+
-</code></pre>
-<h3 id="解答-4"><strong>解答</strong></h3>
-<h5 id="思路-4"><strong>思路:</strong></h5>
-<p>回答此题的前提是需要了解sql的四大排名函数，审题得知，我们需要根据分数的大小降序排列后，对分数进行排名且名次之间无间隔，所以在四大排名函数中应选择<strong>DENSE_RANK()</strong>。</p>
-<h5 id="答案-4"><strong>答案:</strong></h5>
-<p>select Score,DENSE_RANK() over (order by Score DESC) 'Rank' from Scores;</p>
-<h5 id="重点-4"><strong>重点:</strong></h5>
-<p>1.sql的四大排名函数：</p>
-<ul>
-<li>​    ROW_NUMBER()      ----- 每条数据加一个序号，不适合排名，更加适合分页功能</li>
-<li>​    RANK()              ---- 排名序号可重复，之后按总数算</li>
-<li>​    DENSE_RANK()        ---- 排名序号可重复，之后按序号的后一个继续</li>
-<li>​    NTILE()       ----将有序分区中的行分发到指定数目的组中，各个组有编号，分为几个区，一个区会有多少个。<br>
-​    所以，按照题目要求，应采取DENSE_RANK()无间隔的排名函数<br>
-2.对于 MySQL 解决方案，如果要转义用作列名的保留字，可以在关键字之前和之后使用撇号。例如 <code>Rank</code></li>
-</ul>
-<h2 id="5连续出现的数字">5.连续出现的数字</h2>
-<p>表：<code>Logs</code></p>
-<pre><code>+-------------+---------+
-| Column Name | Type    |
-+-------------+---------+
-| id          | int     |
-| num         | varchar |
-+-------------+---------+
-id 是这个表的主键。
-</code></pre>
-<p>编写一个 SQL 查询，查找所有至少连续出现三次的数字。</p>
-<p>返回的结果表中的数据可以按 <strong>任意顺序</strong> 排列。</p>
-<p>查询结果格式如下面的例子所示：</p>
-<pre><code>Logs 表：
-+----+-----+
-| Id | Num |
-+----+-----+
-| 1  | 1   |
-| 2  | 1   |
-| 3  | 1   |
-| 4  | 2   |
-| 5  | 1   |
-| 6  | 2   |
-| 7  | 2   |
-+----+-----+
-
-Result 表：
-+-----------------+
-| ConsecutiveNums |
-+-----------------+
-| 1               |
-+-----------------+
-1 是唯一连续出现至少三次的数字。
-
-
-</code></pre>
-<h3 id="解答-5"><strong>解答</strong></h3>
-<h5 id="思路-5"><strong>思路:</strong></h5>
-<p>本题根据题目要求，需查询出连续出现至少三次的同一个数字，所以distinct函数是一定需要使用的；三次同一个数字的id分别为id，id+1，id+2，而num是相同的，所以需要两个子查询作为筛选条件</p>
-<h5 id="答案-5"><strong>答案:</strong></h5>
-<pre><code>select distinct Num as ConsecutiveNums from Logs where (Id+1,Num) in (select * from Logs) and (Id+2,Num) in (select * from Logs)
-</code></pre>
-<h5 id="重点-5"><strong>重点:</strong></h5>
-<p>活用子查询</p>
-<h2 id="6超过经理收入的员工">6.超过经理收入的员工</h2>
-<p><code>Employee</code> 表包含所有员工，他们的经理也属于员工。每个员工都有一个 Id，此外还有一列对应员工的经理的 Id。</p>
-<pre><code>+----+-------+--------+-----------+
-| Id | Name  | Salary | ManagerId |
-+----+-------+--------+-----------+
-| 1  | Joe   | 70000  | 3         |
-| 2  | Henry | 80000  | 4         |
-| 3  | Sam   | 60000  | NULL      |
-| 4  | Max   | 90000  | NULL      |
-+----+-------+--------+-----------+
-</code></pre>
-<p>给定 <code>Employee</code> 表，编写一个 SQL 查询，该查询可以获取收入超过他们经理的员工的姓名。在上面的表格中，Joe 是唯一一个收入超过他的经理的员工。</p>
-<pre><code>+----------+
-| Employee |
-+----------+
-| Joe      |
-+----------+
-</code></pre>
-<h3 id="解答-6"><strong>解答</strong></h3>
-<h5 id="思路-6"><strong>思路:</strong></h5>
-<p>本题需要使用子链接或自链接</p>
-<h5 id="答案-6"><strong>答案：</strong></h5>
-<p>子链接：</p>
-<pre><code>select a.Name as Employee from Employee a where a.Salary &gt; 
-
-(select b.Salary from Employee b where b.Id = a.ManagerId) 
-</code></pre>
-<p>自链接：</p>
-<pre><code>select a.Name as Employee from Employee a join Employee b where b.id = a.ManagerId and b.Salary &lt; a.Salary
-</code></pre>
-<h5 id="重点-6"><strong>重点：</strong></h5>
-<p>加强自链接和子链接的使用</p>
-<h2 id="7查找重复的电子邮箱">7.查找重复的电子邮箱</h2>
-<p>编写一个 SQL 查询，查找 <code>Person</code> 表中所有重复的电子邮箱。</p>
-<p><strong>示例：</strong></p>
-<pre><code>+----+---------+
-| Id | Email   |
-+----+---------+
-| 1  | a@b.com |
-| 2  | c@d.com |
-| 3  | a@b.com |
-+----+---------+
-</code></pre>
-<p>根据以上输入，你的查询应返回以下结果：</p>
-<pre><code>+---------+
-| Email   |
-+---------+
-| a@b.com |
-+---------+
-</code></pre>
-<p>**说明：**所有电子邮箱都是小写字母。</p>
-<h3 id="解答-7"><strong>解答</strong></h3>
-<h5 id="思路-7"><strong>思路:</strong></h5>
-<p>需要使用group by将结果集归类，然后使用count函数判断是否重复</p>
-<h5 id="答案-7"><strong>答案:</strong></h5>
-<pre><code>select Email from Person group by Email having count(Email) &gt; 1
-</code></pre>
-<h5 id="重点-7"><strong>重点:</strong></h5>
-<p>group by...having和计数函数的使用</p>
-<h2 id="8从不订购的客户">8.从不订购的客户</h2>
-<p>某网站包含两个表，Customers 表和 Orders 表。编写一个 SQL 查询，找出所有从不订购任何东西的客户。</p>
-<p><code>Customers</code> 表：</p>
-<pre><code>+----+-------+
-| Id | Name  |
-+----+-------+
-| 1  | Joe   |
-| 2  | Henry |
-| 3  | Sam   |
-| 4  | Max   |
-+----+-------+
-</code></pre>
-<p><code>Orders</code> 表：</p>
-<pre><code>+----+------------+
-| Id | CustomerId |
-+----+------------+
-| 1  | 3          |
-| 2  | 1          |
-+----+------------+
-</code></pre>
-<p>例如给定上述表格，你的查询应返回：</p>
-<pre><code>+-----------+
-| Customers |
-+-----------+
-| Henry     |
-| Max       |
-+-----------+
-</code></pre>
-<h3 id="解答-8"><strong>解答</strong></h3>
-<h5 id="思路-8"><strong>思路:</strong></h5>
-<p>首先需要连表进行查询，然后需要使用子查询筛选结果</p>
-<h5 id="答案-8"><strong>答案:</strong></h5>
-<pre><code>select c.Name as Customers from Orders o right join Customers c on c.id = o.CustomerId where c.Id not in (select CustomerId from Orders)
-</code></pre>
-<h5 id="重点-8"><strong>重点:</strong></h5>
-<p>注意关联查询配合子查询</p>
-<h2 id="9部门工资最高的员工">9.部门工资最高的员工</h2>
-<p><code>Employee</code> 表包含所有员工信息，每个员工有其对应的 Id, salary 和 department Id。</p>
-<pre><code>+----+-------+--------+--------------+
-| Id | Name  | Salary | DepartmentId |
-+----+-------+--------+--------------+
-| 1  | Joe   | 70000  | 1            |
-| 2  | Jim   | 90000  | 1            |
-| 3  | Henry | 80000  | 2            |
-| 4  | Sam   | 60000  | 2            |
-| 5  | Max   | 90000  | 1            |
-+----+-------+--------+--------------+
-</code></pre>
-<p><code>Department</code> 表包含公司所有部门的信息。</p>
-<pre><code>+----+----------+
-| Id | Name     |
-+----+----------+
-| 1  | IT       |
-| 2  | Sales    |
-+----+----------+
-
-</code></pre>
-<p>编写一个 SQL 查询，找出每个部门工资最高的员工。对于上述表，您的 SQL 查询应返回以下行（行的顺序无关紧要）。</p>
-<pre><code>+------------+----------+--------+
-| Department | Employee | Salary |
-+------------+----------+--------+
-| IT         | Max      | 90000  |
-| IT         | Jim      | 90000  |
-| Sales      | Henry    | 80000  |
-+------------+----------+--------+
-</code></pre>
-<p><strong>解释：</strong></p>
-<p>Max 和 Jim 在 IT 部门的工资都是最高的，Henry 在销售部的工资最高。</p>
-<h3 id="解答-9"><strong>解答</strong></h3>
-<h5 id="思路-9"><strong>思路:</strong></h5>
-<p>需要应用子查询构建一个临时表，临时表中使用分区和**DENSE_RANK()**函数（因为有并列的情况）进行排序，然后在外层根据排序的序号查询排名第一的结果</p>
-<h5 id="答案-9"><strong>答案:</strong></h5>
-<pre><code>SELECT s.Department,s.Employee,s.Salary from 
-(SELECT
-    d.Name as Department,e.Name as Employee,e.Salary as Salary, DENSE_RANK() over (Partition by DepartmentID order by Salary DESC) as rn
-    FROM
-        Employee e join Department d on e.DepartmentID = d.Id) s
-where s.rn = 1
-</code></pre>
-<h5 id="重点-9"><strong>重点:</strong></h5>
-<p>1.Partition by 和 group by的区别<br>
-1. group by是分组函数，partition by是分析函数（然后像sum()等是聚合函数）；<br>
-2. 在执行顺序上，<br>
-以下是常用sql关键字的优先级<br>
-<mark>from &gt; where &gt; group by &gt; having &gt; order by</mark><br>
-而partition by应用在以上关键字之后，实际上就是在执行完select之后，在所得结果集之上进行partition。<br>
-3. partition by相比较于group by，能够在保留全部数据的基础上，只对其中某些字段做分组排序（类似excel中的操作），而group by则只保留参与分组的字段和聚合函数的结果（类似excel中的pivot）<br>
-4. 如果在partition结果上聚合，千万注意聚合函数是逐条累计运行结果的！而在group by后的结果集上使用聚合函数，会作用在分组下的所有记录上。<br>
-2.活用自查询</p>
-<h2 id="10部门工资前三高的所有员工">10.部门工资前三高的所有员工</h2>
-<p><code>Employee</code> 表包含所有员工信息，每个员工有其对应的工号 <code>Id</code>，姓名 <code>Name</code>，工资 <code>Salary</code> 和部门编号 <code>DepartmentId</code> 。</p>
-<pre><code>+----+-------+--------+--------------+
-| Id | Name  | Salary | DepartmentId |
-+----+-------+--------+--------------+
-| 1  | Joe   | 85000  | 1            |
-| 2  | Henry | 80000  | 2            |
-| 3  | Sam   | 60000  | 2            |
-| 4  | Max   | 90000  | 1            |
-| 5  | Janet | 69000  | 1            |
-| 6  | Randy | 85000  | 1            |
-| 7  | Will  | 70000  | 1            |
-+----+-------+--------+--------------+
-</code></pre>
-<p><code>Department</code> 表包含公司所有部门的信息。</p>
-<pre><code>+----+----------+
-| Id | Name     |
-+----+----------+
-| 1  | IT       |
-| 2  | Sales    |
-+----+----------+
-</code></pre>
-<p>编写一个 SQL 查询，找出每个部门获得前三高工资的所有员工。例如，根据上述给定的表，查询结果应返回：</p>
-<pre><code>+------------+----------+--------+
-| Department | Employee | Salary |
-+------------+----------+--------+
-| IT         | Max      | 90000  |
-| IT         | Randy    | 85000  |
-| IT         | Joe      | 85000  |
-| IT         | Will     | 70000  |
-| Sales      | Henry    | 80000  |
-| Sales      | Sam      | 60000  |
-+------------+----------+--------+
-</code></pre>
-<p><strong>解释：</strong></p>
-<p>IT 部门中，Max 获得了最高的工资，Randy 和 Joe 都拿到了第二高的工资，Will 的工资排第三。销售部门（Sales）只有两名员工，Henry 的工资最高，Sam 的工资排第二。</p>
-<h3 id="解答-10"><strong>解答</strong></h3>
-<h5 id="思路-10"><strong>思路:</strong></h5>
-<p>根据上题的一道扩展问题，可延续上题思路，更改排序的筛选条件</p>
-<h5 id="答案-10"><strong>答案:</strong></h5>
-<pre><code>SELECT s.Department,s.Employee,S.Salary from 
-
-(SELECT
-
-​    d.Name as Department,e.Name as Employee,e.Salary as Salary, e.DepartmentId as did,DENSE_RANK() over (Partition by DepartmentID order by Salary DESC) as rn
-
-​    FROM
-
-​        Employee e join Department d on e.DepartmentID = d.Id) s
-
-where s.rn &lt;= 3 order by s.did asc,S.Salary DESC
-</code></pre>
-<h5 id="重点-10"><strong>重点:</strong></h5>
-<p>主要思路延续上一题</p>
-<h2 id="11-删除重复的电子邮箱">11. 删除重复的电子邮箱</h2>
-<p>编写一个 SQL 查询，来删除 Person 表中所有重复的电子邮箱，重复的邮箱里只保留 Id 最小 的那个。</p>
-<pre><code>+----+------------------+
-| Id | Email            |
-+----+------------------+
-| 1  | john@example.com |
-| 2  | bob@example.com  |
-| 3  | john@example.com |
-+----+------------------+
-Id 是这个表的主键。
-</code></pre>
-<p>例如，在运行你的查询语句之后，上面的 Person 表应返回以下几行:</p>
-<pre><code>+----+------------------+
-| Id | Email            |
-+----+------------------+
-| 1  | john@example.com |
-| 2  | bob@example.com  |
-+----+------------------+
-</code></pre>
-<p>提示：</p>
-<ul>
-<li>执行 SQL 之后，输出是整个 Person 表。</li>
-<li>使用 delete 语句。</li>
-</ul>
-<h3 id="解答-11"><strong>解答</strong></h3>
-<h5 id="思路-11"><strong>思路:</strong></h5>
-<p>使用自链接筛选比较结果进行删除</p>
-<h5 id="答案-11"><strong>答案:</strong></h5>
-<pre><code>delete p1 from Person p1 join Person p2 on p1.Email = p2.Email where p1.Id &gt; p2.Id
-</code></pre>
-<h5 id="重点-11"><strong>重点:</strong></h5>
-<p>活用自链接</p>
-<h2 id="12上升的温度">12.上升的温度</h2>
-<p>表 Weather</p>
-<pre><code>+---------------+---------+
-| Column Name   | Type    |
-+---------------+---------+
-| id            | int     |
-| recordDate    | date    |
-| temperature   | int     |
-+---------------+---------+
-id 是这个表的主键
-该表包含特定日期的温度信息
-</code></pre>
-<p>编写一个 SQL 查询，来查找与之前（昨天的）日期相比温度更高的所有日期的 id 。<br>
-返回结果 不要求顺序 。<br>
-查询结果格式如下例：</p>
-<pre><code>Weather
-+----+------------+-------------+
-| id | recordDate | Temperature |
-+----+------------+-------------+
-| 1  | 2015-01-01 | 10          |
-| 2  | 2015-01-02 | 25          |
-| 3  | 2015-01-03 | 20          |
-| 4  | 2015-01-04 | 30          |
-+----+------------+-------------+
-
-Result table:
-+----+
-| id |
-+----+
-| 2  |
-| 4  |
-+----+
-2015-01-02 的温度比前一天高（10 -&gt; 25）
-2015-01-04 的温度比前一天高（20 -&gt; 30）
-</code></pre>
-<h3 id="解答-12"><strong>解答</strong></h3>
-<h5 id="思路-12"><strong>思路:</strong></h5>
-<p>这里需要使用datediff函数来判断前一天，== datediff(日期1, 日期2)： 得到的结果是日期1与日期2相差的天数。 如果日期1比日期2大，结果为正；如果日期1比日期2小，结果为负。==</p>
-<h5 id="答案-12"><strong>答案:</strong></h5>
-<pre><code>select w1.id from Weather w1,Weather w2 where w1.Temperature &gt; w2.Temperature and datediff(w1.recordDate,w2.recordDate) = 1
-</code></pre>
-<h5 id="重点-12"><strong>重点:</strong></h5>
-<p>== datediff(日期1, 日期2)： 得到的结果是日期1与日期2相差的天数。 如果日期1比日期2大，结果为正；如果日期1比日期2小，结果为负。==</p>
-<h2 id="13大的国家">13.大的国家</h2>
-<p>这里有张 World 表</p>
-<pre><code>+-----------------+------------+------------+--------------+---------------+
-| name            | continent  | area       | population   | gdp           |
-+-----------------+------------+------------+--------------+---------------+
-| Afghanistan     | Asia       | 652230     | 25500100     | 20343000      |
-| Albania         | Europe     | 28748      | 2831741      | 12960000      |
-| Algeria         | Africa     | 2381741    | 37100000     | 188681000     |
-| Andorra         | Europe     | 468        | 78115        | 3712000       |
-| Angola          | Africa     | 1246700    | 20609294     | 100990000     |
-+-----------------+------------+------------+--------------+---------------+
-</code></pre>
-<p>如果一个国家的面积超过 300 万平方公里，或者人口超过 2500 万，那么这个国家就是大国家。<br>
-编写一个 SQL 查询，输出表中所有大国家的名称、人口和面积。<br>
-例如，根据上表，我们应该输出:</p>
-<pre><code>+--------------+-------------+--------------+
-| name         | population  | area         |
-+--------------+-------------+--------------+
-| Afghanistan  | 25500100    | 652230       |
-| Algeria      | 37100000    | 2381741      |
-+--------------+-------------+--------------+
-</code></pre>
-<h3 id="解答-13"><strong>解答</strong></h3>
-<h5 id="思路-13"><strong>思路:</strong></h5>
-<p>此题比较简单，使用or进行筛选即可</p>
-<h5 id="答案-13"><strong>答案:</strong></h5>
-<pre><code>select name,population,area from World where area &gt; 3000000 or population &gt; 25000000
-</code></pre>
-<h5 id="重点-13"><strong>重点:</strong></h5>
-<p>or的使用方式</p>
-<h2 id="14-超过5名学生的课">14. 超过5名学生的课</h2>
-<p>有一个courses 表 ，有: student (学生) 和 class (课程)。<br>
-请列出所有超过或等于5名学生的课。<br>
-例如，表：</p>
-<pre><code>+---------+------------+
-| student | class      |
-+---------+------------+
-| A       | Math       |
-| B       | English    |
-| C       | Math       |
-| D       | Biology    |
-| E       | Math       |
-| F       | Computer   |
-| G       | Math       |
-| H       | Math       |
-| I       | Math       |
-+---------+------------+
-</code></pre>
-<p>应该输出:</p>
-<pre><code>+---------+
-| class   |
-+---------+
-| Math    |
-+---------+
-</code></pre>
-<p>提示：</p>
-<ul>
-<li>学生在每个课中不应被重复计算。</li>
-</ul>
-<h3 id="解答-14"><strong>解答</strong></h3>
-<h5 id="思路-14"><strong>思路:</strong></h5>
-<p>可使用子查询进行分组之后利用count筛选结果</p>
-<h5 id="答案-14"><strong>答案:</strong></h5>
-<pre><code>select c.class from (select distinct * from courses) c group by c.class having count(c.class) &gt;=5 
-</code></pre>
-<h5 id="重点-14"><strong>重点:</strong></h5>
-<p>注意提示，需要进行去重操作</p>
-<h2 id="15-有趣的电影">15. 有趣的电影</h2>
-<p>某城市开了一家新的电影院，吸引了很多人过来看电影。该电影院特别注意用户体验，专门有个 LED显示板做电影推荐，上面公布着影评和相关电影描述。<br>
-作为该电影院的信息部主管，您需要编写一个 SQL查询，找出所有影片描述为非 boring (不无聊) 的并且 id 为奇数 的影片，结果请按等级 rating 排列。<br>
-例如，下表 cinema:</p>
-<pre><code>+---------+-----------+--------------+-----------+
-|   id    | movie     |  description |  rating   |
-+---------+-----------+--------------+-----------+
-|   1     | War       |   great 3D   |   8.9     |
-|   2     | Science   |   fiction    |   8.5     |
-|   3     | irish     |   boring     |   6.2     |
-|   4     | Ice song  |   Fantacy    |   8.6     |
-|   5     | House card|   Interesting|   9.1     |
-+---------+-----------+--------------+-----------+
-</code></pre>
-<p>对于上面的例子，则正确的输出是为：</p>
-<pre><code>+---------+-----------+--------------+-----------+
-|   id    | movie     |  description |  rating   |
-+---------+-----------+--------------+-----------+
-|   5     | House card|   Interesting|   9.1     |
-|   1     | War       |   great 3D   |   8.9     |
-+---------+-----------+--------------+-----------+
-</code></pre>
-<h3 id="解答-15"><strong>解答</strong></h3>
-<h5 id="思路-15"><strong>思路:</strong></h5>
-<p>奇数可以用取余不等于0的方式计算，“&lt;&gt;”代表的是不等于</p>
-<h5 id="答案-15"><strong>答案:</strong></h5>
-<pre><code>select id,movie,description,rating from cinema where id % 2 &lt;&gt; 0 and description &lt;&gt; 'boring' order by rating desc
-</code></pre>
-<h5 id="重点-15"><strong>重点:</strong></h5>
-<p>奇数的算法和不等于符号</p>
-<h2 id="16-换座位">16. 换座位</h2>
-<p>小美是一所中学的信息科技老师，她有一张 seat 座位表，平时用来储存学生名字和与他们相对应的座位 id。<br>
-其中纵列的 id 是连续递增的<br>
-小美想改变相邻俩学生的座位。<br>
-你能不能帮她写一个 SQL query 来输出小美想要的结果呢？<br>
-示例：</p>
-<pre><code>+---------+---------+
-|    id   | student |
-+---------+---------+
-|    1    | Abbot   |
-|    2    | Doris   |
-|    3    | Emerson |
-|    4    | Green   |
-|    5    | Jeames  |
-+---------+---------+
-</code></pre>
-<p>假如数据输入的是上表，则输出结果如下：</p>
-<pre><code>+---------+---------+
-|    id   | student |
-+---------+---------+
-|    1    | Doris   |
-|    2    | Abbot   |
-|    3    | Green   |
-|    4    | Emerson |
-|    5    | Jeames  |
-+---------+---------+
-</code></pre>
-<p>注意：<br>
-如果学生人数是奇数，则不需要改变最后一个同学的座位。</p>
-<h3 id="解答-16"><strong>解答</strong></h3>
-<h5 id="思路-16"><strong>思路:</strong></h5>
-<p>此题涉及到异或运算符的使用，需要对异或运算符有所了解</p>
-<h5 id="答案-16"><strong>答案:</strong></h5>
-<pre><code>select rank() over (order by ((id-1)^1)) as id,student from seat
-</code></pre>
-<h5 id="重点-16"><strong>重点:</strong></h5>
-<p>^(位异或)的使用方式：<br>
-上下运算,按照与的运算规则：0&amp;0=0 ；0&amp;1=1；1&amp;1=0</p>
-<h2 id="17-变更性别">17. 变更性别</h2>
-<p>给定一个 salary 表，如下所示，有 m = 男性 和 f = 女性 的值。交换所有的 f 和 m 值（例如，将所有 f 值更改为 m，反之亦然）。要求只使用一个更新（Update）语句，并且没有中间的临时表。</p>
-<p>注意，您必只能写一个 Update 语句，请不要编写任何 Select 语句。<br>
-例如：</p>
-<pre><code>| id | name | sex | salary |
-|----|------|-----|--------|
-| 1  | A    | m   | 2500   |
-| 2  | B    | f   | 1500   |
-| 3  | C    | m   | 5500   |
-| 4  | D    | f   | 500    |
-</code></pre>
-<p>运行你所编写的更新语句之后，将会得到以下表:</p>
-<pre><code>| id | name | sex | salary |
-|----|------|-----|--------|
-| 1  | A    | f   | 2500   |
-| 2  | B    | m   | 1500   |
-| 3  | C    | f   | 5500   |
-| 4  | D    | m   | 500    |
-</code></pre>
-<h3 id="解答-17"><strong>解答</strong></h3>
-<h5 id="思路-17"><strong>思路:</strong></h5>
-<p>此题涉及到sql语句中的if用法</p>
-<h5 id="答案-17"><strong>答案:</strong></h5>
-<pre><code>update salary set sex = if(sex = 'f','m','f')
-</code></pre>
-<h5 id="重点-17"><strong>重点:</strong></h5>
-<p>在sql的update语句中，if语句类似于三目运算符的作用</p>
 ]]></content>
     </entry>
 </feed>
