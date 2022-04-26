@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://chenm0.github.io/</id>
     <title>xxx.class</title>
-    <updated>2022-04-26T00:40:22.149Z</updated>
+    <updated>2022-04-26T02:55:49.248Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://chenm0.github.io/"/>
     <link rel="self" href="https://chenm0.github.io/atom.xml"/>
@@ -10,6 +10,186 @@
     <logo>https://chenm0.github.io/images/avatar.png</logo>
     <icon>https://chenm0.github.io/favicon.ico</icon>
     <rights>All rights reserved 2022, xxx.class</rights>
+    <entry>
+        <title type="html"><![CDATA[JVM笔记---2.运行时数据区概述及线程]]></title>
+        <id>https://chenm0.github.io/KDeC0X3Hk/</id>
+        <link href="https://chenm0.github.io/KDeC0X3Hk/">
+        </link>
+        <updated>2022-04-26T01:42:02.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="运行区数据区结构">运行区数据区结构</h2>
+<h3 id="运行时数据区与内存">运行时数据区与内存</h3>
+<ol>
+<li>内存是非常重要的系统资源，是硬盘和CPU的中间仓库及桥梁，承载着操作系统和应用程序的实时运行。JVM内存布局规定了Java在运行过程中内存申请、分配、管理的策略，保证了JVM的高效稳定运行。不同的JVM对于内存的划分方式和管理机制存在着部分差异。结合JVM虚拟机规范，来探讨一下经典的JVM内存布局。</li>
+<li>我们通过磁盘或者网络IO得到的数据，都需要先加载到内存中，然后CPU从内存中获取数据进行读取，也就是说内存充当了CPU和磁盘之间的桥梁<br>
+<img src="https://chenm0.github.io//post-images/1650938032487.jpeg" alt="" loading="lazy"></li>
+</ol>
+<h3 id="线程的内存空间">线程的内存空间</h3>
+<ol>
+<li>Java虚拟机定义了若干种程序运行期间会使用到的运行时数据区：其中有一些会随着虚拟机启动而创建，随着虚拟机退出而销毁。另外一些则是与线程一一对应的，这些与线程对应的数据区域会随着线程开始和结束而创建和销毁。</li>
+<li>灰色的为单独线程私有的，红色的为多个线程共享的。即：</li>
+</ol>
+<ul>
+<li>线程独有：独立包括程序计数器、栈、本地方法栈</li>
+<li>线程间共享：堆、堆外内存（永久代或元空间、代码缓存）<br>
+<img src="https://chenm0.github.io//post-images/1650938125695.png" alt="" loading="lazy"></li>
+</ul>
+<h3 id="runtime类">Runtime类</h3>
+<p>每个JVM只有一个Runtime实例。即为运行时环境，相当于内存结构的中间的那个框框：运行时环境。</p>
+<h2 id="线程">线程</h2>
+<h3 id="jvm线程">JVM线程</h3>
+<ol>
+<li>线程是一个程序里的运行单元。JVM允许一个应用有多个线程并行的执行</li>
+<li>在Hotspot JVM里，每个线程都与操作系统的本地线程直接映射<br>
+<code>当一个Java线程准备好执行以后，此时一个操作系统的本地线程也同时创建。Java线程执行终止后，本地线程也会回收</code></li>
+<li>操作系统负责将线程安排调度到任何一个可用的CPU上。一旦本地线程初始化成功，它就会调用Java线程中的run()方法</li>
+</ol>
+<h3 id="jvm-系统线程">JVM 系统线程</h3>
+<p>如果你使用jconsole或者是任何一个调试工具，都能看到在后台有许多线程在运行。这些后台线程不包括调用public static void main(String[])的main线程以及所有这个main线程自己创建的线程。<br>
+这些主要的后台系统线程在Hotspot JVM里主要是以下几个：</p>
+<ul>
+<li>虚拟机线程：这种线程的操作是需要JVM达到安全点才会出现。这些操作必须在不同的线程中发生的原因是他们都需要JVM达到安全点，这样堆才不会变化。这种线程的执行类型括&quot;stop-the-world&quot;的垃圾收集，线程栈收集，线程挂起以及偏向锁撤销</li>
+<li>周期任务线程：这种线程是时间周期事件的体现（比如中断），他们一般用于周期性操作的调度执行</li>
+<li>GC线程：这种线程对在JVM里不同种类的垃圾收集行为提供了支持</li>
+<li>编译线程：这种线程在运行时会将字节码编译成到本地代码</li>
+<li>信号调度线程：这种线程接收信号并发送给JVM，在它内部通过调用适当的方法进行处理</li>
+</ul>
+<h2 id="程序计数器pc寄存器">程序计数器(PC寄存器)</h2>
+<h3 id="pc寄存器介绍">PC寄存器介绍</h3>
+<p>JVM中的程序计数寄存器（Program Counter Register）中，Register的命名源于CPU的寄存器，寄存器存储指令相关的现场信息。CPU只有把数据装载到寄存器才能够运行。<br>
+<code>这里，并非是广义上所指的物理寄存器，或许将其翻译为PC计数器（或指令计数器）会更加贴切（也称为程序钩子），并且也不容易引起一些不必要的误会。JVM中的PC寄存器是对物理PC寄存器的一种抽象模拟</code></p>
+<ol>
+<li>它是一块很小的内存空间，几乎可以忽略不记。也是运行速度最快的存储区域。</li>
+<li>在JVM规范中，每个线程都有它自己的程序计数器，是线程私有的，生命周期与线程的生命周期保持一致。</li>
+<li>它是程序控制流的指示器，分支、循环、跳转、异常处理、线程恢复等基础功能都需要依赖这个计数器来完成。</li>
+<li>字节码解释器工作时就是通过改变这个计数器的值来选取下一条需要执行的字节码指令。</li>
+<li>它是唯一一个在Java虚拟机规范中没有规定任何OutofMemoryError情况的区域。</li>
+</ol>
+<h3 id="pc寄存器的作用">PC寄存器的作用</h3>
+<p>PC寄存器用来存储指向下一条指令的地址，也即将要执行的指令代码。由执行引擎读取下一条指令，并执行该指令。<br>
+<img src="https://chenm0.github.io//post-images/1650939184266.png" alt="" loading="lazy"></p>
+<pre><code>Classfile /F:/IDEAWorkSpaceSourceCode/JVMDemo/out/production/chapter04/com/atguigu/java/PCRegisterTest.class
+  Last modified 2020-11-2; size 675 bytes
+  MD5 checksum 53b3ef104479ec9e9b7ce5319e5881d3
+  Compiled from &quot;PCRegisterTest.java&quot;
+public class com.atguigu.java.PCRegisterTest
+  minor version: 0
+  major version: 52
+  flags: ACC_PUBLIC, ACC_SUPER
+Constant pool:
+   #1 = Methodref          #6.#26         // java/lang/Object.&quot;&lt;init&gt;&quot;:()V
+   #2 = String             #27            // abc
+   #3 = Fieldref           #28.#29        // java/lang/System.out:Ljava/io/PrintStream;
+   #4 = Methodref          #30.#31        // java/io/PrintStream.println:(I)V
+   #5 = Class              #32            // com/atguigu/java/PCRegisterTest
+   #6 = Class              #33            // java/lang/Object
+   #7 = Utf8               &lt;init&gt;
+   #8 = Utf8               ()V
+   #9 = Utf8               Code
+  #10 = Utf8               LineNumberTable
+  #11 = Utf8               LocalVariableTable
+  #12 = Utf8               this
+  #13 = Utf8               Lcom/atguigu/java/PCRegisterTest;
+  #14 = Utf8               main
+  #15 = Utf8               ([Ljava/lang/String;)V
+  #16 = Utf8               args
+  #17 = Utf8               [Ljava/lang/String;
+  #18 = Utf8               i
+  #19 = Utf8               I
+  #20 = Utf8               j
+  #21 = Utf8               k
+  #22 = Utf8               s
+  #23 = Utf8               Ljava/lang/String;
+  #24 = Utf8               SourceFile
+  #25 = Utf8               PCRegisterTest.java
+  #26 = NameAndType        #7:#8          // &quot;&lt;init&gt;&quot;:()V
+  #27 = Utf8               abc
+  #28 = Class              #34            // java/lang/System
+  #29 = NameAndType        #35:#36        // out:Ljava/io/PrintStream;
+  #30 = Class              #37            // java/io/PrintStream
+  #31 = NameAndType        #38:#39        // println:(I)V
+  #32 = Utf8               com/atguigu/java/PCRegisterTest
+  #33 = Utf8               java/lang/Object
+  #34 = Utf8               java/lang/System
+  #35 = Utf8               out
+  #36 = Utf8               Ljava/io/PrintStream;
+  #37 = Utf8               java/io/PrintStream
+  #38 = Utf8               println
+  #39 = Utf8               (I)V
+{
+  public com.atguigu.java.PCRegisterTest();
+    descriptor: ()V
+    flags: ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: invokespecial #1                  // Method java/lang/Object.&quot;&lt;init&gt;&quot;:()V
+         4: return
+      LineNumberTable:
+        line 7: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       5     0  this   Lcom/atguigu/java/PCRegisterTest;
+
+  public static void main(java.lang.String[]);
+    descriptor: ([Ljava/lang/String;)V
+    flags: ACC_PUBLIC, ACC_STATIC
+    Code:
+      stack=2, locals=5, args_size=1
+         0: bipush        10
+         2: istore_1
+         3: bipush        20
+         5: istore_2
+         6: iload_1
+         7: iload_2
+         8: iadd
+         9: istore_3
+        10: ldc           #2                  // String abc
+        12: astore        4
+        14: getstatic     #3                  // Field java/lang/System.out:Ljava/io/PrintStream;
+        17: iload_1
+        18: invokevirtual #4                  // Method java/io/PrintStream.println:(I)V
+        21: getstatic     #3                  // Field java/lang/System.out:Ljava/io/PrintStream;
+        24: iload_3
+        25: invokevirtual #4                  // Method java/io/PrintStream.println:(I)V
+        28: return
+      LineNumberTable:
+        line 10: 0
+        line 11: 3
+        line 12: 6
+        line 14: 10
+        line 15: 14
+        line 16: 21
+        line 18: 28
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      29     0  args   [Ljava/lang/String;
+            3      26     1     i   I
+            6      23     2     j   I
+           10      19     3     k   I
+           14      15     4     s   Ljava/lang/String;
+}
+SourceFile: &quot;PCRegisterTest.java&quot;
+</code></pre>
+<ul>
+<li>左边的数字代表指令地址（指令偏移），即 PC 寄存器中可能存储的值，然后执行引擎读取 PC 寄存器中的值，并执行该指令<br>
+<img src="https://chenm0.github.io//post-images/1650939274746.png" alt="" loading="lazy"></li>
+</ul>
+<pre><code>PC寄存器为什么被设定为私有的？
+1. 我们都知道所谓的多线程在一个特定的时间段内只会执行其中某一个线程的方法，CPU会不停地做任务切换，这样必然导致经常中断或恢复，如何保证分毫无差呢？为了能够准确地记录各个线程正在执行的当前字节码指令地址，最好的办法自然是为每一个线程都分配一个PC寄存器，这样一来各个线程之间便可以进行独立计算，从而不会出现相互干扰的情况。
+2. 由于CPU时间片轮限制，众多线程在并发执行过程中，任何一个确定的时刻，一个处理器或者多核处理器中的一个内核，只会执行某个线程中的一条指令。
+3. 这样必然导致经常中断或恢复，如何保证分毫无差呢？每个线程在创建后，都会产生自己的程序计数器和栈帧，程序计数器在各个线程之间互不影响。
+
+使用PC寄存器存储字节码指令地址有什么用呢？或者问为什么使用 PC 寄存器来记录当前线程的执行地址呢？
+1. 因为CPU需要不停的切换各个线程，这时候切换回来以后，就得知道接着从哪开始继续执行
+2. JVM的字节码解释器就需要通过改变PC寄存器的值来明确下一条应该执行什么样的字节码指令
+</code></pre>
+<h2 id="cpu-时间片">CPU 时间片</h2>
+<p>CPU时间片即CPU分配给各个程序的时间，每个线程被分配一个时间段，称作它的时间片。<br>
+在宏观上：我们可以同时打开多个应用程序，每个程序并行不悖，同时运行。<br>
+但在微观上：由于只有一个CPU，一次只能处理程序要求的一部分，如何处理公平，一种方法就是引入时间片，每个程序轮流执行。<br>
+<img src="https://chenm0.github.io//post-images/1650941456334.png" alt="" loading="lazy"></p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[JVM笔记---1.类加载子系统]]></title>
         <id>https://chenm0.github.io/CwyaFdgZf/</id>
@@ -1445,218 +1625,6 @@ system<br>
     &lt;plugins&gt;
 &lt;/build&gt;
 </code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Mybatis动态SQL]]></title>
-        <id>https://chenm0.github.io/mybatis-sql/</id>
-        <link href="https://chenm0.github.io/mybatis-sql/">
-        </link>
-        <updated>2021-09-03T01:24:52.000Z</updated>
-        <content type="html"><![CDATA[<p>动态 SQL 是 MyBatis 的强大特性之一。如果你使用过 JDBC 或其它类似的框架，你应该能理解根据不同条件拼接 SQL 语句有多痛苦，例如拼接时要确保不能忘记添加必要的空格，还要注意去掉列表最后一个列名的逗号。利用动态 SQL，可以彻底摆脱这种痛苦。</p>
-<p>使用动态 SQL 并非一件易事，但借助可用于任何 SQL 映射语句中的强大的动态 SQL 语言，MyBatis 显著地提升了这一特性的易用性。</p>
-<p>如果你之前用过 JSTL 或任何基于类 XML 语言的文本处理器，你对动态 SQL 元素可能会感觉似曾相识。在 MyBatis 之前的版本中，需要花时间了解大量的元素。借助功能强大的基于 OGNL 的表达式，MyBatis 3 替换了之前的大部分元素，大大精简了元素种类，现在要学习的元素种类比原来的一半还要少。</p>
-<ul>
-<li>if</li>
-<li>choose (when, otherwise)</li>
-<li>trim (where, set)</li>
-<li>foreach</li>
-</ul>
-<h3 id="if">if</h3>
-<p>使用动态 SQL 最常见情景是根据条件包含 where 子句的一部分。比如：</p>
-<pre><code>&lt;select id=&quot;findActiveBlogWithTitleLike&quot;
-     resultType=&quot;Blog&quot;&gt;
-  SELECT * FROM BLOG
-  WHERE state = ‘ACTIVE’
-  &lt;if test=&quot;title != null&quot;&gt;
-    AND title like #{title}
-  &lt;/if&gt;
-&lt;/select&gt;
-</code></pre>
-<p>这条语句提供了可选的查找文本功能。如果不传入 “title”，那么所有处于 “ACTIVE” 状态的 BLOG 都会返回；如果传入了 “title” 参数，那么就会对 “title” 一列进行模糊查找并返回对应的 BLOG 结果（“title” 的参数值需要包含查找掩码或通配符字符）。</p>
-<p>如果希望通过 “title” 和 “author” 两个参数进行可选搜索该怎么办呢？首先，我想先将语句名称修改成更名副其实的名称；接下来，只需要加入另一个条件即可。</p>
-<pre><code>&lt;select id=&quot;findActiveBlogLike&quot;
-     resultType=&quot;Blog&quot;&gt;
-  SELECT * FROM BLOG WHERE state = ‘ACTIVE’
-  &lt;if test=&quot;title != null&quot;&gt;
-    AND title like #{title}
-  &lt;/if&gt;
-  &lt;if test=&quot;author != null and author.name != null&quot;&gt;
-    AND author_name like #{author.name}
-  &lt;/if&gt;
-&lt;/select&gt;
-</code></pre>
-<h3 id="choose-when-otherwise">choose、when、otherwise</h3>
-<p>有时候，我们不想使用所有的条件，而只是想从多个条件中选择一个使用。针对这种情况，MyBatis 提供了 choose 元素，它有点像 Java 中的 switch 语句。</p>
-<p>还是上面的例子，但是策略变为：传入了 “title” 就按 “title” 查找，传入了 “author” 就按 “author” 查找的情形。若两者都没有传入，就返回标记为 featured 的 BLOG（这可能是管理员认为，与其返回大量的无意义随机 Blog，还不如返回一些由管理员精选的 Blog）</p>
-<pre><code>&lt;select id=&quot;findActiveBlogLike&quot;
-     resultType=&quot;Blog&quot;&gt;
-  SELECT * FROM BLOG WHERE state = ‘ACTIVE’
-  &lt;choose&gt;
-    &lt;when test=&quot;title != null&quot;&gt;
-      AND title like #{title}
-    &lt;/when&gt;
-    &lt;when test=&quot;author != null and author.name != null&quot;&gt;
-      AND author_name like #{author.name}
-    &lt;/when&gt;
-    &lt;otherwise&gt;
-      AND featured = 1
-    &lt;/otherwise&gt;
-  &lt;/choose&gt;
-&lt;/select&gt;
-</code></pre>
-<h3 id="trim-where-set">trim、where、set</h3>
-<p>前面几个例子已经方便地解决了一个臭名昭著的动态 SQL 问题。现在回到之前的 “if” 示例，这次我们将 “state = ‘ACTIVE’” 设置成动态条件，看看会发生什么。</p>
-<pre><code>&lt;select id=&quot;findActiveBlogLike&quot;
-     resultType=&quot;Blog&quot;&gt;
-  SELECT * FROM BLOG
-  WHERE
-  &lt;if test=&quot;state != null&quot;&gt;
-    state = #{state}
-  &lt;/if&gt;
-  &lt;if test=&quot;title != null&quot;&gt;
-    AND title like #{title}
-  &lt;/if&gt;
-  &lt;if test=&quot;author != null and author.name != null&quot;&gt;
-    AND author_name like #{author.name}
-  &lt;/if&gt;
-&lt;/select&gt;
-</code></pre>
-<p>如果没有匹配的条件会怎么样？最终这条 SQL 会变成这样：</p>
-<pre><code>SELECT * FROM BLOG
-WHERE
-</code></pre>
-<p>这会导致查询失败。如果匹配的只是第二个条件又会怎样？这条 SQL 会是这样:</p>
-<pre><code>SELECT * FROM BLOG
-WHERE
-AND title like ‘someTitle’
-</code></pre>
-<p>这个查询也会失败。这个问题不能简单地用条件元素来解决。这个问题是如此的难以解决，以至于解决过的人不会再想碰到这种问题。</p>
-<p>MyBatis 有一个简单且适合大多数场景的解决办法。而在其他场景中，可以对其进行自定义以符合需求。而这，只需要一处简单的改动：</p>
-<pre><code>&lt;select id=&quot;findActiveBlogLike&quot;
-     resultType=&quot;Blog&quot;&gt;
-  SELECT * FROM BLOG
-  &lt;where&gt;
-    &lt;if test=&quot;state != null&quot;&gt;
-         state = #{state}
-    &lt;/if&gt;
-    &lt;if test=&quot;title != null&quot;&gt;
-        AND title like #{title}
-    &lt;/if&gt;
-    &lt;if test=&quot;author != null and author.name != null&quot;&gt;
-        AND author_name like #{author.name}
-    &lt;/if&gt;
-  &lt;/where&gt;
-&lt;/select&gt;
-</code></pre>
-<p><em>where</em> 元素只会在子元素返回任何内容的情况下才插入 “WHERE” 子句。而且，若子句的开头为 “AND” 或 “OR”，<em>where</em> 元素也会将它们去除。</p>
-<p>如果 <em>where</em> 元素与你期望的不太一样，你也可以通过自定义 trim 元素来定制 <em>where</em> 元素的功能。比如，和 <em>where</em> 元素等价的自定义 trim 元素为：</p>
-<pre><code>&lt;trim prefix=&quot;WHERE&quot; prefixOverrides=&quot;AND |OR &quot;&gt;
-  ...
-&lt;/trim&gt;
-</code></pre>
-<p><em>prefixOverrides</em> 属性会忽略通过管道符分隔的文本序列（注意此例中的空格是必要的）。上述例子会移除所有 <em>prefixOverrides</em> 属性中指定的内容，并且插入 <em>prefix</em> 属性中指定的内容。</p>
-<p>用于动态更新语句的类似解决方案叫做 <em>set</em>。<em>set</em> 元素可以用于动态包含需要更新的列，忽略其它不更新的列。比如：</p>
-<pre><code>&lt;update id=&quot;updateAuthorIfNecessary&quot;&gt;
-  update Author
-    &lt;set&gt;
-      &lt;if test=&quot;username != null&quot;&gt;username=#{username},&lt;/if&gt;
-      &lt;if test=&quot;password != null&quot;&gt;password=#{password},&lt;/if&gt;
-      &lt;if test=&quot;email != null&quot;&gt;email=#{email},&lt;/if&gt;
-      &lt;if test=&quot;bio != null&quot;&gt;bio=#{bio}&lt;/if&gt;
-    &lt;/set&gt;
-  where id=#{id}
-&lt;/update&gt;
-</code></pre>
-<p>这个例子中，<em>set</em> 元素会动态地在行首插入 SET 关键字，并会删掉额外的逗号（这些逗号是在使用条件语句给列赋值时引入的）。</p>
-<p>来看看与 <em>set</em> 元素等价的自定义 <em>trim</em> 元素吧：</p>
-<pre><code>&lt;trim prefix=&quot;SET&quot; suffixOverrides=&quot;,&quot;&gt;
-  ...
-&lt;/trim&gt;
-</code></pre>
-<p>注意，我们覆盖了后缀值设置，并且自定义了前缀值。</p>
-<h3 id="foreach">foreach</h3>
-<p>动态 SQL 的另一个常见使用场景是对集合进行遍历（尤其是在构建 IN 条件语句的时候）。比如：</p>
-<pre><code>&lt;select id=&quot;selectPostIn&quot; resultType=&quot;domain.blog.Post&quot;&gt;
-  SELECT *
-  FROM POST P
-  WHERE ID in
-  &lt;foreach item=&quot;item&quot; index=&quot;index&quot; collection=&quot;list&quot;
-      open=&quot;(&quot; separator=&quot;,&quot; close=&quot;)&quot;&gt;
-        #{item}
-  &lt;/foreach&gt;
-&lt;/select&gt;
-</code></pre>
-<p><em>foreach</em> 元素的功能非常强大，它允许你指定一个集合，声明可以在元素体内使用的集合项（item）和索引（index）变量。它也允许你指定开头与结尾的字符串以及集合项迭代之间的分隔符。这个元素也不会错误地添加多余的分隔符，看它多智能！</p>
-<p><strong>提示</strong> 你可以将任何可迭代对象（如 List、Set 等）、Map 对象或者数组对象作为集合参数传递给 <em>foreach</em>。当使用可迭代对象或者数组时，index 是当前迭代的序号，item 的值是本次迭代获取到的元素。当使用 Map 对象（或者 Map.Entry 对象的集合）时，index 是键，item 是值。</p>
-<p>至此，我们已经完成了与 XML 配置及映射文件相关的讨论。下一章将详细探讨 Java API，以便你能充分利用已经创建的映射配置。</p>
-<h3 id="script">script</h3>
-<p>要在带注解的映射器接口类中使用动态 SQL，可以使用 <em>script</em> 元素。比如:</p>
-<pre><code>    @Update({&quot;&lt;script&gt;&quot;,
-      &quot;update Author&quot;,
-      &quot;  &lt;set&gt;&quot;,
-      &quot;    &lt;if test='username != null'&gt;username=#{username},&lt;/if&gt;&quot;,
-      &quot;    &lt;if test='password != null'&gt;password=#{password},&lt;/if&gt;&quot;,
-      &quot;    &lt;if test='email != null'&gt;email=#{email},&lt;/if&gt;&quot;,
-      &quot;    &lt;if test='bio != null'&gt;bio=#{bio}&lt;/if&gt;&quot;,
-      &quot;  &lt;/set&gt;&quot;,
-      &quot;where id=#{id}&quot;,
-      &quot;&lt;/script&gt;&quot;})
-    void updateAuthorValues(Author author);
-</code></pre>
-<h3 id="bind">bind</h3>
-<p><code>bind</code> 元素允许你在 OGNL 表达式以外创建一个变量，并将其绑定到当前的上下文。比如：</p>
-<pre><code>&lt;select id=&quot;selectBlogsLike&quot; resultType=&quot;Blog&quot;&gt;
-  &lt;bind name=&quot;pattern&quot; value=&quot;'%' + _parameter.getTitle() + '%'&quot; /&gt;
-  SELECT * FROM BLOG
-  WHERE title LIKE #{pattern}
-&lt;/select&gt;
-</code></pre>
-<h3 id="多数据库支持">多数据库支持</h3>
-<p>如果配置了 databaseIdProvider，你就可以在动态代码中使用名为 “_databaseId” 的变量来为不同的数据库构建特定的语句。比如下面的例子：</p>
-<pre><code>&lt;insert id=&quot;insert&quot;&gt;
-  &lt;selectKey keyProperty=&quot;id&quot; resultType=&quot;int&quot; order=&quot;BEFORE&quot;&gt;
-    &lt;if test=&quot;_databaseId == 'oracle'&quot;&gt;
-      select seq_users.nextval from dual
-    &lt;/if&gt;
-    &lt;if test=&quot;_databaseId == 'db2'&quot;&gt;
-      select nextval for seq_users from sysibm.sysdummy1&quot;
-    &lt;/if&gt;
-  &lt;/selectKey&gt;
-  insert into users values (#{id}, #{name})
-&lt;/insert&gt;
-</code></pre>
-<h3 id="动态-sql-中的插入脚本语言">动态 SQL 中的插入脚本语言</h3>
-<p>MyBatis 从 3.2 版本开始支持插入脚本语言，这允许你插入一种语言驱动，并基于这种语言来编写动态 SQL 查询语句。</p>
-<p>可以通过实现以下接口来插入一种语言：</p>
-<pre><code>public interface LanguageDriver {
-  ParameterHandler createParameterHandler(MappedStatement mappedStatement, Object parameterObject, BoundSql boundSql);
-  SqlSource createSqlSource(Configuration configuration, XNode script, Class&lt;?&gt; parameterType);
-  SqlSource createSqlSource(Configuration configuration, String script, Class&lt;?&gt; parameterType);
-}
-</code></pre>
-<p>实现自定义语言驱动后，你就可以在 mybatis-config.xml 文件中将它设置为默认语言：</p>
-<pre><code>&lt;typeAliases&gt;
-  &lt;typeAlias type=&quot;org.sample.MyLanguageDriver&quot; alias=&quot;myLanguage&quot;/&gt;
-&lt;/typeAliases&gt;
-&lt;settings&gt;
-  &lt;setting name=&quot;defaultScriptingLanguage&quot; value=&quot;myLanguage&quot;/&gt;
-&lt;/settings&gt;
-</code></pre>
-<p>或者，你也可以使用 <code>lang</code> 属性为特定的语句指定语言：</p>
-<pre><code>&lt;select id=&quot;selectBlog&quot; lang=&quot;myLanguage&quot;&gt;
-  SELECT * FROM BLOG
-&lt;/select&gt;
-</code></pre>
-<p>或者，在你的 mapper 接口上添加 <code>@Lang</code> 注解：</p>
-<pre><code>public interface Mapper {
-  @Lang(MyLanguageDriver.class)
-  @Select(&quot;SELECT * FROM BLOG&quot;)
-  List&lt;Blog&gt; selectBlog();
-}
-</code></pre>
-<p><strong>提示</strong> 可以使用 Apache Velocity 作为动态语言，更多细节请参考 MyBatis-Velocity 项目。</p>
-<p>你前面看到的所有 xml 标签都由默认 MyBatis 语言提供，而它由语言驱动 <code>org.apache.ibatis.scripting.xmltags.XmlLanguageDriver</code>（别名为 <code>xml</code>）所提供。</p>
 ]]></content>
     </entry>
 </feed>
