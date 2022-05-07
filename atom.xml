@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://chenm0.github.io/</id>
     <title>xxx.class</title>
-    <updated>2022-04-26T02:55:49.248Z</updated>
+    <updated>2022-05-07T13:30:17.574Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://chenm0.github.io/"/>
     <link rel="self" href="https://chenm0.github.io/atom.xml"/>
@@ -10,6 +10,338 @@
     <logo>https://chenm0.github.io/images/avatar.png</logo>
     <icon>https://chenm0.github.io/favicon.ico</icon>
     <rights>All rights reserved 2022, xxx.class</rights>
+    <entry>
+        <title type="html"><![CDATA[前端学习笔记：(1) HTML]]></title>
+        <id>https://chenm0.github.io/NShkF30Co/</id>
+        <link href="https://chenm0.github.io/NShkF30Co/">
+        </link>
+        <updated>2022-05-07T12:49:36.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="html是什么">HTML是什么？</h2>
+<p>HTML 不是一门编程语言，而是一种用于定义内容结构的标记语言。HTML 由一系列的元素（elements）组成，这些元素可以用来包围不同部分的内容，使其以某种方式呈现或者工作。 一对标签（ tags）可以为一段文字或者一张图片添加超链接，将文字设置为斜体，改变字号，等等。</p>
+<h3 id="html-元素详解">HTML 元素详解</h3>
+<pre><code>&lt;p&gt;这是一个HTML元素&lt;/p&gt;
+</code></pre>
+<p>这个元素的主要部分有：</p>
+<ol>
+<li><strong>开始标签（Opening tag）</strong>：包含元素的名称（本例为 p），被大于号、小于号所包围。表示元素从这里开始或者开始起作用 —— 在本例中即段落由此开始。</li>
+<li><strong>结束标签（Closing tag）</strong>：与开始标签相似，只是其在元素名之前包含了一个斜杠。这表示着元素的结尾 —— 在本例中即段落在此结束。初学者常常会犯忘记包含结束标签的错误，这可能会产生一些奇怪的结果。</li>
+<li><strong>内容（Content）</strong>：元素的内容，本例中就是所输入的文本本身。</li>
+<li><strong>元素（Element）</strong>：开始标签、结束标签与内容相结合，便是一个完整的元素。</li>
+</ol>
+<p>元素也可以有属性（Attribute）：</p>
+<pre><code>&lt;p class=&quot;editor-note&quot;&gt;这是一个HTML元素&lt;/p&gt;
+</code></pre>
+<p>属性应该包含：</p>
+<ol>
+<li>在属性与元素名称（或上一个属性，如果有超过一个属性的话）之间的空格符。</li>
+<li>属性的名称，并接上一个等号。</li>
+<li>由引号所包围的属性值。</li>
+</ol>
+<pre><code>`注：不包含 ASCII 空格（以及 &quot; ' ` = &lt; &gt; ）的简单属性值可以不使用引号，但是建议将所有属性值用引号括起来，这样的代码一致性更佳，更易于阅读。
+</code></pre>
+<h4 id="嵌套元素">嵌套元素</h4>
+<p>也可以将一个元素置于其他元素之中 —— 称作嵌套。</p>
+<pre><code>&lt;p&gt;这是一个&lt;strong&gt;HTML元素&lt;/strong&gt;&lt;/p&gt;
+</code></pre>
+<p>必须保证元素嵌套次序正确：本例首先使用 <code>&lt;p&gt;</code> 标签，然后是 <code>&lt;strong&gt;</code> 标签，因此要先结束 <code>&lt;strong&gt;</code> 标签，最后再结束 <code>&lt;p&gt;</code> 标签。元素必须正确地开始和结束，才能清楚地显示出正确的嵌套层次。</p>
+<h4 id="空元素">空元素</h4>
+<p>不包含任何内容的元素称为空元素。比如 <code>&lt;img&gt;</code> 元素：</p>
+<pre><code>&lt;img src=&quot;images/firefox-icon.png&quot; alt=&quot;测试图片&quot;&gt;
+</code></pre>
+<p>本元素包含两个属性，但是并没有 <code>&lt;/img&gt;</code> 结束标签，元素里也没有内容。这是因为图像元素不需要通过内容来产生效果，它的作用是向其所在的位置嵌入一个图像。</p>
+<h3 id="html-文档详解">HTML 文档详解</h3>
+<p>来看看单个元素如何彼此协同构成一个完整的 HTML 页面</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;title&gt;测试页面&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;img src=&quot;images/firefox-icon.png&quot; alt=&quot;测试图片&quot;&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>这里有：</p>
+<ul>
+<li><code>&lt;!DOCTYPE html&gt;</code> — 文档类型。混沌初分，HTML 尚在襁褓（大约是 1991/92 年）之时，DOCTYPE 用来链接一些 HTML 编写守则，比如自动查错之类。DOCTYPE 在当今作用有限，仅用于保证文档正常读取。现在知道这些就足够了。</li>
+<li><code>&lt;html&gt;&lt;/html&gt;</code> — <code>&lt;html&gt;</code> 元素。该元素包含整个页面的内容，也称作根元素。</li>
+<li><code>&lt;head&gt;&lt;/head&gt;</code> — <code>&lt;head&gt;</code> 元素。该元素的内容对用户不可见，其中包含例如面向搜索引擎的搜索关键字（keywords）、页面描述、CSS 样式表和字符编码声明等。</li>
+<li><code>&lt;meta charset=&quot;utf-8&quot;&gt;</code> — 该元素指定文档使用 UTF-8 字符编码 ，UTF-8 包括绝大多数人类已知语言的字符。基本上 UTF-8 可以处理任何文本内容，还可以避免以后出现某些问题，没有理由再选用其他编码。</li>
+<li><code>&lt;title&gt;&lt;/title&gt;</code> — <code>&lt;title&gt;</code> 元素。该元素设置页面的标题，显示在浏览器标签页上，也作为收藏网页的描述文字。</li>
+<li><code>&lt;body&gt;&lt;/body&gt;</code> — <code>&lt;body&gt;</code> 元素。该元素包含期望让用户在访问页面时看到的内容，包括文本、图像、视频、游戏、可播放的音轨或其他内容。</li>
+</ul>
+<h2 id="图像">图像</h2>
+<pre><code>&lt;img src=&quot;images/firefox-icon.png&quot; alt=&quot;测试图片&quot;&gt;
+</code></pre>
+<p>该元素通过包含图像文件路径的地址属性 src，可在所在位置嵌入图像。<br>
+该元素还包括一个替换文字属性 alt，是图像的描述内容，用于当图像不能被用户看见时显示，不可见的原因可能是：</p>
+<ol>
+<li>用户有视觉障碍。视障用户可以使用屏幕阅读器来朗读 alt 属性的内容。</li>
+<li>有些错误使图像无法显示。alt 属性的关键字即“描述文本”。alt 文本应向用户完整地传递图像要表达的意思。</li>
+</ol>
+<h2 id="标记文本">标记文本</h2>
+<p>本段包含了一些最常用的文本标记 HTML 元素。</p>
+<h3 id="标题heading">标题（Heading）</h3>
+<p>标题元素可用于指定内容的标题和子标题。就像一本书的书名、每章的大标题、小标题，等。HTML 文档也是一样。HTML 包括六个级别的标题， <code>&lt;h1&gt;</code> (en-US)–<code>&lt;h6&gt;</code> (en-US) ，一般最多用到 3-4 级标题。</p>
+<pre><code>&lt;h1&gt;主标题&lt;/h1&gt;
+&lt;h2&gt;顶层标题&lt;/h2&gt;
+&lt;h3&gt;子标题&lt;/h3&gt;
+&lt;h4&gt;次子标题&lt;/h4&gt;
+</code></pre>
+<pre><code>不要使用标题元素来加大、加粗字体，因为标题对于 无障碍访问 和 搜索引擎优化 等问题非常有意义。要保持页面结构清晰，标题整洁，不要发生标题级别跳跃。
+</code></pre>
+<h3 id="段落paragraph">段落（Paragraph）</h3>
+<p>如上文所讲，<code>&lt;p&gt;</code> 元素是用来指定段落的。通常用于指定常规的文本内容：</p>
+<pre><code>&lt;p&gt;这是一个段落&lt;/p&gt;
+</code></pre>
+<h3 id="列表list">列表（List）</h3>
+<p>Web 上的许多内容都是列表，HTML 有一些特别的列表元素。标记列表通常包括至少两个元素。最常用的列表类型为：</p>
+<ol>
+<li>**无序列表（Unordered List）**中项目的顺序并不重要，就像购物列表。用一个 <code>&lt;ul&gt;</code> 元素包围。</li>
+<li>**有序列表（Ordered List）**中项目的顺序很重要，就像烹调指南。用一个 <code>&lt;ol&gt;</code> 元素包围。<br>
+列表的每个项目用一个列表项目（List Item）元素 <code>&lt;li&gt;</code> 包围。</li>
+</ol>
+<h3 id="链接">链接</h3>
+<p>链接非常重要 — 它们赋予 Web 网络属性。要植入一个链接，我们需要使用一个简单的元素 — <code>&lt;a&gt;</code> — a 是 &quot;anchor&quot; （锚）的缩写。要将一些文本添加到链接中，只需如下几步：</p>
+<ol>
+<li>选择一些文本。比如 “陈陌的个人博客”。</li>
+<li>将文本包含在 <a> 元素内，就像这样：</li>
+</ol>
+<pre><code>&lt;a&gt;陈陌的个人博客&lt;/a&gt;
+</code></pre>
+<ol start="3">
+<li>为此 <a> 元素添加一个 href 属性，就像这样：</li>
+</ol>
+<pre><code>&lt;a href=&quot;&quot;&gt;陈陌的个人博客&lt;/a&gt;
+</code></pre>
+<ol start="4">
+<li>把属性的值设置为所需网址：</li>
+</ol>
+<pre><code>&lt;a href=&quot;https://www.baidu.com&quot;&gt;陈陌的个人博客&lt;/a&gt;
+</code></pre>
+<p>如果网址开始部分省略了 https:// 或者 http://，可能会得到错误的结果。在完成一个链接后，可以试着点击它来确保指向正确。<br>
+href 这个名字可能开始看起来有点令人费解，代表超文本引用（ hypertext reference）</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[JVM笔记---(3)虚拟机栈]]></title>
+        <id>https://chenm0.github.io/Q851aTBIk/</id>
+        <link href="https://chenm0.github.io/Q851aTBIk/">
+        </link>
+        <updated>2022-04-29T07:16:41.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="概述">概述</h2>
+<ol>
+<li>由于跨平台性的设计，Java的指令都是根据栈来设计的。不同平台CPU架构不同，所以不能设计为基于寄存器的【如果设计成基于寄存器的，耦合度高，性能会有所提升，因为可以对具体的CPU架构进行优化，但是跨平台性大大降低】</li>
+<li>优点是跨平台，指令集小，编译器容易实现，缺点是性能下降，实现同样的功能需要更多的指令。</li>
+</ol>
+<h3 id="内存中的栈和堆">内存中的栈和堆</h3>
+<ol>
+<li>首先栈是运行时的单位，而堆是存储的单位。</li>
+<li>即：栈解决程序的运行问题，即程序如何执行，或者说如何处理数据。堆解决的是数据存储的问题，即数据怎么放，放哪里<br>
+<img src="https://chenm0.github.io//post-images/1651217704326.png" alt="" loading="lazy"></li>
+</ol>
+<h3 id="虚拟机栈基本内容">虚拟机栈基本内容</h3>
+<ul>
+<li>Java虚拟机栈是什么？<br>
+Java虚拟机栈（Java Virtual Machine Stack），早期也叫Java栈。每个线程在创建时都会创建一个虚拟机栈，其内部保存一个个的栈帧（Stack Frame），对应着一次次的Java方法调用，栈是线程私有的</li>
+</ul>
+<pre><code>public class StackTest {
+
+    public static void main(String[] args) {
+        StackTest test = new StackTest();
+        test.methodA();
+    }
+
+    public void methodA() {
+        int i = 10;
+        int j = 20;
+
+        methodB();
+    }
+
+    public void methodB(){
+        int k = 30;
+        int m = 40;
+    }
+}
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://chenm0.github.io//post-images/1651218099413.png" alt="" loading="lazy"></figure>
+<ul>
+<li>虚拟机栈的生命周期<br>
+生命周期和线程一致，也就是线程结束了，该虚拟机栈也销毁了</li>
+<li>虚拟机栈的作用
+<ul>
+<li>主管Java程序的运行，它保存方法的局部变量（8 种基本数据类型、对象的引用地址）、部分结果，并参与方法的调用和返回。</li>
+<li>局部变量，它是相比于成员变量来说的（或属性）</li>
+<li>基本数据类型变量 VS 引用类型变量（类、数组、接口）</li>
+</ul>
+</li>
+</ul>
+<h3 id="虚拟机栈的特点">虚拟机栈的特点</h3>
+<ul>
+<li>栈是一种快速有效的分配存储方式，访问速度仅次于程序计数器。</li>
+<li>JVM直接对Java栈的操作只有两个：
+<ul>
+<li>每个方法执行，伴随着进栈（入栈、压栈）</li>
+<li>执行结束后的出栈工作</li>
+</ul>
+</li>
+<li>对于栈来说不存在垃圾回收问题
+<ul>
+<li>栈不需要GC，但是可能存在OOM<br>
+<img src="https://chenm0.github.io//post-images/1651218797989.png" alt="" loading="lazy"></li>
+</ul>
+</li>
+</ul>
+<h3 id="虚拟机栈的异常">虚拟机栈的异常</h3>
+<p>Java 虚拟机规范允许Java栈的大小是动态的或者是固定不变的。</p>
+<ul>
+<li>如果采用固定大小的Java虚拟机栈，那每一个线程的Java虚拟机栈容量可以在线程创建的时候独立选定。如果线程请求分配的栈容量超过Java虚拟机栈允许的最大容量，Java虚拟机将会抛出一个StackoverflowError 异常。</li>
+<li>如果Java虚拟机栈可以动态扩展，并且在尝试扩展的时候无法申请到足够的内存，或者在创建新的线程时没有足够的内存去创建对应的虚拟机栈，那Java虚拟机将会抛出一个 OutofMemoryError 异常。</li>
+</ul>
+<h3 id="设置栈内存大小">设置栈内存大小</h3>
+<p>我们可以使用参数 -Xss 选项来设置线程的最大栈空间，栈的大小直接决定了函数调用的最大可达深度。</p>
+<pre><code>-Xss1m
+-Xss1024k
+-Xss1048576
+</code></pre>
+<h2 id="栈的存储单位">栈的存储单位</h2>
+<h3 id="栈中存储什么">栈中存储什么？</h3>
+<ol>
+<li>每个线程都有自己的栈，栈中的数据都是以栈帧（Stack Frame）的格式存在</li>
+<li>在这个线程上正在执行的每个方法都各自对应一个栈帧（Stack Frame）。</li>
+<li>栈帧是一个内存区块，是一个数据集，维系着方法执行过程中的各种数据信息。</li>
+</ol>
+<h3 id="栈运行原理">栈运行原理</h3>
+<ol>
+<li>JVM直接对Java栈的操作只有两个，就是对栈帧的压栈和出栈，遵循先进后出（后进先出）原则</li>
+<li>在一条活动线程中，一个时间点上，只会有一个活动的栈帧。即只有当前正在执行的方法的栈帧（栈顶栈帧）是有效的。这个栈帧被称为当前栈帧（Current Frame），与当前栈帧相对应的方法就是当前方法（Current Method），定义这个方法的类就是当前类（Current Class）</li>
+<li>执行引擎运行的所有字节码指令只针对当前栈帧进行操作。</li>
+<li>如果在该方法中调用了其他方法，对应的新的栈帧会被创建出来，放在栈的顶端，成为新的当前帧。<br>
+<img src="https://chenm0.github.io//post-images/1651219955004.png" alt="" loading="lazy"></li>
+</ol>
+<ul>
+<li>不同线程中所包含的栈帧是不允许存在相互引用的，即不可能在一个栈帧之中引用另外一个线程的栈帧。</li>
+<li>如果当前方法调用了其他方法，方法返回之际，当前栈帧会传回此方法的执行结果给前一个栈帧，接着，虚拟机会丢弃当前栈帧，使得前一个栈帧重新成为当前栈帧。</li>
+<li>Java方法有两种返回函数的方式。
+<ul>
+<li>一种是正常的函数返回，使用return指令。</li>
+<li>另一种是方法执行中出现未捕获处理的异常，以抛出异常的方式结束。</li>
+<li>但不管使用哪种方式，都会导致栈帧被弹出。</li>
+</ul>
+</li>
+</ul>
+<h3 id="栈帧的内部结构">栈帧的内部结构</h3>
+<p>每个栈帧中存储着：<br>
+- 局部变量表（Local Variables）<br>
+- 操作数栈（Operand Stack）（或表达式栈）<br>
+- 动态链接（Dynamic Linking）（或指向运行时常量池的方法引用）<br>
+- 方法返回地址（Return Address）（或方法正常退出或者异常退出的定义）<br>
+- 一些附加信息<br>
+<img src="https://chenm0.github.io//post-images/1651221440441.png" alt="" loading="lazy"><br>
+并行每个线程下的栈都是私有的，因此每个线程都有自己各自的栈，并且每个栈里面都有很多栈帧，栈帧的大小主要由局部变量表 和 操作数栈决定的。</p>
+<h2 id="局部变量表">局部变量表</h2>
+<h3 id="概念">概念</h3>
+<ol>
+<li>局部变量表也被称之为局部变量数组或本地变量表</li>
+<li><B>定义为一个数字数组，主要用于存储方法参数和定义在方法体内的局部变量</B>，这些数据类型包括各类基本数据类型、对象引用（reference），以及returnAddress返回值类型。</li>
+<li>由于局部变量表是建立在线程的栈上，是线程的私有数据，因此不存在数据安全问题</li>
+<li><B>局部变量表所需的容量大小是在编译期确定下来的</B>，并保存在方法的Code属性的maximum local variables数据项中。在方法运行期间是不会改变局部变量表的大小的。</li>
+<li>方法嵌套调用的次数由栈的大小决定。一般来说，栈越大，方法嵌套调用次数越多。
+<ul>
+<li>对一个函数而言，它的参数和局部变量越多，使得局部变量表膨胀，它的栈帧就越大，以满足方法调用所需传递的信息增大的需求。</li>
+<li>进而函数调用就会占用更多的栈空间，导致其嵌套调用次数就会减少。</li>
+</ul>
+</li>
+<li>局部变量表中的变量只在当前方法调用中有效。
+<ul>
+<li>在方法执行时，虚拟机通过使用局部变量表完成参数值到参数变量列表的传递过程。</li>
+<li>当方法调用结束后，随着方法栈帧的销毁，局部变量表也会随之销毁。</li>
+</ul>
+</li>
+</ol>
+<h3 id="补充说明">补充说明</h3>
+<ol>
+<li>在栈帧中，与性能调优关系最为密切的部分就是前面提到的局部变量表。在方法执行时，虚拟机使用局部变量表完成方法的传递。</li>
+<li>局部变量表中的变量也是重要的垃圾回收根节点，只要被局部变量表中直接或间接引用的对象都不会被回收。</li>
+</ol>
+<h2 id="操作数栈">操作数栈</h2>
+<h3 id="特点">特点</h3>
+<ol>
+<li>每一个独立的栈帧除了包含局部变量表以外，还包含一个后进先出（Last - In - First -Out）的 操作数栈，也可以称之为表达式栈（Expression Stack）</li>
+<li>操作数栈，在方法执行过程中，根据字节码指令，往栈中写入数据或提取数据，即入栈（push）和 出栈（pop）
+<ul>
+<li>某些字节码指令将值压入操作数栈，其余的字节码指令将操作数取出栈。使用它们后再把结果压入栈<br>
+比如：执行复制、交换、求和等操作</li>
+</ul>
+</li>
+</ol>
+<h3 id="作用">作用</h3>
+<ol>
+<li>操作数栈，主要用于保存计算过程的中间结果，同时作为计算过程中变量临时的存储空间。</li>
+<li>操作数栈就是JVM执行引擎的一个工作区，当一个方法刚开始执行的时候，一个新的栈帧也会随之被创建出来，这时方法的操作数栈是空的。</li>
+<li>每一个操作数栈都会拥有一个明确的栈深度用于存储数值，其所需的最大深度在编译期就定义好了，保存在方法的Code属性中，为maxstack的值。</li>
+<li>栈中的任何一个元素都是可以任意的Java数据类型
+<ul>
+<li>32bit的类型占用一个栈单位深度</li>
+<li>64bit的类型占用两个栈单位深度</li>
+</ul>
+</li>
+<li>操作数栈并非采用访问索引的方式来进行数据访问的，而是只能通过标准的入栈和出栈操作来完成一次数据访问。只不过操作数栈是用数组这个结构来实现的而已</li>
+<li>如果被调用的方法带有返回值的话，其返回值将会被压入当前栈帧的操作数栈中，并更新PC寄存器中下一条需要执行的字节码指令。</li>
+<li>操作数栈中元素的数据类型必须与字节码指令的序列严格匹配，这由编译器在编译器期间进行验证，同时在类加载过程中的类检验阶段的数据流分析阶段要再次验证。</li>
+<li>另外，我们说Java虚拟机的解释引擎是基于栈的执行引擎，其中的栈指的就是操作数栈。</li>
+</ol>
+<h2 id="栈顶缓存技术top-of-stack-cashing">栈顶缓存技术（Top Of Stack Cashing）</h2>
+<ol>
+<li>前面提过，基于栈式架构的虚拟机所使用的零地址指令更加紧凑，但完成一项操作的时候必然需要使用更多的入栈和出栈指令，这同时也就意味着将需要更多的指令分派（instruction dispatch）次数（也就是你会发现指令很多）和导致内存读/写次数多，效率不高。</li>
+<li>由于操作数是存储在内存中的，因此频繁地执行内存读/写操作必然会影响执行速度。为了解决这个问题，HotSpot JVM的设计者们提出了栈顶缓存（Tos，Top-of-Stack Cashing）技术，将栈顶元素全部缓存在物理CPU的寄存器中，以此降低对内存的读/写次数，提升执行引擎的执行效率。</li>
+<li>寄存器的主要优点：指令更少，执行速度快，但是指令集（也就是指令种类）很多</li>
+</ol>
+<h2 id="方法的调用">方法的调用</h2>
+<h3 id="静态链接与动态链接">静态链接与动态链接</h3>
+<ul>
+<li>静态链接：<br>
+当一个字节码文件被装载进JVM内部时，如果被调用的目标方法在编译期确定，且运行期保持不变时，这种情况下将调用方法的符号引用转换为直接引用的过程称之为静态链接</li>
+<li>动态链接：<br>
+如果被调用的方法在编译期无法被确定下来，也就是说，只能够在程序运行期将调用的方法的符号转换为直接引用，由于这种引用转换过程具备动态性，因此也被称之为动态链接。</li>
+</ul>
+<h3 id="早期绑定与晚期绑定">早期绑定与晚期绑定</h3>
+<p><code>静态链接与动态链接针对的是方法。早期绑定和晚期绑定范围更广。早期绑定涵盖了静态链接，晚期绑定涵盖了动态链接。</code><br>
+静态链接和动态链接对应的方法的绑定机制为：早期绑定（Early Binding）和晚期绑定（Late Binding）。绑定是一个字段、方法或者类在符号引用被替换为直接引用的过程，这仅仅发生一次。</p>
+<ul>
+<li>早期绑定<br>
+早期绑定就是指被调用的目标方法如果在编译期可知，且运行期保持不变时，即可将这个方法与所属的类型进行绑定，这样一来，由于明确了被调用的目标方法究竟是哪一个，因此也就可以使用静态链接的方式将符号引用转换为直接引用。</li>
+<li>晚期绑定<br>
+如果被调用的方法在编译期无法被确定下来，只能够在程序运行期根据实际的类型绑定相关的方法，这种绑定方式也就被称之为晚期绑定。</li>
+</ul>
+<h3 id="动态语言和静态语言">动态语言和静态语言</h3>
+<ol>
+<li>动态类型语言和静态类型语言两者的区别就在于对类型的检查是在编译期还是在运行期，满足前者就是静态类型语言，反之是动态类型语言。</li>
+<li>说的再直白一点就是，静态类型语言是判断变量自身的类型信息；动态类型语言是判断变量值的类型信息，变量没有类型信息，变量值才有类型信息，这是动态语言的一个重要特征。</li>
+</ol>
+<pre><code>Java：String info = &quot;mogu blog&quot;; (Java是静态类型语言的，会先编译就进行类型检查) 
+JS：var name = &quot;shkstart&quot;; var name = 10; （运行时才进行检查）
+</code></pre>
+<h3 id="java语言中方法重写的本质">Java语言中方法重写的本质</h3>
+<ol>
+<li>找到操作数栈顶的第一个元素所执行的对象的实际类型，记作C。</li>
+<li>如果在类型C中找到与常量中的描述符合简单名称都相符的方法，则进行访问权限校验。
+<ul>
+<li>如果通过则返回这个方法的直接引用，查找过程结束</li>
+<li>如果不通过，则返回java.lang.IllegalAccessError 异常</li>
+</ul>
+</li>
+<li>否则，按照继承关系从下往上依次对C的各个父类进行第2步的搜索和验证过程。</li>
+<li>如果始终没有找到合适的方法，则抛出java.lang.AbstractMethodError异常。<br>
+<code>上面这个过程称为动态分派</code></li>
+</ol>
+<pre><code>IllegalAccessError介绍
+程序试图访问或修改一个属性或调用一个方法，这个属性或方法，你没有权限访问。一般的，这个会引起编译器异常。这个错误如果发生在运行时，就说明一个类发生了不兼容的改变。比如，你把应该有的jar包放从工程中拿走了，或者Maven中存在jar包冲突
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[JVM笔记---2.运行时数据区概述及线程]]></title>
         <id>https://chenm0.github.io/KDeC0X3Hk/</id>
@@ -1071,559 +1403,6 @@ doSomethingwithconfig(context);
         return instance;
     }
 }
-</code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Spring Cloud Gateway]]></title>
-        <id>https://chenm0.github.io/spring-cloud-gateway/</id>
-        <link href="https://chenm0.github.io/spring-cloud-gateway/">
-        </link>
-        <updated>2021-11-05T02:48:36.000Z</updated>
-        <content type="html"><![CDATA[<h3 id="功能特征">功能特征</h3>
-<p>基于Spring Framework 5, Project Reactor 和 Spring Boot 2.0 进行构建；</p>
-<ul>
-<li>动态路由：能够匹配任何请求属性；</li>
-<li>集成 Spring Cloud 服务发现功能；</li>
-<li>可以对路由指定 Predicate（断言）和 Filter（过滤器）；</li>
-<li>易于编写的 Predicate（断言）和 Filter（过滤器）；</li>
-<li>集成Hystrix的断路器功能；</li>
-<li>请求限流功能；</li>
-<li>支持路径重写</li>
-</ul>
-<figure data-type="image" tabindex="1"><img src="https://chenm0.github.io//post-images/1636080636945.jpg" alt="" loading="lazy"></figure>
-<p>上图中是核心的流程图，最主要的就是Route、Predicates 和 Filters 作用于特定路由。</p>
-<ol>
-<li>Route：<strong>路由是网关的基本构件</strong>。它由ID、目标URI、谓词集合和过滤器集合定义。如果聚合谓词为真，则匹配路由。</li>
-<li>Predicate：<strong>参照Java8的新特性Predicate</strong>。这允许开发人员匹配HTTP请求中的任何内容，比如头或参数。</li>
-<li>Filter：可以在发送下游请求之前或之后修改请求和响应。</li>
-</ol>
-<p>** 我们为什么选择Gateway？**<br>
-一方面因为Zuul已经进入了维护阶段，而且Gateway是SpringCloud团队研发的，是亲儿子产品，值得信赖。而且很多功能Zuul都没有；用起来也非常的简单便捷。<br>
-Gateway是基于异步非阻塞(NIO)模型上进行开发的，性能方面不需要担心。虽然Netflix 早就发布了最新的 Zuul 2.x，但 Spring Cloud 貌似没有整合计划。而且Netflix相关组件都宣布进入维护期；不知前景如何？</p>
-<h3 id="工作原理">工作原理</h3>
-<p><img src="https://chenm0.github.io//post-images/1636080815399.jpg" alt="" loading="lazy"><br>
-客户端向 Spring Cloud Gateway 发出请求。然后在 Gateway Handler Mapping 中找到与请求相匹配的路由，将其发送到 Gateway Web Handler。Handler 再通过指 定的过滤器链来将请求发送到我们实际的服务执行业务逻辑，然后返回。过滤器之间用虚线分开是因为过滤器可能会在发送代理请求之前（“pre”）或之后（“post”）执行业务逻辑。<br>
-Filter在“pre”类型的过滤器可以做参数校验、权限校验、流量监控、日志输出、协议转换等，在“post”类型的过滤器中可以做响应内容、响应头的修改，日志的输出，流量监控等有着非常重要的作用。<br>
-** 核心逻辑就是路由转发，执行过滤器链。**<br>
-在上面的处理过程中，有一个重要的点就是讲请求和路由进行匹配，这时候就需要用到predicate，它是决定了一个请求走哪一个路由。</p>
-<h3 id="predicate简介">predicate简介</h3>
-<p>Predicate来自于java8的接口。Predicate接受一个输入参数，返回一个布尔值结果。该接口包含多种默认方法来将Predicate组合成其他复杂的逻辑（比如：与，或，非）。可以用于接口请求参数校验、判断新老数据是否有变化需要进行更新操作。add--与、or--或、negate--非。Spring Cloud Gateway内置了许多Predict,这些Predict的源码在org.springframework.cloud.gateway.handler.predicate包中<br>
-<img src="https://chenm0.github.io//post-images/1636081078455.jpg" alt="" loading="lazy"><br>
-在上图中，有很多类型的Predicate,比如说时间类型的Predicated（AfterRoutePredicateFactory BeforeRoutePredicateFactory BetweenRoutePredicateFactory），当只有满足特定时间要求的请求会进入到此predicate中，并交由router处理；cookie类型的CookieRoutePredicateFactory，指定的cookie满足正则匹配，才会进入此router;以及host、method、path、querparam、remoteaddr类型的predicate，每一种predicate都会对当前的客户端请求进行判断，是否满足当前的要求，如果满足则交给当前请求处理。如果有很多个Predicate，并且一个请求满足多个Predicate，则按照配置的顺序第一个生效。</p>
-<ol>
-<li>After Route Predicate Factory<br>
-After Route Predicate Factory使用的是时间作为匹配规则，只要当前时间大于设定时间，路由才会匹配请求。<br>
-** application.yml：**</li>
-</ol>
-<pre><code class="language-text">spring:  
-    cloud:    
-        gateway:      
-            routes:      
-            - id: after_route        
-              uri: http://www.google.com        
-              predicates:        
-              - After=2018-12-25T14:33:47.789+08:00
-</code></pre>
-<p><u>这个路由规则会在东8区的2018-12-25 14:33:47后，将请求都转跳到google。</u></p>
-<ol start="2">
-<li>Before Route Predicate Factory<br>
-Before Route Predicate Factory也是使用时间作为匹配规则，只要当前时间小于设定时间，路由才会匹配请求。 application.yml：<br>
-** application.yml：**</li>
-</ol>
-<pre><code class="language-text">spring:  
-    cloud:    
-        gateway:      
-            routes:      
-            - id: before_route        
-              uri: http://www.google.com        
-              predicates:        
-              - Before=2018-12-25T14:33:47.789+08:00
-</code></pre>
-<p><u>这个路由规则会在东8区的2018-12-25 14:33:47前，将请求都转跳到google。</u></p>
-<ol start="3">
-<li>Between Route Predicate Factory<br>
-Between Route Predicate Factory也是使用两个时间作为匹配规则，只要当前时间大于第一个设定时间，并小于第二个设定时间，路由才会匹配请求。<br>
-** application.yml：**</li>
-</ol>
-<pre><code class="language-text">spring:  
-    cloud:   
-        gateway:      
-            routes:      
-            - id: between_route        
-              uri: http://www.google.com        
-              predicates:        
-              - Between=2018-12-25T14:33:47.789+08:00, 2018-12-26T14:33:47.789+08:
-</code></pre>
-<p><u>这个路由规则会在东8区的2018-12-25 14:33:47到2018-12-26 14:33:47之间，将请求都转跳到google。</u></p>
-<ol start="4">
-<li>Cookie Route Predicate Factory<br>
-Cookie Route Predicate Factory使用的是cookie名字和正则表达式的value作为两个输入参数，请求的cookie需要匹配cookie名和符合其中value的正则。<br>
-** application.yml：**</li>
-</ol>
-<pre><code class="language-text">spring: 
-    cloud:    
-        gateway:  
-            routes:      
-            - id: cookie_route       
-              uri: http://www.google.com        
-              predicates:        
-              - Cookie=cookiename, cookievalue
-</code></pre>
-<p><u>路由匹配请求存在cookie名为cookiename，cookie内容匹配cookievalue的，将请求转发到google。</u></p>
-<ol start="5">
-<li>Header Route Predicate Factory<br>
-Header Route Predicate Factory，与Cookie Route Predicate Factory类似，也是两个参数，一个header的name，一个是正则匹配的value。<br>
-** application.yml：**</li>
-</ol>
-<pre><code class="language-text">spring:  
-    cloud:    
-        gateway:     
-            routes:      
-            - id: header_route        
-              uri: http://www.google.com        
-              predicates:        
-              - Header=X-Request-Id, \d+
-</code></pre>
-<p><u>路由匹配存在名为X-Request-Id，内容为数字的header的请求，将请求转发到google。</u></p>
-<ol start="6">
-<li>Host Route Predicate Factory<br>
-Host Route Predicate Factory使用的是host的列表作为参数，host使用Ant style匹配。<br>
-** application.yml：**</li>
-</ol>
-<pre><code class="language-text">spring:  
-    cloud:    
-        gateway:      
-            routes:      
-            - id: host_route        
-              uri: http://www.google.com        
-              predicates:        
-              - Host=**.somehost.org,**.anotherhost.org
-</code></pre>
-<p><u>路由会匹配Host诸如：www.somehost.org 或 beta.somehost.org或www.anotherhost.org等请求。</u></p>
-<ol start="7">
-<li>Method Route Predicate Factory<br>
-Method Route Predicate Factory是通过HTTP的method来匹配路由。<br>
-** application.yml：**</li>
-</ol>
-<pre><code class="language-text">spring:  
-    cloud:    
-        gateway:      
-            routes:      
-            - id: method_route        
-              uri: http://www.google.com        
-              predicates:        
-              - Method=GET
-</code></pre>
-<p>路由会匹配到所有GET方法的请求。</p>
-<ol start="8">
-<li>Path Route Predicate Factory<br>
-Path Route Predicate Factory使用的是path列表作为参数，使用Spring的PathMatcher匹配path，可以设置可选变量。<br>
-** application.yml：**</li>
-</ol>
-<pre><code class="language-text">spring:  
-    cloud:    
-        gateway:      
-            routes:      
-            - id: host_route        
-              uri: http://www.google.com       
-              predicates:        
-              - Path=/foo/{segment},/bar/{segment}
-</code></pre>
-<p><u>上面路由可以匹配诸如：/foo/1 或 /foo/bar 或 /bar/baz等 其中的segment变量可以通过下面方式获取：</u></p>
-<pre><code>PathMatchInfo variables = exchange.getAttribute(URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-Map&lt;String, String&gt; uriVariables = variables.getUriVariables();
-String segment = uriVariables.get(&quot;segment&quot;);
-</code></pre>
-<p>在后续的GatewayFilter Factories就可以做对应的操作了</p>
-<ol start="9">
-<li>Query Route Predicate Factory<br>
-Query Route Predicate Factory可以通过一个或两个参数来匹配路由，一个是查询的name，一个是查询的正则value。<br>
-** application.yml：**</li>
-</ol>
-<pre><code class="language-text">spring:  
-    cloud:    
-        gateway:      
-            routes:      
-            - id: host_route        
-              uri: http://www.google.com       
-              predicates:        
-              - Path=/foo/{segment},/bar/{segment}
-</code></pre>
-<p><u>路由会匹配所有包含baz查询参数的请求。</u></p>
-<pre><code class="language-text">spring:  
-	cloud:    
-		gateway:      
-			routes:      
-			- id: query_route       
-              uri: http://www.google.com        
-              predicates:       
-              - Query=foo, ba.
-</code></pre>
-<p><u>路由会匹配所有包含foo，并且foo的内容为诸如：bar或baz等符合ba.正则规则的请求。</u><br>
-10.  RemoteAddr Route Predicate Factory<br>
-RemoteAddr Route Predicate Factory通过无类别域间路由(IPv4 or IPv6)列表匹配路由。<br>
-** application.yml：**</p>
-<pre><code class="language-text">spring:  
-	cloud:    
-		gateway:    
-        	routes:      
-        	- id: remoteaddr_route        
-        	  uri: http://www.google.com        
-        	  predicates:        
-        	  - RemoteAddr=192.168.1.1/24
-</code></pre>
-<p><u>上面路由就会匹配RemoteAddr诸如192.168.1.10等请求。</u><br>
-RemoteAddr Route Predicate Factory默认情况下，使用的是请求的remote address。但是如果Spring Cloud Gateway是部署在其他的代理后面的，如Nginx，则Spring Cloud Gateway获取请求的remote address是其他代理的ip，而不是真实客户端的ip。<br>
-考虑到这种情况，你可以自定义获取remote address的处理器RemoteAddressResolver。当然Spring Cloud Gateway也提供了基于X-Forwarded-For请求头的XForwardedRemoteAddressResolver。 熟悉Http代理协议的，都知道X-Forwarded-For头信息做什么的，不熟悉的可以自己谷歌了解一下。<br>
-XForwardedRemoteAddressResolver提供了两个静态方法获取它的实例： XForwardedRemoteAddressResolver::trustAll得到的RemoteAddressResolver总是获取X-Forwarded-For的第一个ip地址作为remote address，这种方式就比较容易被伪装的请求欺骗，模拟请求很容易通过设置初始的X-Forwarded-For头信息，就可以欺骗到gateway。<br>
-XForwardedRemoteAddressResolver::maxTrustedIndex得到的RemoteAddressResolver则会在X-Forwarded-For信息里面，从右到左选择信任最多maxTrustedIndex个ip，因为X-Forwarded-For是越往右是越接近gateway的代理机器ip，所以是越往右的ip，信任度是越高的。 那么如果前面只是挡了一层Nginx的话，如果只需要Nginx前面客户端的ip，则maxTrustedIndex取1，就可以比较安全地获取真实客户端ip。</p>
-<pre><code>使用java的配置： &lt;u&gt;GatewayConfig.java：&lt;/u&gt;
-</code></pre>
-<pre><code>RemoteAddressResolver resolver = XForwardedRemoteAddressResolver.maxTrustedIndex(1);
-...
-    .route(&quot;direct-route&quot;, r -&gt; r.remoteAddr(&quot;10.1.1.1&quot;, &quot;10.10.1.1/24&quot;)        .uri(&quot;http://www.google.com&quot;)
-    .route(&quot;proxied-route&quot;,r -&gt; r.remoteAddr(resolver,  &quot;10.10.1.1&quot;, &quot;10.10.1.1/24&quot;)        .uri(&quot;http://www.google.com&quot;))
-</code></pre>
-<h3 id="gatewayfilter-工厂介绍">GatewayFilter 工厂介绍</h3>
-<p>Route filters可以通过一些方式修改HTTP请求的输入和输出，针对某些特殊的场景，Spring Cloud Gateway已经内置了很多不同功能的GatewayFilter Factories。</p>
-<ol>
-<li>AddRequestHeader GatewayFilter Factory<br>
-AddRequestHeader GatewayFilter Factory通过配置name和value可以增加请求的header。<br>
-** application.yml：**</li>
-</ol>
-<pre><code class="language-text">spring:  
-	cloud:    
-		gateway:   
-        	routes: 
-            - id: add_request_header_route  
-              uri: http://www.google.com  
-              filters:
-              - AddRequestHeader=X-Request-Foo, Bar
-</code></pre>
-<p><u>对匹配的请求，会额外添加X-Request-Foo:Bar的header。</u></p>
-<ol start="2">
-<li>AddRequestParameter GatewayFilter Factory<br>
-AddRequestParameter GatewayFilter Factory通过配置name和value可以增加请求的参数。<br>
-** application.yml：**</li>
-</ol>
-<pre><code class="language-text">spring:  
-	cloud:  
-    	gateway:   
-        	routes:      
-        	- id: add_request_parameter_route     
-              uri: http://www.google.com     
-              filters:       
-              - AddRequestParameter=foo, bar
-</code></pre>
-<p><u>对匹配的请求，会额外添加foo=bar的请求参数。</u></p>
-<ol start="3">
-<li>AddResponseHeader GatewayFilter Factory<br>
-AddResponseHeader GatewayFilter Factory通过配置name和value可以增加响应的header。<br>
-** application.yml：**</li>
-</ol>
-<pre><code class="language-text">spring:  
-	cloud:   
-    	gateway:  
-        	routes:      
-        	- id: add_request_header_route    
-              uri: http://www.google.com     
-              filters:        
-              - AddResponseHeader=X-Response-Foo, Bar
-</code></pre>
-<p><u>对匹配的请求，响应返回时会额外添加X-Response-Foo:Bar的header返回。</u></p>
-<ol start="4">
-<li>Hystrix GatewayFilter Factory<br>
-Hystrix是Netflix实现的断路器模式工具包，The Hystrix GatewayFilter就是将断路器使用在gateway的路由上，目的是保护你的服务避免级联故障，以及在下游失败时可以降级返回。<br>
-项目里面引入spring-cloud-starter-netflix-hystrix依赖，并提供HystrixCommand的名字，即可生效Hystrix GatewayFilter。<br>
-** application.yml：**</li>
-</ol>
-<pre><code class="language-text">spring:  
-	cloud:    
-		gateway:      
-			routes:     
-        	- id: hystrix_route      
-              uri: http://www.google.com     
-              filters:        
-              - Hystrix=myCommandName
-</code></pre>
-<p><u>那么剩下的过滤器，就会包装在名为myCommandName的HystrixCommand中运行。</u><br>
-Hystrix过滤器也是通过配置可以参数fallbackUri，来支持路由熔断后的降级处理，降级后，请求会跳过fallbackUri配置的路径，目前只支持forward:的URI协议。<br>
-** application.yml：**</p>
-<pre><code class="language-text">spring:
-  cloud:
-    gateway:
-      routes:
-      - id: hystrix_route
-        uri: lb://backing-service:8088
-        predicates:
-        - Path=/consumingserviceendpoint
-        filters:
-        - name: Hystrix
-          args:
-            name: fallbackcmd
-            fallbackUri: forward:/incaseoffailureusethis
-</code></pre>
-<p><u>当Hystrix降级后就会将请求转发到/incaseoffailureusethis。</u><br>
-整个流程其实是用fallbackUri将请求跳转到gateway内部的controller或者handler，然而也可以通过以下的方式将请求转发到外部的服务<br>
-** application.yml：**</p>
-<pre><code class="language-text">spring:
-  cloud:
-    gateway:
-      routes:
-      - id: ingredients
-        uri: lb://ingredients
-        predicates:
-        - Path=//ingredients/**
-        filters:
-        - name: Hystrix
-          args:
-            name: fetchIngredients
-            fallbackUri: forward:/fallback
-      - id: ingredients-fallback
-        uri: http://localhost:9994
-        predicates:
-        - Path=/fallback
-</code></pre>
-<p><u>以上的例子，gateway降级后就会将请求转发到http://localhost:9994。</u><br>
-Hystrix Gateway filter在转发降级请求时，会将造成降级的异常设置在ServerWebExchangeUtils.HYSTRIX_EXECUTION_EXCEPTION_ATTR属性中，在处理降级时也可以用到。<br>
-比如下一节讲到的FallbackHeaders GatewayFilter Factory，就会通过上面的方式拿到异常信息，设置到降级转发请求的header上，来告知降级下游异常信息。<br>
-通过下面配置可以设置Hystrix的全局超时信息：<br>
-** application.yml：**</p>
-<pre><code class="language-text">hystrix.command.fallbackcmd.execution.isolation.thread.timeoutInMilliseconds: 5000
-</code></pre>
-<ol start="5">
-<li>FallbackHeaders GatewayFilter Factory<br>
-FallbackHeaders GatewayFilter Factory可以将Hystrix执行的异常信息添加到外部请求的fallbackUriheader上。<br>
-** application.yml：**</li>
-</ol>
-<pre><code class="language-text">spring:
-  cloud:
-    gateway:
-      routes:
-      - id: ingredients
-        uri: lb://ingredients
-        predicates:
-        - Path=//ingredients/**
-        filters:
-        - name: Hystrix
-          args:
-            name: fetchIngredients
-            fallbackUri: forward:/fallback
-      - id: ingredients-fallback
-        uri: http://localhost:9994
-        predicates:
-        - Path=/fallback
-        filters:
-        - name: FallbackHeaders
-          args:
-            executionExceptionTypeHeaderName: Test-Header
-</code></pre>
-<p>你也可以使用默认的header，也可以像上面一下配置修改header的名字：</p>
-<pre><code>executionExceptionTypeHeaderName (&quot;Execution-Exception-Type&quot;)
-
-executionExceptionMessageHeaderName (&quot;Execution-Exception-Message&quot;)
-
-rootCauseExceptionTypeHeaderName (&quot;Root-Cause-Exception-Type&quot;)
-
-rootCauseExceptionMessageHeaderName (&quot;Root-Cause-Exception-Message&quot;)
-</code></pre>
-<ol start="6">
-<li>PrefixPath GatewayFilter Factory<br>
-The PrefixPath GatewayFilter Factor通过设置prefix参数来路径前缀<br>
-** application.yml：**</li>
-</ol>
-<pre><code class="language-text">spring:
-  cloud:
-    gateway:
-      routes:
-      - id: ingredients
-        uri: lb://ingredients
-        predicates:
-        - Path=//ingredients/**
-        filters:
-        - name: Hystrix
-          args:
-            name: fetchIngredients
-            fallbackUri: forward:/fallback
-      - id: ingredients-fallback
-        uri: http://localhost:9994
-        predicates:
-        - Path=/fallback
-        filters:
-        - name: FallbackHeaders
-          args:
-            executionExceptionTypeHeaderName: Test-Header
-</code></pre>
-<p><u>如果一个请求是/hello，通过上面路由，就会将请求修改为/mypath/hello。</u></p>
-<ol start="7">
-<li>PreserveHostHeader GatewayFilter Factory<br>
-PreserveHostHeader GatewayFilter Factory会保留原始请求的host头信息，并原封不动的转发出去，而不是被gateway的http客户端重置。<br>
-** application.yml：**</li>
-</ol>
-<pre><code class="language-text">spring:
-  cloud:
-    gateway:
-      routes:
-      - id: preserve_host_route
-        uri: http://www.google.com
-        filters:
-        - PreserveHostHeader
-</code></pre>
-<ol start="8">
-<li>RequestRateLimiter GatewayFilter Factory<br>
-RequestRateLimiter GatewayFilter Factory使用RateLimiter来决定当前请求是否允许通过，如果不允许，则默认返回状态码HTTP 429 - Too Many Requests。<br>
-RequestRateLimiter GatewayFilter可以使用一个可选参数keyResolver来做速率限制keyResolver是KeyResolver接口的一个实现bean，在配置里面，通过SpEL表达式#{@myKeyResolver}来管理bean的名字myKeyResolver。</li>
-</ol>
-<pre><code>KeyResolver.java.
-
-public interface KeyResolver {
-	Mono&lt;String&gt; resolve(ServerWebExchange exchange);
-}
-</code></pre>
-<p>** KeyResolver接口允许你使用不同的策略来得出限制请求的key，未来，官方也会推出一些KeyResolver的不同实现。 **<br>
-KeyResolver默认实现是PrincipalNameKeyResolver，通过ServerWebExchange中获取Principal，并以Principal.getName()作为限流的key。<br>
-如果KeyResolver拿不到key，请求默认都会被限制，你也可以自己配置spring.cloud.gateway.filter.request-rate-limiter.deny-empty-key：是否允许空key，spring.cloud.gateway.filter.request-rate-limiter.empty-key-status-code ：空key时返回的状态码。</p>
-<p>RequestRateLimiter不支持捷径配置，如下面的配置是非法的</p>
-<pre><code>application.properties.
-
-# INVALID SHORTCUT CONFIGURATION
-spring.cloud.gateway.routes[0].filters[0]=RequestRateLimiter=2, 2, #{@userkeyresolver}
-</code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[maven-assembly-plugin插件]]></title>
-        <id>https://chenm0.github.io/maven-assembly-plugin/</id>
-        <link href="https://chenm0.github.io/maven-assembly-plugin/">
-        </link>
-        <updated>2021-11-05T01:41:22.000Z</updated>
-        <content type="html"><![CDATA[<h3 id="一-assembly-是什么意思">一. Assembly 是什么意思？</h3>
-<figure data-type="image" tabindex="1"><img src="https://chenm0.github.io//post-images/1636076532479.png" alt="" loading="lazy"></figure>
-<h3 id="二-maven-assembly-plugin是什么">二. maven-assembly-plugin是什么？</h3>
-<p><code>它是maven中针对打包任务而提供的标准插件。</code></p>
-<h3 id="三-maven-assembly-plugin插件的作用">三. maven-assembly-plugin插件的作用？</h3>
-<p><strong>摘自官网：</strong> http://maven.apache.org/plugins/maven-assembly-plugin/<br>
-<strong>英文原文：</strong> The Assembly Plugin for Maven is primarily intended to allow users to aggregate the project output along with its dependencies, modules, site documentation, and other files into a single distributable archive.<br>
-<strong>中文翻译：</strong> Assembly 插件的主要作用是，允许用户将项目输出与它的依赖项、模块、站点文档、和其他文件一起组装成一个可分发的归档文件。</p>
-<h3 id="四maven-assembly-plugin插件在maven项目中如何使用即使用步骤">四.maven-assembly-plugin插件在maven项目中如何使用（即使用步骤）？</h3>
-<ol>
-<li>需要指定一个Assembly描述符文件。该文件指定了打包格式，包含的文件/过滤的文件等信息，可以同时指定多个描述符文件，打包成不同的格式。</li>
-<li>在Maven工程的pom.xml文件里配置maven-assembly-plugin插件，引入Assembly描述符文件。</li>
-</ol>
-<h3 id="五-maven项目中assembly描述符文件详解">五. maven项目中Assembly描述符文件详解</h3>
-<p>示例：</p>
-<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-&lt;assembly
-​    xmlns=&quot;http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2&quot;
-​    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
-​    xsi:schemaLocation=&quot;http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd&quot;&gt;
-
-​    &lt;!-- id 标识符，添加到生成文件名称的后缀符。如果指定 id 的话（这里指定的是项目的版本），目标文件则是 ${artifactId}-${id}.jar。【如terminal-dispatch-5.0.0.0.jar】 --&gt;
-​    &lt;id&gt;${project.version}&lt;/id&gt;
-
-​    &lt;!-- 指定打包格式。maven-assembly-plugin插件支持的打包格式有zip、tar、tar.gz (or tgz)、tar.bz2 (or tbz2)、jar、dir、war，可以同时指定多个打包格式 --&gt;
-​    &lt;formats&gt;
-​        &lt;format&gt;jar&lt;/format&gt;
-​    &lt;/formats&gt;
-​    
-​    &lt;!-- 指定打的包是否包含打包层目录（比如finalName是terminal-dispatch，当值为true，所有文件被放在包内的terminal-dispatch目录下，否则直接放在包的根目录下）--&gt;
-​    &lt;includeBaseDirectory&gt;true&lt;/includeBaseDirectory&gt;
-
-​    &lt;!-- 指定将工程依赖的包打到包里的指定目录下 --&gt;
-​    &lt;dependencySets&gt;
-​        &lt;dependencySet&gt;
-​            &lt;useProjectArtifact&gt;true&lt;/useProjectArtifact&gt; &lt;!-- 指定打包时是否包含工程自身生成的jar包 --&gt;
-​            &lt;outputDirectory&gt;lib&lt;/outputDirectory&gt; &lt;!-- 指定将这些依赖包打到包里lib目录下 --&gt;
-​            &lt;scope&gt;runtime&lt;/scope&gt; &lt;!-- 用于管理依赖的部署，runtime表示只在运行时使用 --&gt;
-​        &lt;/dependencySet&gt;
-​    &lt;/dependencySets&gt;
-
-​    &lt;!-- 指定要包含的文件集，可以定义多个fileSet --&gt;
-​    &lt;fileSets&gt;
-​        &lt;fileSet&gt;
-​            &lt;directory&gt;src/main/script/linux/bin&lt;/directory&gt; &lt;!-- 指定归档文件（要打的jar包）要包含的目录（下的文件及文件夹） --&gt;
-​            &lt;outputDirectory&gt;bin&lt;/outputDirectory&gt; &lt;!-- 指定要将当前目录（&lt;directory&gt;标签中的目录放在归档文件（要打的jar包）bin目录下） --&gt;
-​            &lt;includes&gt;
-​                &lt;include&gt;terminal-dispatch&lt;/include&gt; &lt;!-- 精确控制要包含的文件，&lt;exclude&gt;用于精确控制要排除的文件  --&gt;
-​                &lt;include&gt;server&lt;/include&gt;
-​            &lt;/includes&gt;
-​            &lt;fileMode&gt;0755&lt;/fileMode&gt; &lt;!-- 设置文件 UNIX 属性，是一种读写权限 --&gt;
-​       &lt;/fileSet&gt;        
-​        &lt;fileSet&gt;
-​            &lt;directory&gt;src/main/resources&lt;/directory&gt;
-​            &lt;outputDirectory&gt;conf&lt;/outputDirectory&gt;
-​            &lt;includes&gt;
-​                &lt;include&gt;config.properties&lt;/include&gt;
-​                &lt;include&gt;logback.xml&lt;/include&gt;
-​            &lt;/includes&gt;
-​            &lt;fileMode&gt;0644&lt;/fileMode&gt;
-​        &lt;/fileSet&gt;
-​        &lt;fileSet&gt;
-​            &lt;directory&gt;src/main/script/conf&lt;/directory&gt;
-​            &lt;outputDirectory&gt;conf&lt;/outputDirectory&gt;
-​            &lt;includes&gt;
-​                &lt;include&gt;wrapper.conf&lt;/include&gt;
-​            &lt;/includes&gt;
-​            &lt;fileMode&gt;0644&lt;/fileMode&gt;
-​        &lt;/fileSet&gt;
-​        &lt;fileSet&gt;
-​            &lt;directory&gt;src/main/script/linux/lib&lt;/directory&gt;
-​            &lt;outputDirectory&gt;lib&lt;/outputDirectory&gt;
-​            &lt;includes&gt;
-​                &lt;include&gt;libwrapper.so&lt;/include&gt;
-​                &lt;include&gt;wrapper.jar&lt;/include&gt;
-​            &lt;/includes&gt;
-​            &lt;fileMode&gt;0755&lt;/fileMode&gt;
-​        &lt;/fileSet&gt;
-​    &lt;/fileSets&gt;
-&lt;/assembly&gt;
-</code></pre>
-<ol>
-<li><includeBaseDirectory>true</includeBaseDirectory>标签作用？<br>
-指定打的包是否包含打包层目录，比如finalName是terminal-dispatch，当值为true，所有文件被放在包内的terminal-dispatch目录下，否则直接放在包的根目录下</li>
-<li><fileMode>0755</fileMode>标签作用？<br>
-设置文件的unix属性，好像是一种读写权限的设定，linux的内容，我没有深究，不是特别懂，暂时不多说。</li>
-</ol>
-<p>1<br>
-compile<br>
-缺省值，适用于所有阶段，会随着项目一起发布</p>
-<p>2<br>
-provided<br>
-类似compile，期望JDK、容器或使用者会提供这个依赖。如servlet.jar</p>
-<p>3<br>
-runtime<br>
-只在运行时使用，如JDBC驱动，适用运行和测试阶段</p>
-<p>4<br>
-test<br>
-只在测试时使用，用于编译和运行测试代码。不会随项目发布</p>
-<p>5<br>
-system<br>
-类似provided，需要显式提供包含依赖的jar，Maven不会在Repository中查找它</p>
-<h3 id="六-maven中的pomxml配置引入assembly描述符文件">六. maven中的pom.xml配置(引入assembly描述符文件)</h3>
-<pre><code class="language-javascript">&lt;build&gt;
-    &lt;plugins&gt;
-       &lt;plugin&gt;
-       　　&lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
-　　　　　　&lt;artifactId&gt;maven-assembly-plugin&lt;/artifactId&gt;
-　　　　　　&lt;version&gt;2.4&lt;/version&gt;
-　　　　　　　　&lt;executions&gt;
-　　　　　　　　　　&lt;execution&gt; &lt;!--执行器 mvn assembly:assembly--&gt;
-　　　　　　　　　　　　&lt;id&gt;make-zip&lt;/id&gt; &lt;!--名字任意 --&gt;
-　　　　　　　　　　　　&lt;phase&gt;package&lt;/phase&gt; &lt;!-- 绑定到package生命周期阶段上 --&gt;
-　　　　　　　　　　　　&lt;goals&gt;
-　　　　　　　　　　　　　　&lt;goal&gt;single&lt;/goal&gt; &lt;!-- 该打包任务只运行一次 --&gt;
-　　　　　　　　　　　　&lt;/goals&gt;
-　　　　　　　　　　　　&lt;configuration&gt;
-　　　　　　　　　　　　　　&lt;descriptors
-　　　　　　　　　　　　　　　　&lt;descriptor&gt;src/main/script/assembly.xml&lt;/descriptor&gt; 
-　　　　　　　　　　　　　　&lt;/descriptors&gt;
-　　　　　　　　　　&lt;/configuration&gt;
-　　　　　　　　&lt;/execution&gt;
-　　　　　　&lt;/executions&gt;
-　　　　&lt;/plugin&gt;
-    &lt;plugins&gt;
-&lt;/build&gt;
 </code></pre>
 ]]></content>
     </entry>

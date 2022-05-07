@@ -8,7 +8,7 @@
 <meta name="keywords" content="个人博客">
 <meta name="description" content="&lt;a href=&#34;https://https://github.com/chenm0/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
-<title>@Excel参数大全 | xxx.class</title>
+<title>前端学习笔记：(1) HTML | xxx.class</title>
 <link rel="shortcut icon" href="/favicon.ico?v=1651930214569">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
@@ -38,8 +38,8 @@
 
 
 
-  <meta name="description" content="@Excel参数大全" />
-  <meta name="keywords" content="JAVA" />
+  <meta name="description" content="前端学习笔记：(1) HTML" />
+  <meta name="keywords" content="前端,HTML" />
 </head>
 
 <body>
@@ -190,7 +190,8 @@
       <div class="sidebar-body pisces" id="sidebar_body">
         
           
-            
+            <div class="post-side-meta" id="post_side_meta">
+              
 <div class="sidebar-wrapper box-shadow-wrapper bg-color">
   <div class="sidebar-item">
     <img class="site-author-image right-motion" src="/images/avatar.png"/>
@@ -244,6 +245,214 @@
   </div>
 
 </div>
+            </div>
+            <div class="post-toc sidebar-body-active" id="post_toc" style="opacity: 1;">
+              <div class="toc-box right-motion">
+  <div class="toc-wrapper auto-number auto"
+    id="toc_wrapper">
+    <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#html%E6%98%AF%E4%BB%80%E4%B9%88">HTML是什么？</a>
+<ul>
+<li><a href="#html-%E5%85%83%E7%B4%A0%E8%AF%A6%E8%A7%A3">HTML 元素详解</a>
+<ul>
+<li><a href="#%E5%B5%8C%E5%A5%97%E5%85%83%E7%B4%A0">嵌套元素</a></li>
+<li><a href="#%E7%A9%BA%E5%85%83%E7%B4%A0">空元素</a></li>
+</ul>
+</li>
+<li><a href="#html-%E6%96%87%E6%A1%A3%E8%AF%A6%E8%A7%A3">HTML 文档详解</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%BE%E5%83%8F">图像</a></li>
+<li><a href="#%E6%A0%87%E8%AE%B0%E6%96%87%E6%9C%AC">标记文本</a>
+<ul>
+<li><a href="#%E6%A0%87%E9%A2%98heading">标题（Heading）</a></li>
+<li><a href="#%E6%AE%B5%E8%90%BDparagraph">段落（Paragraph）</a></li>
+<li><a href="#%E5%88%97%E8%A1%A8list">列表（List）</a></li>
+<li><a href="#%E9%93%BE%E6%8E%A5">链接</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+</div>
+
+<script>
+
+  let lastTop = 0, lList = [], hList = [], postBody, lastIndex = -1;
+  let active = 'active-show', activeClass = 'active-current';
+  let tocWrapper = document.querySelector('#toc_wrapper');
+  let tocContent = tocWrapper.children[0];
+  let autoNumber = tocWrapper && tocWrapper.classList.contains('auto-number');
+
+  function addTocNumber(elem, deep) {
+    if (!elem) {
+      return;
+    }
+    let prop = elem.__proto__;
+
+    if (prop === HTMLUListElement.prototype) {
+      for (let i = 0; i < elem.children.length; i++) {
+        addTocNumber(elem.children[i], deep + (i + 1) + '.');
+      }
+    } else if (prop === HTMLLIElement.prototype) {
+      // 保存li元素
+      if (elem.children[0] && elem.children[0].__proto__ === HTMLAnchorElement.prototype) {
+        lList.push(elem);
+      }
+      for (let i = 0; i < elem.children.length; i++) {
+        let cur = elem.children[i];
+        if (cur.__proto__ === HTMLAnchorElement.prototype) {
+          if (autoNumber) {
+            cur.text = deep + ' ' + cur.text;
+          }
+        } else if (cur.__proto__ === HTMLUListElement.prototype) {
+          addTocNumber(cur, deep);
+        }
+      }
+    }
+  }
+
+  function removeParentActiveClass() {
+    let parents = tocContent.querySelectorAll('.' + active)
+    parents.forEach(function (elem) {
+      elem.classList.remove(active);
+    });
+  }
+
+  function addActiveClass(index) {
+    if (index >= 0 && index < hList.length) {
+      lList[index].classList.add(activeClass);
+    }
+  }
+
+  function removeActiveClass(index) {
+    if (index >= 0 && index < hList.length) {
+      lList[index].classList.remove(activeClass);
+    }
+  }
+
+  function addActiveLiElemment(elem, parent) {
+    if (!elem || elem === parent) {
+      return;
+    } else {
+      if (elem.__proto__ === HTMLLIElement.prototype) {
+        elem.classList.add(active);
+      }
+      addActiveLiElemment(elem.parentElement, parent);
+    }
+  }
+
+  function showToc() {
+    if (tocWrapper) {
+      postBody = document.querySelector('#post_body');
+      for (let i = 0; i < postBody.children.length; i++) {
+        if (postBody.children[i].__proto__ === HTMLHeadingElement.prototype) {
+          hList.push(postBody.children[i]);
+        }
+      }
+      if (tocWrapper.classList.contains('compress')) {
+        tocContent.classList.add('closed');
+      } else if (tocWrapper.classList.contains('no_compress')) {
+        tocContent.classList.add('expanded');
+      } else {
+        if (hList.length > 10) {
+          active = 'active-hidden'
+          tocContent.classList.add('closed');
+        } else {
+          tocContent.classList.add('expanded');
+        }
+      }
+    }
+  }
+
+  (function () {
+    // 处理不是从#一级标题开始目录
+    if (tocContent.children.length === 1 && tocContent.children[0].__proto__ === HTMLLIElement.prototype) {
+      let con = tocContent.children[0].children[0];
+      tocContent.innerHTML = con.innerHTML;
+    }
+    let markdownItTOC = document.querySelector('.markdownIt-TOC');
+    let innerHeight = window.innerHeight;
+    markdownItTOC.style = `max-height: ${innerHeight - 80 > 0 ? innerHeight - 80 : innerHeight}px`
+    addTocNumber(tocContent, '');
+  })();
+
+  document.addEventListener('scroll', function (e) {
+    if (lList.length <= 0) {
+      return;
+    }
+    let scrollTop = document.scrollingElement.scrollTop + 10;
+    let dir;
+
+    if (lastTop - scrollTop > 0) {
+      dir = 'up';
+    } else {
+      dir = 'down';
+    }
+
+    lastTop = scrollTop;
+    if (scrollTop <= 0) {
+      if (lastIndex >= 0 && lastIndex < hList.length) {
+        lList[lastIndex].classList.remove(activeClass);
+      }
+      return;
+    }
+
+    let current = 0, hasFind = false;
+    for (let i = 0; i < hList.length; i++) {
+      if (hList[i].offsetTop > scrollTop) {
+        current = i;
+        hasFind = true;
+        break;
+      }
+    }
+    if (!hasFind && scrollTop > lList[lList.length - 1].offsetTop) {
+      current = hList.length - 1;
+    } else {
+      current--;
+    }
+    if (dir === 'down') {
+      if (current > lastIndex) {
+        addActiveClass(current);
+        removeActiveClass(lastIndex)
+        lastIndex = current;
+        removeParentActiveClass();
+        lList[current] && addActiveLiElemment(lList[current].parentElement, tocContent);
+      }
+    } else {
+      if (current < lastIndex) {
+        addActiveClass(current);
+        removeActiveClass(lastIndex);
+        lastIndex = current;
+        removeParentActiveClass();
+        lList[current] && addActiveLiElemment(lList[current].parentElement, tocContent);
+      }
+    }
+  });
+
+
+  window.addEventListener('load', function () {
+    showToc();
+    document.querySelector('#sidebar').style = 'display: block;';
+    tocWrapper.classList.add('toc-active');
+    setTimeout(function () {
+      if ("createEvent" in document) {
+        let evt = document.createEvent("HTMLEvents");
+        evt.initEvent("scroll", false, true);
+        document.dispatchEvent(evt);
+      }
+      else {
+        document.fireEvent("scroll");
+      }
+    }, 500)
+  })
+
+</script>
+            </div>
           
         
       </div>
@@ -331,8 +540,8 @@
           <div class="section bg-color post post-page">
             <section class="post-header">
   <h1 class="post-title">
-    <a class="post-title-link" href="https://chenm0.github.io/excel-args/">
-      @Excel参数大全
+    <a class="post-title-link" href="https://chenm0.github.io/NShkF30Co/">
+      前端学习笔记：(1) HTML
     </a>
   </h1>
   <div class="post-meta">
@@ -340,7 +549,7 @@
     <span class="meta-item pc-show">
       <i class="fa fa-calendar-o"></i>
       <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-07-19 17:05:37">2021-07-19</span>
+      <span class="publish-time" data-t="2022-05-07 20:49:36">2022-05-07</span>
       <span class="post-meta-divider pc-show">|</span>
     </span>
     
@@ -349,8 +558,14 @@
       <span class="pc-show language" data-lan="category-in">分类于</span>
       
       
-      <a href="https://chenm0.github.io/BuwDjq1zh0/">
-        <span>JAVA</span>
+      <a href="https://chenm0.github.io/Ecw5j-2F-/">
+        <span>前端</span>
+      </a>、
+      
+      
+      
+      <a href="https://chenm0.github.io/I96Vd7CGnq/">
+        <span>HTML</span>
       </a>
       
       
@@ -359,17 +574,17 @@
     
     <span class="meta-item">
       <i class="fa fa-clock-o"></i>
-      <span>2<span class="language" data-lan="minute">分钟</span></span>
+      <span>8<span class="language" data-lan="minute">分钟</span></span>
     </span>
     <span class="meta-item">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-file-word-o"></i>
-      <span>303<span class="pc-show language" data-lan="words">字数</span></span>
+      <span>1907<span class="pc-show language" data-lan="words">字数</span></span>
     </span>
     
     
     
-    <span id="/excel-args/" data-flag-title="@Excel参数大全" class="meta-item pc-show leancloud_visitors">
+    <span id="/NShkF30Co/" data-flag-title="前端学习笔记：(1) HTML" class="meta-item pc-show leancloud_visitors">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-eye"></i>
       <span><span class="language" data-lan="view">浏览量</span>：<span class="leancloud-visitors-count"></span></span>
@@ -378,126 +593,112 @@
   </div>
 </section>
             <div class="post-body next-md-body" id="post_body">
-              <table>
-<thead>
-<tr>
-<th>参数</th>
-<th>类型</th>
-<th>默认值</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>sort</td>
-<td>int</td>
-<td>Integer.MAX_VALUE</td>
-<td>导出时在excel中排序</td>
-</tr>
-<tr>
-<td>name</td>
-<td>String</td>
-<td>空</td>
-<td>导出到Excel中的名字</td>
-</tr>
-<tr>
-<td>dateFormat</td>
-<td>String</td>
-<td>空</td>
-<td>日期格式, 如: yyyy-MM-dd</td>
-</tr>
-<tr>
-<td>dictType</td>
-<td>String</td>
-<td>空</td>
-<td>如果是字典类型，请设置字典的type值 (如: sys_user_sex)</td>
-</tr>
-<tr>
-<td>readConverterExp</td>
-<td>String</td>
-<td>空</td>
-<td>读取内容转表达式 (如: 0=男,1=女,2=未知)</td>
-</tr>
-<tr>
-<td>separator</td>
-<td>String</td>
-<td>,</td>
-<td>分隔符，读取字符串组内容</td>
-</tr>
-<tr>
-<td>scale</td>
-<td>int</td>
-<td>-1</td>
-<td>BigDecimal 精度 默认:-1(默认不开启BigDecimal格式化)</td>
-</tr>
-<tr>
-<td>roundingMode</td>
-<td>int</td>
-<td>BigDecimal.ROUND_HALF_EVEN</td>
-<td>BigDecimal 舍入规则 默认:BigDecimal.ROUND_HALF_EVEN</td>
-</tr>
-<tr>
-<td>columnType</td>
-<td>Enum</td>
-<td>Type.STRING</td>
-<td>导出类型（0数字 1字符串 2图片）</td>
-</tr>
-<tr>
-<td>height</td>
-<td>String</td>
-<td>14</td>
-<td>导出时在excel中每个列的高度 单位为字符</td>
-</tr>
-<tr>
-<td>width</td>
-<td>String</td>
-<td>16</td>
-<td>导出时在excel中每个列的宽 单位为字符</td>
-</tr>
-<tr>
-<td>suffix</td>
-<td>String</td>
-<td>空</td>
-<td>文字后缀,如% 90 变成90%</td>
-</tr>
-<tr>
-<td>defaultValue</td>
-<td>String</td>
-<td>空</td>
-<td>当值为空时,字段的默认值</td>
-</tr>
-<tr>
-<td>prompt</td>
-<td>String</td>
-<td>空</td>
-<td>提示信息</td>
-</tr>
-<tr>
-<td>combo</td>
-<td>String</td>
-<td>Null</td>
-<td>设置只能选择不能输入的列内容</td>
-</tr>
-<tr>
-<td>targetAttr</td>
-<td>String</td>
-<td>空</td>
-<td>另一个类中的属性名称,支持多级获取,以小数点隔开</td>
-</tr>
-<tr>
-<td>isStatistics</td>
-<td>boolean</td>
-<td>false</td>
-<td>是否自动统计数据,在最后追加一行统计数据总和</td>
-</tr>
-<tr>
-<td>type</td>
-<td>Enum</td>
-<td>Type.ALL</td>
-<td>字段类型（0：导出导入；1：仅导出；2：仅导入）</td>
-</tr>
-</tbody>
-</table>
+              <h2 id="html是什么">HTML是什么？</h2>
+<p>HTML 不是一门编程语言，而是一种用于定义内容结构的标记语言。HTML 由一系列的元素（elements）组成，这些元素可以用来包围不同部分的内容，使其以某种方式呈现或者工作。 一对标签（ tags）可以为一段文字或者一张图片添加超链接，将文字设置为斜体，改变字号，等等。</p>
+<h3 id="html-元素详解">HTML 元素详解</h3>
+<pre><code>&lt;p&gt;这是一个HTML元素&lt;/p&gt;
+</code></pre>
+<p>这个元素的主要部分有：</p>
+<ol>
+<li><strong>开始标签（Opening tag）</strong>：包含元素的名称（本例为 p），被大于号、小于号所包围。表示元素从这里开始或者开始起作用 —— 在本例中即段落由此开始。</li>
+<li><strong>结束标签（Closing tag）</strong>：与开始标签相似，只是其在元素名之前包含了一个斜杠。这表示着元素的结尾 —— 在本例中即段落在此结束。初学者常常会犯忘记包含结束标签的错误，这可能会产生一些奇怪的结果。</li>
+<li><strong>内容（Content）</strong>：元素的内容，本例中就是所输入的文本本身。</li>
+<li><strong>元素（Element）</strong>：开始标签、结束标签与内容相结合，便是一个完整的元素。</li>
+</ol>
+<p>元素也可以有属性（Attribute）：</p>
+<pre><code>&lt;p class=&quot;editor-note&quot;&gt;这是一个HTML元素&lt;/p&gt;
+</code></pre>
+<p>属性应该包含：</p>
+<ol>
+<li>在属性与元素名称（或上一个属性，如果有超过一个属性的话）之间的空格符。</li>
+<li>属性的名称，并接上一个等号。</li>
+<li>由引号所包围的属性值。</li>
+</ol>
+<pre><code>`注：不包含 ASCII 空格（以及 &quot; ' ` = &lt; &gt; ）的简单属性值可以不使用引号，但是建议将所有属性值用引号括起来，这样的代码一致性更佳，更易于阅读。
+</code></pre>
+<h4 id="嵌套元素">嵌套元素</h4>
+<p>也可以将一个元素置于其他元素之中 —— 称作嵌套。</p>
+<pre><code>&lt;p&gt;这是一个&lt;strong&gt;HTML元素&lt;/strong&gt;&lt;/p&gt;
+</code></pre>
+<p>必须保证元素嵌套次序正确：本例首先使用 <code>&lt;p&gt;</code> 标签，然后是 <code>&lt;strong&gt;</code> 标签，因此要先结束 <code>&lt;strong&gt;</code> 标签，最后再结束 <code>&lt;p&gt;</code> 标签。元素必须正确地开始和结束，才能清楚地显示出正确的嵌套层次。</p>
+<h4 id="空元素">空元素</h4>
+<p>不包含任何内容的元素称为空元素。比如 <code>&lt;img&gt;</code> 元素：</p>
+<pre><code>&lt;img src=&quot;images/firefox-icon.png&quot; alt=&quot;测试图片&quot;&gt;
+</code></pre>
+<p>本元素包含两个属性，但是并没有 <code>&lt;/img&gt;</code> 结束标签，元素里也没有内容。这是因为图像元素不需要通过内容来产生效果，它的作用是向其所在的位置嵌入一个图像。</p>
+<h3 id="html-文档详解">HTML 文档详解</h3>
+<p>来看看单个元素如何彼此协同构成一个完整的 HTML 页面</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;title&gt;测试页面&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;img src=&quot;images/firefox-icon.png&quot; alt=&quot;测试图片&quot;&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>这里有：</p>
+<ul>
+<li><code>&lt;!DOCTYPE html&gt;</code> — 文档类型。混沌初分，HTML 尚在襁褓（大约是 1991/92 年）之时，DOCTYPE 用来链接一些 HTML 编写守则，比如自动查错之类。DOCTYPE 在当今作用有限，仅用于保证文档正常读取。现在知道这些就足够了。</li>
+<li><code>&lt;html&gt;&lt;/html&gt;</code> — <code>&lt;html&gt;</code> 元素。该元素包含整个页面的内容，也称作根元素。</li>
+<li><code>&lt;head&gt;&lt;/head&gt;</code> — <code>&lt;head&gt;</code> 元素。该元素的内容对用户不可见，其中包含例如面向搜索引擎的搜索关键字（keywords）、页面描述、CSS 样式表和字符编码声明等。</li>
+<li><code>&lt;meta charset=&quot;utf-8&quot;&gt;</code> — 该元素指定文档使用 UTF-8 字符编码 ，UTF-8 包括绝大多数人类已知语言的字符。基本上 UTF-8 可以处理任何文本内容，还可以避免以后出现某些问题，没有理由再选用其他编码。</li>
+<li><code>&lt;title&gt;&lt;/title&gt;</code> — <code>&lt;title&gt;</code> 元素。该元素设置页面的标题，显示在浏览器标签页上，也作为收藏网页的描述文字。</li>
+<li><code>&lt;body&gt;&lt;/body&gt;</code> — <code>&lt;body&gt;</code> 元素。该元素包含期望让用户在访问页面时看到的内容，包括文本、图像、视频、游戏、可播放的音轨或其他内容。</li>
+</ul>
+<h2 id="图像">图像</h2>
+<pre><code>&lt;img src=&quot;images/firefox-icon.png&quot; alt=&quot;测试图片&quot;&gt;
+</code></pre>
+<p>该元素通过包含图像文件路径的地址属性 src，可在所在位置嵌入图像。<br>
+该元素还包括一个替换文字属性 alt，是图像的描述内容，用于当图像不能被用户看见时显示，不可见的原因可能是：</p>
+<ol>
+<li>用户有视觉障碍。视障用户可以使用屏幕阅读器来朗读 alt 属性的内容。</li>
+<li>有些错误使图像无法显示。alt 属性的关键字即“描述文本”。alt 文本应向用户完整地传递图像要表达的意思。</li>
+</ol>
+<h2 id="标记文本">标记文本</h2>
+<p>本段包含了一些最常用的文本标记 HTML 元素。</p>
+<h3 id="标题heading">标题（Heading）</h3>
+<p>标题元素可用于指定内容的标题和子标题。就像一本书的书名、每章的大标题、小标题，等。HTML 文档也是一样。HTML 包括六个级别的标题， <code>&lt;h1&gt;</code> (en-US)–<code>&lt;h6&gt;</code> (en-US) ，一般最多用到 3-4 级标题。</p>
+<pre><code>&lt;h1&gt;主标题&lt;/h1&gt;
+&lt;h2&gt;顶层标题&lt;/h2&gt;
+&lt;h3&gt;子标题&lt;/h3&gt;
+&lt;h4&gt;次子标题&lt;/h4&gt;
+</code></pre>
+<pre><code>不要使用标题元素来加大、加粗字体，因为标题对于 无障碍访问 和 搜索引擎优化 等问题非常有意义。要保持页面结构清晰，标题整洁，不要发生标题级别跳跃。
+</code></pre>
+<h3 id="段落paragraph">段落（Paragraph）</h3>
+<p>如上文所讲，<code>&lt;p&gt;</code> 元素是用来指定段落的。通常用于指定常规的文本内容：</p>
+<pre><code>&lt;p&gt;这是一个段落&lt;/p&gt;
+</code></pre>
+<h3 id="列表list">列表（List）</h3>
+<p>Web 上的许多内容都是列表，HTML 有一些特别的列表元素。标记列表通常包括至少两个元素。最常用的列表类型为：</p>
+<ol>
+<li>**无序列表（Unordered List）**中项目的顺序并不重要，就像购物列表。用一个 <code>&lt;ul&gt;</code> 元素包围。</li>
+<li>**有序列表（Ordered List）**中项目的顺序很重要，就像烹调指南。用一个 <code>&lt;ol&gt;</code> 元素包围。<br>
+列表的每个项目用一个列表项目（List Item）元素 <code>&lt;li&gt;</code> 包围。</li>
+</ol>
+<h3 id="链接">链接</h3>
+<p>链接非常重要 — 它们赋予 Web 网络属性。要植入一个链接，我们需要使用一个简单的元素 — <code>&lt;a&gt;</code> — a 是 &quot;anchor&quot; （锚）的缩写。要将一些文本添加到链接中，只需如下几步：</p>
+<ol>
+<li>选择一些文本。比如 “陈陌的个人博客”。</li>
+<li>将文本包含在 <a> 元素内，就像这样：</li>
+</ol>
+<pre><code>&lt;a&gt;陈陌的个人博客&lt;/a&gt;
+</code></pre>
+<ol start="3">
+<li>为此 <a> 元素添加一个 href 属性，就像这样：</li>
+</ol>
+<pre><code>&lt;a href=&quot;&quot;&gt;陈陌的个人博客&lt;/a&gt;
+</code></pre>
+<ol start="4">
+<li>把属性的值设置为所需网址：</li>
+</ol>
+<pre><code>&lt;a href=&quot;https://www.baidu.com&quot;&gt;陈陌的个人博客&lt;/a&gt;
+</code></pre>
+<p>如果网址开始部分省略了 https:// 或者 http://，可能会得到错误的结果。在完成一个链接后，可以试着点击它来确保指向正确。<br>
+href 这个名字可能开始看起来有点令人费解，代表超文本引用（ hypertext reference）</p>
 
             </div>
             
@@ -510,7 +711,7 @@
     </li>
     <li class="post-copyright-link">
       <strong class="language" data-lan="link">本文链接：</strong>
-      <a href="https://chenm0.github.io/excel-args/" title="@Excel参数大全">https://chenm0.github.io/excel-args/</a>
+      <a href="https://chenm0.github.io/NShkF30Co/" title="前端学习笔记：(1) HTML">https://chenm0.github.io/NShkF30Co/</a>
     </li>
     <li class="post-copyright-license">
       <strong class="language" data-lan="copyright">版权声明： </strong>
@@ -519,21 +720,19 @@
   </ul>
   <div class="tags">
     
-      <a href="https://chenm0.github.io/BuwDjq1zh0/"># JAVA</a>
+      <a href="https://chenm0.github.io/Ecw5j-2F-/"># 前端</a>
+    
+      <a href="https://chenm0.github.io/I96Vd7CGnq/"># HTML</a>
     
   </div>
   <div class="nav">
     <div class="nav-prev">
       
-        <i class="fa fa-chevron-left"></i>
-        <a class="nav-pc-next" title="Maven setting" href="https://chenm0.github.io/maven-setting/">Maven setting</a class="nav-pc-next">
-        <a class="nav-mobile-prev" title="Maven setting" href="https://chenm0.github.io/maven-setting/">上一篇</a>
-      
     </div>
     <div class="nav-next">
       
-        <a class="nav-pc-next" title="JPA踩坑记录" href="https://chenm0.github.io/jpa-qa/">JPA踩坑记录</a>
-        <a class="nav-mobile-next" title="JPA踩坑记录" href="https://chenm0.github.io/jpa-qa/">下一篇</a>
+        <a class="nav-pc-next" title="JVM笔记---(3)虚拟机栈" href="https://chenm0.github.io/Q851aTBIk/">JVM笔记---(3)虚拟机栈</a>
+        <a class="nav-mobile-next" title="JVM笔记---(3)虚拟机栈" href="https://chenm0.github.io/Q851aTBIk/">下一篇</a>
         <i class="fa fa-chevron-right"></i>
       
     </div>

@@ -8,7 +8,7 @@
 <meta name="keywords" content="个人博客">
 <meta name="description" content="&lt;a href=&#34;https://https://github.com/chenm0/&#34; target=&#34;_blank&#34;&gt;code blog&lt;/a&gt;">
 <meta name="theme-color" content="#000">
-<title>@Excel参数大全 | xxx.class</title>
+<title>JVM笔记---(3)虚拟机栈 | xxx.class</title>
 <link rel="shortcut icon" href="/favicon.ico?v=1651930214569">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
@@ -38,8 +38,8 @@
 
 
 
-  <meta name="description" content="@Excel参数大全" />
-  <meta name="keywords" content="JAVA" />
+  <meta name="description" content="JVM笔记---(3)虚拟机栈" />
+  <meta name="keywords" content="" />
 </head>
 
 <body>
@@ -190,7 +190,8 @@
       <div class="sidebar-body pisces" id="sidebar_body">
         
           
-            
+            <div class="post-side-meta" id="post_side_meta">
+              
 <div class="sidebar-wrapper box-shadow-wrapper bg-color">
   <div class="sidebar-item">
     <img class="site-author-image right-motion" src="/images/avatar.png"/>
@@ -244,6 +245,231 @@
   </div>
 
 </div>
+            </div>
+            <div class="post-toc sidebar-body-active" id="post_toc" style="opacity: 1;">
+              <div class="toc-box right-motion">
+  <div class="toc-wrapper auto-number auto"
+    id="toc_wrapper">
+    <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E6%A6%82%E8%BF%B0">概述</a>
+<ul>
+<li><a href="#%E5%86%85%E5%AD%98%E4%B8%AD%E7%9A%84%E6%A0%88%E5%92%8C%E5%A0%86">内存中的栈和堆</a></li>
+<li><a href="#%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%A0%88%E5%9F%BA%E6%9C%AC%E5%86%85%E5%AE%B9">虚拟机栈基本内容</a></li>
+<li><a href="#%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%A0%88%E7%9A%84%E7%89%B9%E7%82%B9">虚拟机栈的特点</a></li>
+<li><a href="#%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%A0%88%E7%9A%84%E5%BC%82%E5%B8%B8">虚拟机栈的异常</a></li>
+<li><a href="#%E8%AE%BE%E7%BD%AE%E6%A0%88%E5%86%85%E5%AD%98%E5%A4%A7%E5%B0%8F">设置栈内存大小</a></li>
+</ul>
+</li>
+<li><a href="#%E6%A0%88%E7%9A%84%E5%AD%98%E5%82%A8%E5%8D%95%E4%BD%8D">栈的存储单位</a>
+<ul>
+<li><a href="#%E6%A0%88%E4%B8%AD%E5%AD%98%E5%82%A8%E4%BB%80%E4%B9%88">栈中存储什么？</a></li>
+<li><a href="#%E6%A0%88%E8%BF%90%E8%A1%8C%E5%8E%9F%E7%90%86">栈运行原理</a></li>
+<li><a href="#%E6%A0%88%E5%B8%A7%E7%9A%84%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84">栈帧的内部结构</a></li>
+</ul>
+</li>
+<li><a href="#%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E8%A1%A8">局部变量表</a>
+<ul>
+<li><a href="#%E6%A6%82%E5%BF%B5">概念</a></li>
+<li><a href="#%E8%A1%A5%E5%85%85%E8%AF%B4%E6%98%8E">补充说明</a></li>
+</ul>
+</li>
+<li><a href="#%E6%93%8D%E4%BD%9C%E6%95%B0%E6%A0%88">操作数栈</a>
+<ul>
+<li><a href="#%E7%89%B9%E7%82%B9">特点</a></li>
+<li><a href="#%E4%BD%9C%E7%94%A8">作用</a></li>
+</ul>
+</li>
+<li><a href="#%E6%A0%88%E9%A1%B6%E7%BC%93%E5%AD%98%E6%8A%80%E6%9C%AFtop-of-stack-cashing">栈顶缓存技术（Top Of Stack Cashing）</a></li>
+<li><a href="#%E6%96%B9%E6%B3%95%E7%9A%84%E8%B0%83%E7%94%A8">方法的调用</a>
+<ul>
+<li><a href="#%E9%9D%99%E6%80%81%E9%93%BE%E6%8E%A5%E4%B8%8E%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5">静态链接与动态链接</a></li>
+<li><a href="#%E6%97%A9%E6%9C%9F%E7%BB%91%E5%AE%9A%E4%B8%8E%E6%99%9A%E6%9C%9F%E7%BB%91%E5%AE%9A">早期绑定与晚期绑定</a></li>
+<li><a href="#%E5%8A%A8%E6%80%81%E8%AF%AD%E8%A8%80%E5%92%8C%E9%9D%99%E6%80%81%E8%AF%AD%E8%A8%80">动态语言和静态语言</a></li>
+<li><a href="#java%E8%AF%AD%E8%A8%80%E4%B8%AD%E6%96%B9%E6%B3%95%E9%87%8D%E5%86%99%E7%9A%84%E6%9C%AC%E8%B4%A8">Java语言中方法重写的本质</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+</div>
+
+<script>
+
+  let lastTop = 0, lList = [], hList = [], postBody, lastIndex = -1;
+  let active = 'active-show', activeClass = 'active-current';
+  let tocWrapper = document.querySelector('#toc_wrapper');
+  let tocContent = tocWrapper.children[0];
+  let autoNumber = tocWrapper && tocWrapper.classList.contains('auto-number');
+
+  function addTocNumber(elem, deep) {
+    if (!elem) {
+      return;
+    }
+    let prop = elem.__proto__;
+
+    if (prop === HTMLUListElement.prototype) {
+      for (let i = 0; i < elem.children.length; i++) {
+        addTocNumber(elem.children[i], deep + (i + 1) + '.');
+      }
+    } else if (prop === HTMLLIElement.prototype) {
+      // 保存li元素
+      if (elem.children[0] && elem.children[0].__proto__ === HTMLAnchorElement.prototype) {
+        lList.push(elem);
+      }
+      for (let i = 0; i < elem.children.length; i++) {
+        let cur = elem.children[i];
+        if (cur.__proto__ === HTMLAnchorElement.prototype) {
+          if (autoNumber) {
+            cur.text = deep + ' ' + cur.text;
+          }
+        } else if (cur.__proto__ === HTMLUListElement.prototype) {
+          addTocNumber(cur, deep);
+        }
+      }
+    }
+  }
+
+  function removeParentActiveClass() {
+    let parents = tocContent.querySelectorAll('.' + active)
+    parents.forEach(function (elem) {
+      elem.classList.remove(active);
+    });
+  }
+
+  function addActiveClass(index) {
+    if (index >= 0 && index < hList.length) {
+      lList[index].classList.add(activeClass);
+    }
+  }
+
+  function removeActiveClass(index) {
+    if (index >= 0 && index < hList.length) {
+      lList[index].classList.remove(activeClass);
+    }
+  }
+
+  function addActiveLiElemment(elem, parent) {
+    if (!elem || elem === parent) {
+      return;
+    } else {
+      if (elem.__proto__ === HTMLLIElement.prototype) {
+        elem.classList.add(active);
+      }
+      addActiveLiElemment(elem.parentElement, parent);
+    }
+  }
+
+  function showToc() {
+    if (tocWrapper) {
+      postBody = document.querySelector('#post_body');
+      for (let i = 0; i < postBody.children.length; i++) {
+        if (postBody.children[i].__proto__ === HTMLHeadingElement.prototype) {
+          hList.push(postBody.children[i]);
+        }
+      }
+      if (tocWrapper.classList.contains('compress')) {
+        tocContent.classList.add('closed');
+      } else if (tocWrapper.classList.contains('no_compress')) {
+        tocContent.classList.add('expanded');
+      } else {
+        if (hList.length > 10) {
+          active = 'active-hidden'
+          tocContent.classList.add('closed');
+        } else {
+          tocContent.classList.add('expanded');
+        }
+      }
+    }
+  }
+
+  (function () {
+    // 处理不是从#一级标题开始目录
+    if (tocContent.children.length === 1 && tocContent.children[0].__proto__ === HTMLLIElement.prototype) {
+      let con = tocContent.children[0].children[0];
+      tocContent.innerHTML = con.innerHTML;
+    }
+    let markdownItTOC = document.querySelector('.markdownIt-TOC');
+    let innerHeight = window.innerHeight;
+    markdownItTOC.style = `max-height: ${innerHeight - 80 > 0 ? innerHeight - 80 : innerHeight}px`
+    addTocNumber(tocContent, '');
+  })();
+
+  document.addEventListener('scroll', function (e) {
+    if (lList.length <= 0) {
+      return;
+    }
+    let scrollTop = document.scrollingElement.scrollTop + 10;
+    let dir;
+
+    if (lastTop - scrollTop > 0) {
+      dir = 'up';
+    } else {
+      dir = 'down';
+    }
+
+    lastTop = scrollTop;
+    if (scrollTop <= 0) {
+      if (lastIndex >= 0 && lastIndex < hList.length) {
+        lList[lastIndex].classList.remove(activeClass);
+      }
+      return;
+    }
+
+    let current = 0, hasFind = false;
+    for (let i = 0; i < hList.length; i++) {
+      if (hList[i].offsetTop > scrollTop) {
+        current = i;
+        hasFind = true;
+        break;
+      }
+    }
+    if (!hasFind && scrollTop > lList[lList.length - 1].offsetTop) {
+      current = hList.length - 1;
+    } else {
+      current--;
+    }
+    if (dir === 'down') {
+      if (current > lastIndex) {
+        addActiveClass(current);
+        removeActiveClass(lastIndex)
+        lastIndex = current;
+        removeParentActiveClass();
+        lList[current] && addActiveLiElemment(lList[current].parentElement, tocContent);
+      }
+    } else {
+      if (current < lastIndex) {
+        addActiveClass(current);
+        removeActiveClass(lastIndex);
+        lastIndex = current;
+        removeParentActiveClass();
+        lList[current] && addActiveLiElemment(lList[current].parentElement, tocContent);
+      }
+    }
+  });
+
+
+  window.addEventListener('load', function () {
+    showToc();
+    document.querySelector('#sidebar').style = 'display: block;';
+    tocWrapper.classList.add('toc-active');
+    setTimeout(function () {
+      if ("createEvent" in document) {
+        let evt = document.createEvent("HTMLEvents");
+        evt.initEvent("scroll", false, true);
+        document.dispatchEvent(evt);
+      }
+      else {
+        document.fireEvent("scroll");
+      }
+    }, 500)
+  })
+
+</script>
+            </div>
           
         
       </div>
@@ -331,8 +557,8 @@
           <div class="section bg-color post post-page">
             <section class="post-header">
   <h1 class="post-title">
-    <a class="post-title-link" href="https://chenm0.github.io/excel-args/">
-      @Excel参数大全
+    <a class="post-title-link" href="https://chenm0.github.io/Q851aTBIk/">
+      JVM笔记---(3)虚拟机栈
     </a>
   </h1>
   <div class="post-meta">
@@ -340,36 +566,23 @@
     <span class="meta-item pc-show">
       <i class="fa fa-calendar-o"></i>
       <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-07-19 17:05:37">2021-07-19</span>
+      <span class="publish-time" data-t="2022-04-29 15:16:41">2022-04-29</span>
       <span class="post-meta-divider pc-show">|</span>
     </span>
     
     <span class="meta-item">
-      <i class="fa fa-folder-o"></i>
-      <span class="pc-show language" data-lan="category-in">分类于</span>
-      
-      
-      <a href="https://chenm0.github.io/BuwDjq1zh0/">
-        <span>JAVA</span>
-      </a>
-      
-      
-    </span>
-    <span class="post-meta-divider">|</span>
-    
-    <span class="meta-item">
       <i class="fa fa-clock-o"></i>
-      <span>2<span class="language" data-lan="minute">分钟</span></span>
+      <span>13<span class="language" data-lan="minute">分钟</span></span>
     </span>
     <span class="meta-item">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-file-word-o"></i>
-      <span>303<span class="pc-show language" data-lan="words">字数</span></span>
+      <span>3646<span class="pc-show language" data-lan="words">字数</span></span>
     </span>
     
     
     
-    <span id="/excel-args/" data-flag-title="@Excel参数大全" class="meta-item pc-show leancloud_visitors">
+    <span id="/Q851aTBIk/" data-flag-title="JVM笔记---(3)虚拟机栈" class="meta-item pc-show leancloud_visitors">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-eye"></i>
       <span><span class="language" data-lan="view">浏览量</span>：<span class="leancloud-visitors-count"></span></span>
@@ -378,126 +591,216 @@
   </div>
 </section>
             <div class="post-body next-md-body" id="post_body">
-              <table>
-<thead>
-<tr>
-<th>参数</th>
-<th>类型</th>
-<th>默认值</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>sort</td>
-<td>int</td>
-<td>Integer.MAX_VALUE</td>
-<td>导出时在excel中排序</td>
-</tr>
-<tr>
-<td>name</td>
-<td>String</td>
-<td>空</td>
-<td>导出到Excel中的名字</td>
-</tr>
-<tr>
-<td>dateFormat</td>
-<td>String</td>
-<td>空</td>
-<td>日期格式, 如: yyyy-MM-dd</td>
-</tr>
-<tr>
-<td>dictType</td>
-<td>String</td>
-<td>空</td>
-<td>如果是字典类型，请设置字典的type值 (如: sys_user_sex)</td>
-</tr>
-<tr>
-<td>readConverterExp</td>
-<td>String</td>
-<td>空</td>
-<td>读取内容转表达式 (如: 0=男,1=女,2=未知)</td>
-</tr>
-<tr>
-<td>separator</td>
-<td>String</td>
-<td>,</td>
-<td>分隔符，读取字符串组内容</td>
-</tr>
-<tr>
-<td>scale</td>
-<td>int</td>
-<td>-1</td>
-<td>BigDecimal 精度 默认:-1(默认不开启BigDecimal格式化)</td>
-</tr>
-<tr>
-<td>roundingMode</td>
-<td>int</td>
-<td>BigDecimal.ROUND_HALF_EVEN</td>
-<td>BigDecimal 舍入规则 默认:BigDecimal.ROUND_HALF_EVEN</td>
-</tr>
-<tr>
-<td>columnType</td>
-<td>Enum</td>
-<td>Type.STRING</td>
-<td>导出类型（0数字 1字符串 2图片）</td>
-</tr>
-<tr>
-<td>height</td>
-<td>String</td>
-<td>14</td>
-<td>导出时在excel中每个列的高度 单位为字符</td>
-</tr>
-<tr>
-<td>width</td>
-<td>String</td>
-<td>16</td>
-<td>导出时在excel中每个列的宽 单位为字符</td>
-</tr>
-<tr>
-<td>suffix</td>
-<td>String</td>
-<td>空</td>
-<td>文字后缀,如% 90 变成90%</td>
-</tr>
-<tr>
-<td>defaultValue</td>
-<td>String</td>
-<td>空</td>
-<td>当值为空时,字段的默认值</td>
-</tr>
-<tr>
-<td>prompt</td>
-<td>String</td>
-<td>空</td>
-<td>提示信息</td>
-</tr>
-<tr>
-<td>combo</td>
-<td>String</td>
-<td>Null</td>
-<td>设置只能选择不能输入的列内容</td>
-</tr>
-<tr>
-<td>targetAttr</td>
-<td>String</td>
-<td>空</td>
-<td>另一个类中的属性名称,支持多级获取,以小数点隔开</td>
-</tr>
-<tr>
-<td>isStatistics</td>
-<td>boolean</td>
-<td>false</td>
-<td>是否自动统计数据,在最后追加一行统计数据总和</td>
-</tr>
-<tr>
-<td>type</td>
-<td>Enum</td>
-<td>Type.ALL</td>
-<td>字段类型（0：导出导入；1：仅导出；2：仅导入）</td>
-</tr>
-</tbody>
-</table>
+              <h2 id="概述">概述</h2>
+<ol>
+<li>由于跨平台性的设计，Java的指令都是根据栈来设计的。不同平台CPU架构不同，所以不能设计为基于寄存器的【如果设计成基于寄存器的，耦合度高，性能会有所提升，因为可以对具体的CPU架构进行优化，但是跨平台性大大降低】</li>
+<li>优点是跨平台，指令集小，编译器容易实现，缺点是性能下降，实现同样的功能需要更多的指令。</li>
+</ol>
+<h3 id="内存中的栈和堆">内存中的栈和堆</h3>
+<ol>
+<li>首先栈是运行时的单位，而堆是存储的单位。</li>
+<li>即：栈解决程序的运行问题，即程序如何执行，或者说如何处理数据。堆解决的是数据存储的问题，即数据怎么放，放哪里<br>
+<img src="https://chenm0.github.io//post-images/1651217704326.png" alt="" loading="lazy"></li>
+</ol>
+<h3 id="虚拟机栈基本内容">虚拟机栈基本内容</h3>
+<ul>
+<li>Java虚拟机栈是什么？<br>
+Java虚拟机栈（Java Virtual Machine Stack），早期也叫Java栈。每个线程在创建时都会创建一个虚拟机栈，其内部保存一个个的栈帧（Stack Frame），对应着一次次的Java方法调用，栈是线程私有的</li>
+</ul>
+<pre><code>public class StackTest {
+
+    public static void main(String[] args) {
+        StackTest test = new StackTest();
+        test.methodA();
+    }
+
+    public void methodA() {
+        int i = 10;
+        int j = 20;
+
+        methodB();
+    }
+
+    public void methodB(){
+        int k = 30;
+        int m = 40;
+    }
+}
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://chenm0.github.io//post-images/1651218099413.png" alt="" loading="lazy"></figure>
+<ul>
+<li>虚拟机栈的生命周期<br>
+生命周期和线程一致，也就是线程结束了，该虚拟机栈也销毁了</li>
+<li>虚拟机栈的作用
+<ul>
+<li>主管Java程序的运行，它保存方法的局部变量（8 种基本数据类型、对象的引用地址）、部分结果，并参与方法的调用和返回。</li>
+<li>局部变量，它是相比于成员变量来说的（或属性）</li>
+<li>基本数据类型变量 VS 引用类型变量（类、数组、接口）</li>
+</ul>
+</li>
+</ul>
+<h3 id="虚拟机栈的特点">虚拟机栈的特点</h3>
+<ul>
+<li>栈是一种快速有效的分配存储方式，访问速度仅次于程序计数器。</li>
+<li>JVM直接对Java栈的操作只有两个：
+<ul>
+<li>每个方法执行，伴随着进栈（入栈、压栈）</li>
+<li>执行结束后的出栈工作</li>
+</ul>
+</li>
+<li>对于栈来说不存在垃圾回收问题
+<ul>
+<li>栈不需要GC，但是可能存在OOM<br>
+<img src="https://chenm0.github.io//post-images/1651218797989.png" alt="" loading="lazy"></li>
+</ul>
+</li>
+</ul>
+<h3 id="虚拟机栈的异常">虚拟机栈的异常</h3>
+<p>Java 虚拟机规范允许Java栈的大小是动态的或者是固定不变的。</p>
+<ul>
+<li>如果采用固定大小的Java虚拟机栈，那每一个线程的Java虚拟机栈容量可以在线程创建的时候独立选定。如果线程请求分配的栈容量超过Java虚拟机栈允许的最大容量，Java虚拟机将会抛出一个StackoverflowError 异常。</li>
+<li>如果Java虚拟机栈可以动态扩展，并且在尝试扩展的时候无法申请到足够的内存，或者在创建新的线程时没有足够的内存去创建对应的虚拟机栈，那Java虚拟机将会抛出一个 OutofMemoryError 异常。</li>
+</ul>
+<h3 id="设置栈内存大小">设置栈内存大小</h3>
+<p>我们可以使用参数 -Xss 选项来设置线程的最大栈空间，栈的大小直接决定了函数调用的最大可达深度。</p>
+<pre><code>-Xss1m
+-Xss1024k
+-Xss1048576
+</code></pre>
+<h2 id="栈的存储单位">栈的存储单位</h2>
+<h3 id="栈中存储什么">栈中存储什么？</h3>
+<ol>
+<li>每个线程都有自己的栈，栈中的数据都是以栈帧（Stack Frame）的格式存在</li>
+<li>在这个线程上正在执行的每个方法都各自对应一个栈帧（Stack Frame）。</li>
+<li>栈帧是一个内存区块，是一个数据集，维系着方法执行过程中的各种数据信息。</li>
+</ol>
+<h3 id="栈运行原理">栈运行原理</h3>
+<ol>
+<li>JVM直接对Java栈的操作只有两个，就是对栈帧的压栈和出栈，遵循先进后出（后进先出）原则</li>
+<li>在一条活动线程中，一个时间点上，只会有一个活动的栈帧。即只有当前正在执行的方法的栈帧（栈顶栈帧）是有效的。这个栈帧被称为当前栈帧（Current Frame），与当前栈帧相对应的方法就是当前方法（Current Method），定义这个方法的类就是当前类（Current Class）</li>
+<li>执行引擎运行的所有字节码指令只针对当前栈帧进行操作。</li>
+<li>如果在该方法中调用了其他方法，对应的新的栈帧会被创建出来，放在栈的顶端，成为新的当前帧。<br>
+<img src="https://chenm0.github.io//post-images/1651219955004.png" alt="" loading="lazy"></li>
+</ol>
+<ul>
+<li>不同线程中所包含的栈帧是不允许存在相互引用的，即不可能在一个栈帧之中引用另外一个线程的栈帧。</li>
+<li>如果当前方法调用了其他方法，方法返回之际，当前栈帧会传回此方法的执行结果给前一个栈帧，接着，虚拟机会丢弃当前栈帧，使得前一个栈帧重新成为当前栈帧。</li>
+<li>Java方法有两种返回函数的方式。
+<ul>
+<li>一种是正常的函数返回，使用return指令。</li>
+<li>另一种是方法执行中出现未捕获处理的异常，以抛出异常的方式结束。</li>
+<li>但不管使用哪种方式，都会导致栈帧被弹出。</li>
+</ul>
+</li>
+</ul>
+<h3 id="栈帧的内部结构">栈帧的内部结构</h3>
+<p>每个栈帧中存储着：<br>
+- 局部变量表（Local Variables）<br>
+- 操作数栈（Operand Stack）（或表达式栈）<br>
+- 动态链接（Dynamic Linking）（或指向运行时常量池的方法引用）<br>
+- 方法返回地址（Return Address）（或方法正常退出或者异常退出的定义）<br>
+- 一些附加信息<br>
+<img src="https://chenm0.github.io//post-images/1651221440441.png" alt="" loading="lazy"><br>
+并行每个线程下的栈都是私有的，因此每个线程都有自己各自的栈，并且每个栈里面都有很多栈帧，栈帧的大小主要由局部变量表 和 操作数栈决定的。</p>
+<h2 id="局部变量表">局部变量表</h2>
+<h3 id="概念">概念</h3>
+<ol>
+<li>局部变量表也被称之为局部变量数组或本地变量表</li>
+<li><B>定义为一个数字数组，主要用于存储方法参数和定义在方法体内的局部变量</B>，这些数据类型包括各类基本数据类型、对象引用（reference），以及returnAddress返回值类型。</li>
+<li>由于局部变量表是建立在线程的栈上，是线程的私有数据，因此不存在数据安全问题</li>
+<li><B>局部变量表所需的容量大小是在编译期确定下来的</B>，并保存在方法的Code属性的maximum local variables数据项中。在方法运行期间是不会改变局部变量表的大小的。</li>
+<li>方法嵌套调用的次数由栈的大小决定。一般来说，栈越大，方法嵌套调用次数越多。
+<ul>
+<li>对一个函数而言，它的参数和局部变量越多，使得局部变量表膨胀，它的栈帧就越大，以满足方法调用所需传递的信息增大的需求。</li>
+<li>进而函数调用就会占用更多的栈空间，导致其嵌套调用次数就会减少。</li>
+</ul>
+</li>
+<li>局部变量表中的变量只在当前方法调用中有效。
+<ul>
+<li>在方法执行时，虚拟机通过使用局部变量表完成参数值到参数变量列表的传递过程。</li>
+<li>当方法调用结束后，随着方法栈帧的销毁，局部变量表也会随之销毁。</li>
+</ul>
+</li>
+</ol>
+<h3 id="补充说明">补充说明</h3>
+<ol>
+<li>在栈帧中，与性能调优关系最为密切的部分就是前面提到的局部变量表。在方法执行时，虚拟机使用局部变量表完成方法的传递。</li>
+<li>局部变量表中的变量也是重要的垃圾回收根节点，只要被局部变量表中直接或间接引用的对象都不会被回收。</li>
+</ol>
+<h2 id="操作数栈">操作数栈</h2>
+<h3 id="特点">特点</h3>
+<ol>
+<li>每一个独立的栈帧除了包含局部变量表以外，还包含一个后进先出（Last - In - First -Out）的 操作数栈，也可以称之为表达式栈（Expression Stack）</li>
+<li>操作数栈，在方法执行过程中，根据字节码指令，往栈中写入数据或提取数据，即入栈（push）和 出栈（pop）
+<ul>
+<li>某些字节码指令将值压入操作数栈，其余的字节码指令将操作数取出栈。使用它们后再把结果压入栈<br>
+比如：执行复制、交换、求和等操作</li>
+</ul>
+</li>
+</ol>
+<h3 id="作用">作用</h3>
+<ol>
+<li>操作数栈，主要用于保存计算过程的中间结果，同时作为计算过程中变量临时的存储空间。</li>
+<li>操作数栈就是JVM执行引擎的一个工作区，当一个方法刚开始执行的时候，一个新的栈帧也会随之被创建出来，这时方法的操作数栈是空的。</li>
+<li>每一个操作数栈都会拥有一个明确的栈深度用于存储数值，其所需的最大深度在编译期就定义好了，保存在方法的Code属性中，为maxstack的值。</li>
+<li>栈中的任何一个元素都是可以任意的Java数据类型
+<ul>
+<li>32bit的类型占用一个栈单位深度</li>
+<li>64bit的类型占用两个栈单位深度</li>
+</ul>
+</li>
+<li>操作数栈并非采用访问索引的方式来进行数据访问的，而是只能通过标准的入栈和出栈操作来完成一次数据访问。只不过操作数栈是用数组这个结构来实现的而已</li>
+<li>如果被调用的方法带有返回值的话，其返回值将会被压入当前栈帧的操作数栈中，并更新PC寄存器中下一条需要执行的字节码指令。</li>
+<li>操作数栈中元素的数据类型必须与字节码指令的序列严格匹配，这由编译器在编译器期间进行验证，同时在类加载过程中的类检验阶段的数据流分析阶段要再次验证。</li>
+<li>另外，我们说Java虚拟机的解释引擎是基于栈的执行引擎，其中的栈指的就是操作数栈。</li>
+</ol>
+<h2 id="栈顶缓存技术top-of-stack-cashing">栈顶缓存技术（Top Of Stack Cashing）</h2>
+<ol>
+<li>前面提过，基于栈式架构的虚拟机所使用的零地址指令更加紧凑，但完成一项操作的时候必然需要使用更多的入栈和出栈指令，这同时也就意味着将需要更多的指令分派（instruction dispatch）次数（也就是你会发现指令很多）和导致内存读/写次数多，效率不高。</li>
+<li>由于操作数是存储在内存中的，因此频繁地执行内存读/写操作必然会影响执行速度。为了解决这个问题，HotSpot JVM的设计者们提出了栈顶缓存（Tos，Top-of-Stack Cashing）技术，将栈顶元素全部缓存在物理CPU的寄存器中，以此降低对内存的读/写次数，提升执行引擎的执行效率。</li>
+<li>寄存器的主要优点：指令更少，执行速度快，但是指令集（也就是指令种类）很多</li>
+</ol>
+<h2 id="方法的调用">方法的调用</h2>
+<h3 id="静态链接与动态链接">静态链接与动态链接</h3>
+<ul>
+<li>静态链接：<br>
+当一个字节码文件被装载进JVM内部时，如果被调用的目标方法在编译期确定，且运行期保持不变时，这种情况下将调用方法的符号引用转换为直接引用的过程称之为静态链接</li>
+<li>动态链接：<br>
+如果被调用的方法在编译期无法被确定下来，也就是说，只能够在程序运行期将调用的方法的符号转换为直接引用，由于这种引用转换过程具备动态性，因此也被称之为动态链接。</li>
+</ul>
+<h3 id="早期绑定与晚期绑定">早期绑定与晚期绑定</h3>
+<p><code>静态链接与动态链接针对的是方法。早期绑定和晚期绑定范围更广。早期绑定涵盖了静态链接，晚期绑定涵盖了动态链接。</code><br>
+静态链接和动态链接对应的方法的绑定机制为：早期绑定（Early Binding）和晚期绑定（Late Binding）。绑定是一个字段、方法或者类在符号引用被替换为直接引用的过程，这仅仅发生一次。</p>
+<ul>
+<li>早期绑定<br>
+早期绑定就是指被调用的目标方法如果在编译期可知，且运行期保持不变时，即可将这个方法与所属的类型进行绑定，这样一来，由于明确了被调用的目标方法究竟是哪一个，因此也就可以使用静态链接的方式将符号引用转换为直接引用。</li>
+<li>晚期绑定<br>
+如果被调用的方法在编译期无法被确定下来，只能够在程序运行期根据实际的类型绑定相关的方法，这种绑定方式也就被称之为晚期绑定。</li>
+</ul>
+<h3 id="动态语言和静态语言">动态语言和静态语言</h3>
+<ol>
+<li>动态类型语言和静态类型语言两者的区别就在于对类型的检查是在编译期还是在运行期，满足前者就是静态类型语言，反之是动态类型语言。</li>
+<li>说的再直白一点就是，静态类型语言是判断变量自身的类型信息；动态类型语言是判断变量值的类型信息，变量没有类型信息，变量值才有类型信息，这是动态语言的一个重要特征。</li>
+</ol>
+<pre><code>Java：String info = &quot;mogu blog&quot;; (Java是静态类型语言的，会先编译就进行类型检查) 
+JS：var name = &quot;shkstart&quot;; var name = 10; （运行时才进行检查）
+</code></pre>
+<h3 id="java语言中方法重写的本质">Java语言中方法重写的本质</h3>
+<ol>
+<li>找到操作数栈顶的第一个元素所执行的对象的实际类型，记作C。</li>
+<li>如果在类型C中找到与常量中的描述符合简单名称都相符的方法，则进行访问权限校验。
+<ul>
+<li>如果通过则返回这个方法的直接引用，查找过程结束</li>
+<li>如果不通过，则返回java.lang.IllegalAccessError 异常</li>
+</ul>
+</li>
+<li>否则，按照继承关系从下往上依次对C的各个父类进行第2步的搜索和验证过程。</li>
+<li>如果始终没有找到合适的方法，则抛出java.lang.AbstractMethodError异常。<br>
+<code>上面这个过程称为动态分派</code></li>
+</ol>
+<pre><code>IllegalAccessError介绍
+程序试图访问或修改一个属性或调用一个方法，这个属性或方法，你没有权限访问。一般的，这个会引起编译器异常。这个错误如果发生在运行时，就说明一个类发生了不兼容的改变。比如，你把应该有的jar包放从工程中拿走了，或者Maven中存在jar包冲突
+</code></pre>
 
             </div>
             
@@ -510,7 +813,7 @@
     </li>
     <li class="post-copyright-link">
       <strong class="language" data-lan="link">本文链接：</strong>
-      <a href="https://chenm0.github.io/excel-args/" title="@Excel参数大全">https://chenm0.github.io/excel-args/</a>
+      <a href="https://chenm0.github.io/Q851aTBIk/" title="JVM笔记---(3)虚拟机栈">https://chenm0.github.io/Q851aTBIk/</a>
     </li>
     <li class="post-copyright-license">
       <strong class="language" data-lan="copyright">版权声明： </strong>
@@ -519,21 +822,19 @@
   </ul>
   <div class="tags">
     
-      <a href="https://chenm0.github.io/BuwDjq1zh0/"># JAVA</a>
-    
   </div>
   <div class="nav">
     <div class="nav-prev">
       
         <i class="fa fa-chevron-left"></i>
-        <a class="nav-pc-next" title="Maven setting" href="https://chenm0.github.io/maven-setting/">Maven setting</a class="nav-pc-next">
-        <a class="nav-mobile-prev" title="Maven setting" href="https://chenm0.github.io/maven-setting/">上一篇</a>
+        <a class="nav-pc-next" title="前端学习笔记：(1) HTML" href="https://chenm0.github.io/NShkF30Co/">前端学习笔记：(1) HTML</a class="nav-pc-next">
+        <a class="nav-mobile-prev" title="前端学习笔记：(1) HTML" href="https://chenm0.github.io/NShkF30Co/">上一篇</a>
       
     </div>
     <div class="nav-next">
       
-        <a class="nav-pc-next" title="JPA踩坑记录" href="https://chenm0.github.io/jpa-qa/">JPA踩坑记录</a>
-        <a class="nav-mobile-next" title="JPA踩坑记录" href="https://chenm0.github.io/jpa-qa/">下一篇</a>
+        <a class="nav-pc-next" title="JVM笔记---2.运行时数据区概述及线程" href="https://chenm0.github.io/KDeC0X3Hk/">JVM笔记---2.运行时数据区概述及线程</a>
+        <a class="nav-mobile-next" title="JVM笔记---2.运行时数据区概述及线程" href="https://chenm0.github.io/KDeC0X3Hk/">下一篇</a>
         <i class="fa fa-chevron-right"></i>
       
     </div>
